@@ -44,14 +44,14 @@ This will create some initial data, to start developing further experiments. You
 
 ## Subproject 2 - Dataset similarity
 * Define multiple ways to measure similarity
-*    High-level properties (such as medical or not) 
-*    Feature vector representation of the images
-*    Trained network weights
-*    Asking an observer
-*    Etc
+    * High-level properties (such as medical or not) 
+    * Feature vector representation of the images
+    * Trained network weights
+    * Asking an observer
+    * Etc
 * Measure similarity of datasets 
-** If available, use an already saved dataset/trained network
-** If not, train/test the network and save it
+    * If available, use an already saved dataset/trained network
+    * If not, train/test the network and save it
 * Compare similarity matrices to performances to investigate which similarity is more suitable
 
 
