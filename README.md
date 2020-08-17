@@ -66,6 +66,11 @@ This will create some initial data, to start developing further experiments. You
 * https://github.com/tueimage/essential-skills - tutorial about deep learning, Github etc. 
 * https://github.com/IDSIA/sacred - toolbox for keeping track of experiments (optional) 
 
+# Papers
 
+* References in "Cats or CAT scans" paper
+* Transfusion: Understanding Transfer Learning with Applications to Medical Imaging http://papers.nips.cc/paper/8596-transfusion-understanding-transfer-learning-for-medical-imaging (+ maybe citations of this paper)
+* What And How Other Datasets Can Be Leveraged For Medical Imaging Classification https://ieeexplore.ieee.org/document/8759148
+* 
 
 
