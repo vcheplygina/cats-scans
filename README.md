@@ -63,8 +63,8 @@ This will create some initial data, to start developing further experiments. You
 * https://github.com/tueimage/transfer-medical-msc-2019 - transfer learning experiments on two datasets, varying properties, could be useful for code structure and general transfer learning mechanisms 
 * https://github.com/tueimage/meta-segmentation-msc-2018/ - meta-learning to represent a dataset as a feature vector, could be useful for similarity measures 
 
-
-
+* https://github.com/tueimage/essential-skills - tutorial about deep learning, Github etc. 
+* https://github.com/IDSIA/sacred - toolbox for keeping track of experiments (optional) 
 
 
 
