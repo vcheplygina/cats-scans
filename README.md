@@ -64,6 +64,7 @@ This will create some initial data, to start developing further experiments. You
 * https://github.com/tueimage/meta-segmentation-msc-2018/ - meta-learning to represent a dataset as a feature vector, could be useful for similarity measures 
 
 * https://github.com/tueimage/essential-skills - tutorial about deep learning, Github etc. 
+* https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004947 - article about Github
 * https://github.com/IDSIA/sacred - toolbox for keeping track of experiments (optional) 
 
 # Papers
@@ -71,6 +72,16 @@ This will create some initial data, to start developing further experiments. You
 * References in "Cats or CAT scans" paper
 * Transfusion: Understanding Transfer Learning with Applications to Medical Imaging http://papers.nips.cc/paper/8596-transfusion-understanding-transfer-learning-for-medical-imaging (+ maybe citations of this paper)
 * What And How Other Datasets Can Be Leveraged For Medical Imaging Classification https://ieeexplore.ieee.org/document/8759148
-* 
+
+
+# Project management
+
+We will use Github Issues, and the board in the Projects tab, to manage the project. Any coding-related to-do's (for example, implementing a function) should be created as an issue, because this allows adding comments, labels, deadlines etc. Then from the project board, you can import this issue as a card. 
+
+A good to-do should be actionable (start with a verb, such as implement or read) and concrete (for example, a specific functionality, a number of papers, etc). 
+
+Cards start in the "backlog" column, and then progress through "to-do" (plan for next week), "in progress" (doing it now) and "done". The idea is to have as few things as possible in the "in progress" column, and to prioritize what you have in "to-do". This is based on the agile or Kanban methdology. You might want to search for "examples Kanban research projects" or similar queries to get an idea of how people use it for such projects. 
+
+
 
 
