@@ -59,12 +59,18 @@ This will create some initial data, to start developing further experiments. You
 
 # Resources
 
+
+## Tutorials
+* https://github.com/tueimage/essential-skills - tutorial about deep learning, Github etc. 
+* https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004947 - article about Github
+
+## Individual projects
 * https://github.com/tueimage/transfer-medical-bsc-2018 - preliminary results
 * https://github.com/tueimage/transfer-medical-msc-2019 - transfer learning experiments on two datasets, varying properties, could be useful for code structure and general transfer learning mechanisms 
 * https://github.com/tueimage/meta-segmentation-msc-2018/ - meta-learning to represent a dataset as a feature vector, could be useful for similarity measures 
+* https://github.com/raumannsr/hints_crowd - transfer learning from ImageNet weights, could be useful for code structure
 
-* https://github.com/tueimage/essential-skills - tutorial about deep learning, Github etc. 
-* https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004947 - article about Github
+## Data and tools 
 
 * https://modelzoo.co/ - pretrained networks
 * https://github.com/IDSIA/sacred - toolbox for keeping track of experiments (optional) 
