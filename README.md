@@ -70,6 +70,8 @@ This will create some initial data, to start developing further experiments. You
 * https://github.com/tueimage/meta-segmentation-msc-2018/ - meta-learning to represent a dataset as a feature vector, could be useful for similarity measures 
 * https://github.com/raumannsr/hints_crowd - transfer learning from ImageNet to skin lesions, could be useful for code structure
 * https://github.com/tueimage/crowdskin-bsc-2020/tree/mphjoosten - extension of above project, good documentation
+* https://github.com/tueimage/lung-nodule-msc-2018 - transfer learning medical to medical, good documentation
+
 
 ## Data and tools 
 
