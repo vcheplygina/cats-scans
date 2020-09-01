@@ -68,7 +68,8 @@ This will create some initial data, to start developing further experiments. You
 * https://github.com/tueimage/transfer-medical-bsc-2018 - preliminary results
 * https://github.com/tueimage/transfer-medical-msc-2019 - transfer learning experiments on two datasets, varying properties, could be useful for code structure and general transfer learning mechanisms 
 * https://github.com/tueimage/meta-segmentation-msc-2018/ - meta-learning to represent a dataset as a feature vector, could be useful for similarity measures 
-* https://github.com/raumannsr/hints_crowd - transfer learning from ImageNet weights, could be useful for code structure
+* https://github.com/raumannsr/hints_crowd - transfer learning from ImageNet to skin lesions, could be useful for code structure
+* https://github.com/tueimage/crowdskin-bsc-2020/tree/mphjoosten - extension of above project, good documentation
 
 ## Data and tools 
 
