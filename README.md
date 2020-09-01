@@ -65,6 +65,8 @@ This will create some initial data, to start developing further experiments. You
 
 * https://github.com/tueimage/essential-skills - tutorial about deep learning, Github etc. 
 * https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004947 - article about Github
+
+* https://modelzoo.co/ - pretrained networks
 * https://github.com/IDSIA/sacred - toolbox for keeping track of experiments (optional) 
 
 # Papers
