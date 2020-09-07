@@ -93,6 +93,9 @@ A good to-do should be actionable (start with a verb, such as implement or read)
 
 Cards start in the "backlog" column, and then progress through "to-do" (plan for next week), "in progress" (doing it now) and "done". The idea is to have as few things as possible in the "in progress" column, and to prioritize what you have in "to-do". This is based on the agile or Kanban methdology. You might want to search for "examples Kanban research projects" or similar queries to get an idea of how people use it for such projects. 
 
+## Data storage
+
+We can store datasets and other large files on the Open Science Framework website, in this project: https://osf.io/x2fpg/ . It is in some ways similar to Github, because there is version control, contributors, etc. The storage is unlimited, but each file is limited to 5 GB, and you can only upload files, not folders. Therefore it will be suitable for trained models, or ZIP files with images (provided these are less than 5GB). 
 
 
 
