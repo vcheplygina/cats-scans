@@ -5,7 +5,7 @@ from keras.applications.vgg16 import preprocess_input
 from keras.applications.vgg16 import decode_predictions
 
 # load the model
-model = VGG16()
+model = VGG16(weights="imagenet")
 print(model.summary())
 
 # load the image
@@ -30,4 +30,4 @@ label = decode_predictions(yhat)
 label = label[0][0]
 
 # print the classification
-print(label[1], label[2]*100)
+print('%s (%.2f%%)' % (label[1], label[2]*100))
