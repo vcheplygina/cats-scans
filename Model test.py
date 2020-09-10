@@ -8,7 +8,7 @@ fashion_mnist = keras.datasets.fashion_mnist
 train_images = train_images / 255.0
 test_images = test_images / 255.0
 
-# training config
+# training configuration
 batch_size = 64
 num_epochs = 10
 learning_rate = 0.01
