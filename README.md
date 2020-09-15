@@ -97,5 +97,15 @@ Cards start in the "backlog" column, and then progress through "to-do" (plan for
 
 We can store datasets and other large files on the Open Science Framework website, in this project: https://osf.io/x2fpg/ . It is in some ways similar to Github, because there is version control, contributors, etc. The storage is unlimited, but each file is limited to 5 GB, and you can only upload files, not folders. Therefore it will be suitable for trained models, or ZIP files with images (provided these are less than 5GB). 
 
+## Overall plan
 
+* Weeks 1-2 - Reproduce a result from previous work (already pretrained network + existing data), setup Sacred 
+
+* Weeks 3-4 (project 1) - Extend train/test setup, setup code so adding datasets is easy
+* Weeks 3-4 (project 2) - Start implementing similarity measures (possibly also ways to compare similarity matrices)
+
+* Weeks 5-6 (project 1) - Extend to varying dataset characteristics, store results in Sacred  
+* Weeks 5-6 (project 2) - Extract results/ground truth from Sacred, compare to implemented similarity measures
+
+* Weeks 7-8 - Finish experiments / documentation / etc. 
 
