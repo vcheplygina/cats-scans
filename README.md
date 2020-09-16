@@ -97,6 +97,8 @@ Cards start in the "backlog" column, and then progress through "to-do" (plan for
 
 We can store datasets and other large files on the Open Science Framework website, in this project: https://osf.io/x2fpg/ . It is in some ways similar to Github, because there is version control, contributors, etc. The storage is unlimited, but each file is limited to 5 GB, and you can only upload files, not folders. Therefore it will be suitable for trained models, or ZIP files with images (provided these are less than 5GB). 
 
+A useful (free) course on data management: https://www.coursera.org/learn/data-management  Please look at a few videos regarding for example file naming. 
+
 ## Overall plan
 
 * Weeks 1-2 - Reproduce a result from previous work (already pretrained network + existing data), setup Sacred 
