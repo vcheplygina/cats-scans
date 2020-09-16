@@ -99,6 +99,8 @@ We can store datasets and other large files on the Open Science Framework websit
 
 A useful (free) course on data management: https://www.coursera.org/learn/data-management  Please look at a few videos regarding for example file naming. 
 
+An example of organizing files: https://medium.com/@rrfd/cookiecutter-data-science-organize-your-projects-atom-and-jupyter-2be7862f487e
+
 ## Overall plan
 
 * Weeks 1-2 - Reproduce a result from previous work (already pretrained network + existing data), setup Sacred 
