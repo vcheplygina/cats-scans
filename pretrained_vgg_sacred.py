@@ -8,7 +8,7 @@ from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
 import os
 import numpy as np
 from tensorflow.keras.preprocessing.image import img_to_array, array_to_img
-from data_import import import_melanoom
+from data_import_vFloris import import_melanoom
 import cv2
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_auc_score
