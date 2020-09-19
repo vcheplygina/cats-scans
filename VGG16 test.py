@@ -9,7 +9,7 @@ model = VGG16(weights="imagenet")
 print(model.summary())
 
 # load the image
-image = load_img('mug.jpg', target_size = (224,224))
+image = load_img('mug.jpg', target_size=(224, 224))
 
 # convert the image pixels to a numpy array
 image = img_to_array(image)
