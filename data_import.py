@@ -1,15 +1,16 @@
 # %%
 import os
 import pandas as pd
-from sklearn.model_selection import train_test_split
 
 
-def import_ISIC(img_dir, label_dir):
+def import_ISIC():
     """
-    :param img_dir: directory containing image paths
-    :param label_dir: directory containing image labels
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
+    img_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_Input"
+    label_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_GroundTruth" \
+                "/ISIC2018_Task3_Training_GroundTruth.csv"
+
     # get image paths by selecting files from directory that end with .jpg
     images = [os.path.join(img_dir, f) for f in os.listdir(img_dir) if f.endswith('.jpg')]
 
@@ -47,11 +48,13 @@ def import_ISIC(img_dir, label_dir):
     return train_labels
 
 
-def import_blood(data_dir):
+def import_blood():
     """
-    :param data_dir: directory where data is located
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
+    data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/blood_data/9232-29380-bundle-archive/dataset2-master" \
+               "/dataset2-master/images"
+
     # set paths where training and test data can be found
     train_images = os.path.join(data_dir, "TRAIN")
     test_images = os.path.join(data_dir, "TEST")
@@ -122,21 +125,18 @@ def import_blood(data_dir):
 #
 #     return df_train, df_val, df_test
 
-def collect_data(isic, blood, img_dir, label_dir, test_size):
+def collect_data(isic, blood):
     """
     :param isic: boolean specifying whether data needed is ISIC data or not
     :param blood: boolean specifying whether data needed is blood data or not
-    :param img_dir: directory where images are found
-    :param label_dir: directory where labels are found
-    :param test_size: split value used to split part of dataframe into test set
     :return: training, validation and test dataframe containing image paths and labels
     """
 
     if isic:
-        dataframe = import_ISIC(img_dir, label_dir)  # collect data
+        dataframe = import_ISIC()  # collect data
 
     elif blood:
-        df_train, df_test = import_blood(img_dir)  # collect train and test dataframe
+        df_train, df_test = import_blood()  # collect train and test dataframe
         dataframe = pd.concat([df_train, df_test])  # combine train and test dataframe in one dataframe
 
     return dataframe

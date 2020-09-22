@@ -46,14 +46,11 @@ def create_generators_dataframes(augment):
     return train_datagen, valid_datagen
 
 
-def run_model(isic, blood, img_dir, label_dir, test_size, x_col, y_col, augment, learning_rate,
-              img_length, img_width, batch_size, epochs, color, dropout, imagenet, model_choice):
+def run_model(isic, blood, x_col, y_col, augment, learning_rate, img_length, img_width, batch_size, epochs,
+              color, dropout, imagenet, model_choice):
     """
     :param isic: boolean specifying whether data needed is ISIC data or not
     :param blood: boolean specifying whether data needed is blood data or not
-    :param img_dir: directory where images are found
-    :param label_dir: directory where labels are found
-    :param test_size: split value used to split part of dataframe into test set
     :param x_col: column in dataframe containing the image paths
     :param y_col: column in dataframe containing the target labels
     :param augment: boolean specifying whether to use data augmentation or not
@@ -73,7 +70,7 @@ def run_model(isic, blood, img_dir, label_dir, test_size, x_col, y_col, augment,
     train_datagen, valid_datagen = create_generators_dataframes(augment)
 
     # import data into function
-    dataframe = collect_data(isic, blood, img_dir, label_dir, test_size)
+    dataframe = collect_data(isic, blood)
 
     # set input shape for model
     if color:
@@ -89,11 +86,13 @@ def run_model(isic, blood, img_dir, label_dir, test_size, x_col, y_col, augment,
     loss_per_fold = []
     auc_per_fold = []
 
-    skf = StratifiedKFold(n_splits=5, random_state=2)  # create k-folds validator object with k=5
+    skf = StratifiedKFold(n_splits=5)  # create k-folds validator object with k=5
 
     fold_no = 1  # initialize fold counter
 
     for train_index, val_index in skf.split(np.zeros(len(dataframe)), y=dataframe[['class']]):
+
+        print(f'Starting fold {fold_no}')
 
         train_data = dataframe.iloc[train_index]  # create training dataframe with indices from fold split
         valid_data = dataframe.iloc[val_index]  # create validation dataframe with indices from fold split
@@ -171,10 +170,10 @@ def run_model(isic, blood, img_dir, label_dir, test_size, x_col, y_col, augment,
         with open(f'/Users/IrmavandenBrandt/Downloads/Internship/models/model_{model_choice}_fold{fold_no}.json', "w") \
                 as json_file:  # where to store models?
             json_file.write(model_json)
-        # serialize weights to HDF5
+        # save weights in h5 file
         model.save_weights(f'/Users/IrmavandenBrandt/Downloads/Internship/models/model_{model_choice}_fold{fold_no}.h5')
         # where to store weights?
-        print("Saved model to disk")
+        print("Saved model to disk and finished fold")
 
         fold_no += 1  # increment fold counter to go to next fold
 
@@ -191,16 +190,7 @@ def run_model(isic, blood, img_dir, label_dir, test_size, x_col, y_col, augment,
     return acc_per_fold, loss_per_fold, auc_per_fold
 
 
-acc_per_fold, loss_per_fold, auc_per_fold = run_model(isic=True, blood=False,
-                                                      # img_dir="/Users/IrmavandenBrandt/Downloads/Internship/blood_data/9232-29380-bundle-archive"
-                                                      #         "/dataset2-master/dataset2-master/images",
-                                                      img_dir="/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018"
-                                                              "/ISIC2018_Task3_Training_Input",
-                                                      label_dir="/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018"
-                                                                "/ISIC2018_Task3_Training_GroundTruth"
-                                                                "/ISIC2018_Task3_Training_GroundTruth.csv",
-                                                      # label_dir=None,
-                                                      test_size=None, x_col="path", y_col="class",
-                                                      augment=True, learning_rate=0.00001, img_length=60, img_width=80,
-                                                      batch_size=128, epochs=10, color=True, dropout=0.2, imagenet=True,
-                                                      model_choice="resnet")
+acc_per_fold, loss_per_fold, auc_per_fold = run_model(isic=True, blood=False, x_col="path", y_col="class", augment=True,
+                                                      learning_rate=0.00001, img_length=60, img_width=80,
+                                                      batch_size=128, epochs=10, color=True, dropout=0.2,
+                                                      imagenet=True, model_choice="resnet")
