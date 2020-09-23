@@ -12,6 +12,7 @@ from sklearn.utils import class_weight
 import numpy as np
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import roc_auc_score
+from requests_osf import upload_to_osf
 
 # note: this is MACOS specific (to avoid OpenMP runtime error)
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
@@ -46,6 +47,70 @@ def create_generators_dataframes(augment):
     return train_datagen, valid_datagen
 
 
+def create_model(y_col, img_length, img_width, learning_rate, color, dropout, imagenet, model_choice, dataframe):
+    """
+    :param y_col: column in dataframe containing the target labels
+    :param img_length: target length of image in pixels
+    :param img_width: target width of image in pixels
+    :param learning_rate: learning rate used by optimizer
+    :param color: boolean specifying whether the images are in color or not
+    :param dropout: fraction of nodes in layer that are deactivated
+    :param imagenet: boolean specifying whether or not to use pretrained imagenet weights in initialization model
+    :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
+    :param dataframe: dataframe containing paths of all images and the corresponding labels
+    :return: compiled model (i.e. resnet or efficientnet)
+    """
+    # set input shape for model
+    if color:
+        input_shape = (img_length, img_width, 3)  # add 3 channels (i.e RGB) in case of color image
+    else:
+        input_shape = (img_length, img_width, 1)  # add 1 channels in case of gray image
+
+    # compute number of nodes needed in prediction layer (i.e. number of unique classes)
+    num_classes = len(list(dataframe[y_col].unique()))
+
+    model = Sequential()  # initialize new model
+    if model_choice == "efficientnet":
+        if imagenet:
+            # collect efficient net and exclude top layers
+            efficient_net = EfficientNetB1(include_top=False, weights="imagenet", input_shape=input_shape)
+        else:
+            # collect efficient net and exclude top layers
+            efficient_net = EfficientNetB1(include_top=False, weights=None, input_shape=input_shape)
+        model.add(efficient_net)  # attach efficient net to new model
+    elif model_choice == "resnet":
+        if imagenet:
+            # collect efficient net and exclude top layers
+            resnet = ResNet50(include_top=False, weights="imagenet", input_shape=input_shape)
+        else:
+            # collect efficient net and exclude top layers
+            resnet = ResNet50(include_top=False, weights=None, input_shape=input_shape)
+        model.add(resnet)  # attach efficient net to new model
+    # add new top layers to enable prediction for target dataset
+    model.add(GlobalAveragePooling2D(name='gap'))
+    model.add(Dropout(dropout, name='dropout_out'))
+    model.add(Dense(num_classes, activation='softmax'))
+    model.trainable = True  # set all layers in model to be trainable
+
+    model.compile(loss=losses.categorical_crossentropy,
+                  optimizer=optimizers.Adam(lr=learning_rate),
+                  metrics=['accuracy'])
+
+    return model
+
+
+def compute_class_weights(train_generator):
+    """
+    :param train_generator: training generator feeding batches of images to the model and storing class info
+    :return: dictionary containing weights for all classes to balance them
+    """
+    # create balancing weights corresponding to the frequency of items in every class
+    class_weights = class_weight.compute_class_weight('balanced', np.unique(train_generator.classes),
+                                                      train_generator.classes)
+    class_weights = {i: class_weights[i] for i in range(len(class_weights))}
+
+    return class_weights
+
 def run_model(isic, blood, x_col, y_col, augment, learning_rate, img_length, img_width, batch_size, epochs,
               color, dropout, imagenet, model_choice):
     """
@@ -72,21 +137,12 @@ def run_model(isic, blood, x_col, y_col, augment, learning_rate, img_length, img
     # import data into function
     dataframe = collect_data(isic, blood)
 
-    # set input shape for model
-    if color:
-        input_shape = (img_length, img_width, 3)  # add 3 channels (i.e RGB) in case of color image
-    else:
-        input_shape = (img_length, img_width, 1)  # add 1 channels in case of gray image
-
-    # compute number of nodes needed in prediction layer (i.e. number of unique classes)
-    num_classes = len(list(dataframe[y_col].unique()))
-
     # initiliaze empty lists storing accuracy, loss and multi-class auc per fold
     acc_per_fold = []
     loss_per_fold = []
     auc_per_fold = []
 
-    skf = StratifiedKFold(n_splits=5)  # create k-folds validator object with k=5
+    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=2)  # create k-folds validator object with k=5
 
     fold_no = 1  # initialize fold counter
 
@@ -106,6 +162,16 @@ def run_model(isic, blood, x_col, y_col, augment, learning_rate, img_length, img
             class_mode='categorical',
             validate_filenames=False)
 
+        model = create_model(y_col, learning_rate, img_length, img_width, color, dropout, imagenet, model_choice,
+                             dataframe)  # create model
+
+        class_weights = compute_class_weights(train_generator)  # get class weights to balance classes
+
+        model.fit(train_generator,
+                  steps_per_epoch=train_generator.samples // batch_size,
+                  epochs=epochs,
+                  class_weight=class_weights)
+
         validation_generator = valid_datagen.flow_from_dataframe(
             dataframe=valid_data,
             x_col=x_col,
@@ -113,45 +179,8 @@ def run_model(isic, blood, x_col, y_col, augment, learning_rate, img_length, img
             target_size=(img_length, img_width),
             batch_size=batch_size,
             class_mode='categorical',
-            validate_filenames=False)
-
-        model = Sequential()  # initialize new model
-        if model_choice == "efficientnet":
-            if imagenet:
-                # collect efficient net and exclude top layers
-                efficient_net = EfficientNetB1(include_top=False, weights="imagenet", input_shape=input_shape)
-            else:
-                # collect efficient net and exclude top layers
-                efficient_net = EfficientNetB1(include_top=False, weights=None, input_shape=input_shape)
-            model.add(efficient_net)  # attach efficient net to new model
-        elif model_choice == "resnet":
-            if imagenet:
-                # collect efficient net and exclude top layers
-                resnet = ResNet50(include_top=False, weights="imagenet", input_shape=input_shape)
-            else:
-                # collect efficient net and exclude top layers
-                resnet = ResNet50(include_top=False, weights=None, input_shape=input_shape)
-            model.add(resnet)  # attach efficient net to new model
-        # add new top layers to enable prediction for target dataset
-        model.add(GlobalAveragePooling2D(name='gap'))
-        model.add(Dropout(dropout, name='dropout_out'))
-        model.add(Dense(num_classes, activation='softmax'))
-        model.trainable = True  # set all layers in model to be trainable
-
-        model.compile(loss=losses.categorical_crossentropy,
-                      optimizer=optimizers.Adam(lr=learning_rate),
-                      metrics=['accuracy'])
-
-        # create balancing weights corresponding to the frequency of items in every class
-        class_weights = class_weight.compute_class_weight('balanced', np.unique(train_generator.classes),
-                                                          train_generator.classes)
-        class_weights = {i: class_weights[i] for i in range(len(class_weights))}
-        print(class_weights)
-
-        model.fit(train_generator,
-                  steps_per_epoch=train_generator.samples // batch_size,
-                  epochs=epochs,
-                  class_weight=class_weights)
+            validate_filenames=False,
+            shuffle=False)
 
         # compute loss and accuracy on validation set
         valid_loss, valid_acc = model.evaluate(validation_generator, verbose=1)
@@ -159,21 +188,27 @@ def run_model(isic, blood, x_col, y_col, augment, learning_rate, img_length, img
         acc_per_fold.append(valid_acc)
         loss_per_fold.append(valid_loss)
 
+        # save predictions in csv file
+        predictions = model.predict(validation_generator)
+        np.savetxt(
+            f'/Users/IrmavandenBrandt/PycharmProjects/cats-scans/predictions/predictions_{model_choice}_fold{fold_no}.csv',
+            predictions, delimiter=",")
+
         # compute OneVsRest multi-class macro AUC on the test set
-        OneVsRest_auc = roc_auc_score(validation_generator.classes, model.predict(validation_generator),
-                                      multi_class='ovr',
-                                      average='macro')
+        OneVsRest_auc = roc_auc_score(validation_generator.classes, predictions, multi_class='ovr', average='macro')
         auc_per_fold.append(OneVsRest_auc)
 
-        # save model and weights in json files
-        model_json = model.to_json()
-        with open(f'/Users/IrmavandenBrandt/Downloads/Internship/models/model_{model_choice}_fold{fold_no}.json', "w") \
-                as json_file:  # where to store models?
-            json_file.write(model_json)
-        # save weights in h5 file
-        model.save_weights(f'/Users/IrmavandenBrandt/Downloads/Internship/models/model_{model_choice}_fold{fold_no}.h5')
-        # where to store weights?
-        print("Saved model to disk and finished fold")
+        # write model to json file and upload to OSF
+        upload_to_osf(
+            url=f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=model_{model_choice}_fold{fold_no}.json',
+            file=model.to_json(),
+            name=f'model_{model_choice}_fold{fold_no}.json')
+        # save weights in h5 file and upload to OSF
+        upload_to_osf(
+            url=f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=model_{model_choice}_fold{fold_no}.h5',
+            file=model.save(f'model_{model_choice}_fold{fold_no}.h5'),
+            name=f'model_{model_choice}_fold{fold_no}.h5')
+        print(f'Saved model and weights in OSF and finished fold {fold_no}')
 
         fold_no += 1  # increment fold counter to go to next fold
 
@@ -190,7 +225,7 @@ def run_model(isic, blood, x_col, y_col, augment, learning_rate, img_length, img
     return acc_per_fold, loss_per_fold, auc_per_fold
 
 
-acc_per_fold, loss_per_fold, auc_per_fold = run_model(isic=True, blood=False, x_col="path", y_col="class", augment=True,
-                                                      learning_rate=0.00001, img_length=60, img_width=80,
-                                                      batch_size=128, epochs=10, color=True, dropout=0.2,
+acc_per_fold, loss_per_fold, auc_per_fold = run_model(isic=False, blood=True, x_col="path", y_col="class", augment=True,
+                                                      learning_rate=0.00001, img_length=32, img_width=32,
+                                                      batch_size=128, epochs=1, color=True, dropout=0.2,
                                                       imagenet=True, model_choice="resnet")

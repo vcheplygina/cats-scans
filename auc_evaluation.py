@@ -1,6 +1,6 @@
 # %%
 from sklearn.metrics import roc_auc_score
-from TF_generators_models import run_model
+from tf_generators_models import run_model
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.metrics import roc_curve
 
