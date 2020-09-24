@@ -1,6 +1,4 @@
 # %%
-# from sacred import Experiment
-# from sacred.observers import MongoObserver
 from tensorflow.keras import optimizers, Sequential, losses
 from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -10,9 +8,11 @@ import os
 from data_import import collect_data
 from sklearn.utils import class_weight
 import numpy as np
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.metrics import roc_auc_score
 from requests_osf import upload_to_osf
+from csv_writer import create_metrics_csv
+import pandas as pd
 
 # note: this is MACOS specific (to avoid OpenMP runtime error)
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
@@ -47,12 +47,12 @@ def create_generators_dataframes(augment):
     return train_datagen, valid_datagen
 
 
-def create_model(y_col, img_length, img_width, learning_rate, color, dropout, imagenet, model_choice, dataframe):
+def create_model(y_col, learning_rate, img_length, img_width, color, dropout, imagenet, model_choice, dataframe):
     """
     :param y_col: column in dataframe containing the target labels
+    :param learning_rate: learning rate used by optimizer
     :param img_length: target length of image in pixels
     :param img_width: target width of image in pixels
-    :param learning_rate: learning rate used by optimizer
     :param color: boolean specifying whether the images are in color or not
     :param dropout: fraction of nodes in layer that are deactivated
     :param imagenet: boolean specifying whether or not to use pretrained imagenet weights in initialization model
@@ -111,7 +111,8 @@ def compute_class_weights(train_generator):
 
     return class_weights
 
-def run_model(isic, blood, x_col, y_col, augment, learning_rate, img_length, img_width, batch_size, epochs,
+
+def run_model(isic, blood, x_col, y_col, augment, img_length, img_width, learning_rate, batch_size, epochs,
               color, dropout, imagenet, model_choice):
     """
     :param isic: boolean specifying whether data needed is ISIC data or not
@@ -121,8 +122,8 @@ def run_model(isic, blood, x_col, y_col, augment, learning_rate, img_length, img
     :param augment: boolean specifying whether to use data augmentation or not
     :param img_length: target length of image in pixels
     :param img_width: target width of image in pixels
-    :param batch_size: amount of images processed per batch
     :param learning_rate: learning rate used by optimizer
+    :param batch_size: amount of images processed per batch
     :param epochs: number of epochs the model needs to run
     :param color: boolean specifying whether the images are in color or not
     :param dropout: fraction of nodes in layer that are deactivated
@@ -137,7 +138,7 @@ def run_model(isic, blood, x_col, y_col, augment, learning_rate, img_length, img
     # import data into function
     dataframe = collect_data(isic, blood)
 
-    # initiliaze empty lists storing accuracy, loss and multi-class auc per fold
+    # initialize empty lists storing accuracy, loss and multi-class auc per fold
     acc_per_fold = []
     loss_per_fold = []
     auc_per_fold = []
@@ -162,16 +163,6 @@ def run_model(isic, blood, x_col, y_col, augment, learning_rate, img_length, img
             class_mode='categorical',
             validate_filenames=False)
 
-        model = create_model(y_col, learning_rate, img_length, img_width, color, dropout, imagenet, model_choice,
-                             dataframe)  # create model
-
-        class_weights = compute_class_weights(train_generator)  # get class weights to balance classes
-
-        model.fit(train_generator,
-                  steps_per_epoch=train_generator.samples // batch_size,
-                  epochs=epochs,
-                  class_weight=class_weights)
-
         validation_generator = valid_datagen.flow_from_dataframe(
             dataframe=valid_data,
             x_col=x_col,
@@ -182,33 +173,75 @@ def run_model(isic, blood, x_col, y_col, augment, learning_rate, img_length, img
             validate_filenames=False,
             shuffle=False)
 
+        model = create_model(y_col, learning_rate, img_length, img_width, color, dropout, imagenet, model_choice,
+                             dataframe)  # create model
+
+        class_weights = compute_class_weights(train_generator)  # get class weights to balance classes
+
+        model.fit(train_generator,
+                  steps_per_epoch=train_generator.samples // batch_size,
+                  epochs=epochs,
+                  class_weight=class_weights,
+                  validation_data=validation_generator,
+                  validation_steps=validation_generator.samples // batch_size,
+                  )
+
         # compute loss and accuracy on validation set
         valid_loss, valid_acc = model.evaluate(validation_generator, verbose=1)
-        print(f'Test loss for fold {fold_no}:', valid_loss, f' and Test accuracy for fold {fold_no}:', valid_acc)
+        print(f'Validation loss for fold {fold_no}:', valid_loss, f' and Validation accuracy for fold {fold_no}:',
+              valid_acc)
         acc_per_fold.append(valid_acc)
         loss_per_fold.append(valid_loss)
 
         # save predictions in csv file
         predictions = model.predict(validation_generator)
-        np.savetxt(
-            f'/Users/IrmavandenBrandt/PycharmProjects/cats-scans/predictions/predictions_{model_choice}_fold{fold_no}.csv',
-            predictions, delimiter=",")
+        predictions_csv = np.savetxt(f'predictions_{model_choice}_fold{fold_no}.csv', predictions, delimiter=",")
 
         # compute OneVsRest multi-class macro AUC on the test set
         OneVsRest_auc = roc_auc_score(validation_generator.classes, predictions, multi_class='ovr', average='macro')
+        print(f'Validation auc: {OneVsRest_auc}')
         auc_per_fold.append(OneVsRest_auc)
 
-        # write model to json file and upload to OSF
-        upload_to_osf(
-            url=f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=model_{model_choice}_fold{fold_no}.json',
-            file=model.to_json(),
-            name=f'model_{model_choice}_fold{fold_no}.json')
-        # save weights in h5 file and upload to OSF
-        upload_to_osf(
-            url=f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=model_{model_choice}_fold{fold_no}.h5',
-            file=model.save(f'model_{model_choice}_fold{fold_no}.h5'),
-            name=f'model_{model_choice}_fold{fold_no}.h5')
-        print(f'Saved model and weights in OSF and finished fold {fold_no}')
+        if isic:
+            # save predictions in osf or pycharm
+            # np.savetxt(
+            #     f'/Users/IrmavandenBrandt/PycharmProjects/cats-scans/predictions/predictions_{model_choice}_isic_fold{fold_no}.csv',
+            #     predictions, delimiter=",")
+            upload_to_osf(
+                url=f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=predictions_{model_choice}_isic_fold{fold_no}.csv',
+                file=predictions_csv,
+                name=f'predictions_{model_choice}_isic_fold{fold_no}.csv')
+            # write model to json file and upload to OSF
+            upload_to_osf(
+                url=f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=model_{model_choice}_isic_fold{fold_no}.json',
+                file=model.to_json(),
+                name=f'model_{model_choice}_isic_fold{fold_no}.json')
+            # save weights in h5 file and upload to OSF
+            upload_to_osf(
+                url=f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=model_{model_choice}_isic_fold{fold_no}.h5',
+                file=model.save(f'model_{model_choice}_isic_fold{fold_no}.h5'),
+                name=f'model_{model_choice}_isic_fold{fold_no}.h5')
+            print(f'Saved model and weights in OSF and finished fold {fold_no}')
+        elif blood:
+            # save predictions in osf or pycharm
+            # np.savetxt(
+            #     f'/Users/IrmavandenBrandt/PycharmProjects/cats-scans/predictions/predictions_{model_choice}_blood_fold{fold_no}.csv',
+            #     predictions, delimiter=",")
+            upload_to_osf(
+                url=f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=predictions_{model_choice}_blood_fold{fold_no}.csv',
+                file=predictions_csv,
+                name=f'predictions_{model_choice}_blood_fold{fold_no}.csv')
+            # write model to json file and upload to OSF
+            upload_to_osf(
+                url=f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=model_{model_choice}_blood_fold{fold_no}.json',
+                file=model.to_json(),
+                name=f'model_{model_choice}_blood_fold{fold_no}.json')
+            # save weights in h5 file and upload to OSF
+            upload_to_osf(
+                url=f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=model_{model_choice}_blood_fold{fold_no}.h5',
+                file=model.save(f'model_{model_choice}_blood_fold{fold_no}.h5'),
+                name=f'model_{model_choice}_blood_fold{fold_no}.h5')
+            print(f'Saved model and weights in OSF and finished fold {fold_no}')
 
         fold_no += 1  # increment fold counter to go to next fold
 
@@ -222,10 +255,8 @@ def run_model(isic, blood, x_col, y_col, augment, learning_rate, img_length, img
     print(f'> Loss: {np.mean(loss_per_fold)} (+- {np.std(loss_per_fold)})')
     print(f'> AUC: {np.mean(auc_per_fold)} (+- {np.std(auc_per_fold)})')
 
-    return acc_per_fold, loss_per_fold, auc_per_fold
+    # save model metrics in .csv file in project
+    create_metrics_csv(model_choice, acc_per_fold, loss_per_fold, auc_per_fold)
 
+    return acc_per_fold, loss_per_fold, auc_per_fold,
 
-acc_per_fold, loss_per_fold, auc_per_fold = run_model(isic=False, blood=True, x_col="path", y_col="class", augment=True,
-                                                      learning_rate=0.00001, img_length=32, img_width=32,
-                                                      batch_size=128, epochs=1, color=True, dropout=0.2,
-                                                      imagenet=True, model_choice="resnet")

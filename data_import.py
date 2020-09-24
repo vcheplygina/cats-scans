@@ -1,6 +1,7 @@
 # %%
 import os
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 
 def import_ISIC():
@@ -52,42 +53,85 @@ def import_blood():
     """
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/blood_data/9232-29380-bundle-archive/dataset2-master" \
-               "/dataset2-master/images"
+    img_dir = "/Users/IrmavandenBrandt/Downloads/Internship/blood_data/9232-29380-bundle-archive/dataset-master" \
+              "/dataset-master/JPEGImages"
+    label_dir = "/Users/IrmavandenBrandt/Downloads/Internship/blood_data/9232-29380-bundle-archive/dataset-master" \
+                "/dataset-master/labels.csv"
 
-    # set paths where training and test data can be found
-    train_images = os.path.join(data_dir, "TRAIN")
-    test_images = os.path.join(data_dir, "TEST")
-    types = list(os.listdir(train_images))  # get types of blood (e.g. labels)
+    # get image paths by selecting files from directory that end with .jpg
+    images = [os.path.join(img_dir, f) for f in os.listdir(img_dir) if f.endswith('.jpg')]
 
-    # initiliaze empty lists that will store entries for train and test dataframes
-    train_tables = []
-    test_tables = []
+    # import labels and set image id as index column
+    labels = pd.read_csv(label_dir)
+    del labels['Unnamed: 0']
+    labels["Image"] = labels["Image"].astype(str)
+    labels["Category"] = labels["Category"].astype(str)
+    labels = labels.set_index("Image")
 
-    for type_set in types:
-        if type_set == '.DS_Store':
+    tables = []  # initiliaze empty list that will store entries for dataframe
+
+    for e, img_path in enumerate(images):
+        img_id = img_path[-9:-4]  # get image id from image path
+        img_id = img_id.lstrip('0')
+        if img_id == '':
+            img_id = '0'
+        extracted_label = labels.loc[img_id]  # extract label from label csv
+
+        if (extracted_label['Category'] == 'nan') or (len(extracted_label['Category']) > 15):
+            continue
+        elif extracted_label['Category'] == 'BASOPHIL':
             continue
         else:
-            train_sub_folder = os.path.join(train_images, type_set)  # set path to images
-            train_image = [os.path.join(train_sub_folder, f) for f in os.listdir(train_sub_folder) if
-                           f.endswith('.jpeg')]
-            train_data_frame = pd.DataFrame(train_image, columns=['path'])  # add image in dataframe column 'path'
-            train_data_frame['class'] = type_set  # add label in dataframe in column 'class'
-            train_tables.append(train_data_frame)  # combine entry with other entries for dataframe
+            data_frame = pd.DataFrame([img_path], columns=['path'])  # add img path to dataframe
+            data_frame['class'] = extracted_label['Category']
+        tables.append(data_frame)  # combine entry with other entries for dataframe
 
-            test_sub_folder = os.path.join(test_images, type_set)  # set path to images
-            test_image = [os.path.join(test_sub_folder, f) for f in os.listdir(test_sub_folder) if f.endswith('.jpeg')]
-            test_data_frame = pd.DataFrame(test_image, columns=['path'])  # add image in dataframe column 'path'
-            test_data_frame['class'] = type_set  # add label in dataframe in column 'class'
-            test_tables.append(test_data_frame)  # combine entry with other entries for dataframe
+    train_labels = pd.concat(tables, ignore_index=True)  # create dataframe from list of tables and reset index
+    print(train_labels['class'].value_counts())  # get information on distribution of labels in dataframe
 
-    train_tables = pd.concat(train_tables, ignore_index=True)  # create dataframe from list of tables and reset index
-    print(train_tables['class'].value_counts())  # get information on distribution of labels in dataframe
+    return train_labels
 
-    test_tables = pd.concat(test_tables, ignore_index=True)  # create dataframe from list of tables and reset index
-    print(test_tables['class'].value_counts())  # get information on distribution of labels in dataframe
 
-    return train_tables, test_tables
+# def import_blood():
+#     """
+#     :return: dataframe with image paths in column "path" and image labels in column "class"
+#     """
+#     data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/blood_data/9232-29380-bundle-archive/dataset2-master" \
+#                "/dataset2-master/images"
+#
+#     # set paths where training and test data can be found
+#     train_images = os.path.join(data_dir, "TRAIN")
+#     test_images = os.path.join(data_dir, "TEST")
+#     types = list(os.listdir(train_images))  # get types of blood (e.g. labels)
+#
+#     # initiliaze empty lists that will store entries for train and test dataframes
+#     train_tables = []
+#     test_tables = []
+#
+#     for type_set in types:
+#         if type_set == '.DS_Store':
+#             continue
+#         else:
+#             train_sub_folder = os.path.join(train_images, type_set)  # set path to images
+#             train_image = [os.path.join(train_sub_folder, f) for f in os.listdir(train_sub_folder) if
+#                            f.endswith('.jpeg')]
+#             train_data_frame = pd.DataFrame(train_image, columns=['path'])  # add image in dataframe column 'path'
+#             train_data_frame['class'] = type_set  # add label in dataframe in column 'class'
+#             train_tables.append(train_data_frame)  # combine entry with other entries for dataframe
+#
+#             test_sub_folder = os.path.join(test_images, type_set)  # set path to images
+#             test_image = [os.path.join(test_sub_folder, f) for f in os.listdir(test_sub_folder) if f.endswith('.jpeg')]
+#             test_data_frame = pd.DataFrame(test_image, columns=['path'])  # add image in dataframe column 'path'
+#             test_data_frame['class'] = type_set  # add label in dataframe in column 'class'
+#             test_tables.append(test_data_frame)  # combine entry with other entries for dataframe
+#
+#     train_tables = pd.concat(train_tables, ignore_index=True)  # create dataframe from list of tables and reset index
+#     print(train_tables['class'].value_counts())  # get information on distribution of labels in dataframe
+#
+#     test_tables = pd.concat(test_tables, ignore_index=True)  # create dataframe from list of tables and reset index
+#     print(test_tables['class'].value_counts())  # get information on distribution of labels in dataframe
+#
+#     return train_tables, test_tables
 
 
 # def collect_data(isic, blood, img_dir, label_dir, test_size):
@@ -129,14 +173,15 @@ def collect_data(isic, blood):
     """
     :param isic: boolean specifying whether data needed is ISIC data or not
     :param blood: boolean specifying whether data needed is blood data or not
-    :return: training, validation and test dataframe containing image paths and labels
+    :return: training and test dataframe containing image paths and labels
     """
 
     if isic:
         dataframe = import_ISIC()  # collect data
 
     elif blood:
-        df_train, df_test = import_blood()  # collect train and test dataframe
-        dataframe = pd.concat([df_train, df_test])  # combine train and test dataframe in one dataframe
+        # df_train, df_test = import_blood()  # collect train and test dataframe
+        dataframe = import_blood()
 
     return dataframe
+
