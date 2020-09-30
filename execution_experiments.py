@@ -10,8 +10,9 @@ import numpy as np
 # initialize experiment name. NOTE: this should be updated with every new experiment
 ex = Experiment('Resnet_pretrained=Imagenet_source=Isic')
 # create link with sacred MongoDB Atlas database
-ex.observers.append(MongoObserver(url="mongodb+srv://Irma:MIA-Bas-Veronika@cats-scans.eqbh3.mongodb.net/sacred"
-                                      "?retryWrites=true&w=majority"))
+ex.observers.append(MongoObserver())
+    # url="mongodb+srv://Irma:MIA-Bas-Veronika@cats-scans.eqbh3.mongodb.net/sacred"
+    #                                   "?retryWrites=true&w=majority"))
 
 
 @ex.config
