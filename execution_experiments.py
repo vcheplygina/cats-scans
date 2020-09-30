@@ -6,11 +6,19 @@ import tensorflow as tf
 from sklearn.metrics import roc_auc_score
 from tf_generators_models_kfold import create_model, compute_class_weights
 import numpy as np
+from neptunecontrib.monitoring.sacred import NeptuneObserver
+
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
 ex = Experiment('Resnet_pretrained=Imagenet_source=Isic')
+ex.observers.append(NeptuneObserver(api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiMjc4MGU5ZDUtMzk3Yy00YjE3LTliY2QtMThkMDJkZTMxNGMzIn0=",
+                                    project_name='irmavdbrandt/cats-scans'))
+
+
+
+
 # create link with sacred MongoDB Atlas database
-ex.observers.append(MongoObserver(url="mongodb://localhost:27017/database"))
+# ex.observers.append(MongoObserver(url="mongodb://localhost:27017/database"))
     # url="mongodb+srv://Irma:MIA-Bas-Veronika@cats-scans.eqbh3.mongodb.net/sacred"
     #                                   "?retryWrites=true&w=majority"))
 
