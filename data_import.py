@@ -1,6 +1,7 @@
 # %%
-import os
 import pandas as pd
+import os
+import numpy as np
 from sklearn.model_selection import train_test_split
 
 
@@ -8,8 +9,19 @@ def import_ISIC():
     """
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    img_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_Input"
-    label_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_GroundTruth" \
+    # # local import paths
+    # img_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_Input"
+    # label_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_GroundTruth" \
+    #             "/ISIC2018_Task3_Training_GroundTruth.csv"
+
+    # # AWS EC2 import paths
+    # img_dir = "/home/ubuntu/ISIC2018/ISIC2018_Task3_Training_Input"
+    # label_dir = "/home/ubuntu/ISIC2018/ISIC2018_Task3_Training_GroundTruth" \
+    #             "/ISIC2018_Task3_Training_GroundTruth.csv"
+
+    # server import paths
+    img_dir = "/data/ivdbrandt/ISIC2018/ISIC2018_Task3_Training_Input"
+    label_dir = "/data/ivdbrandt/ISIC2018/ISIC2018_Task3_Training_GroundTruth" \
                 "/ISIC2018_Task3_Training_GroundTruth.csv"
 
     # get image paths by selecting files from directory that end with .jpg
@@ -134,54 +146,79 @@ def import_blood():
 #     return train_tables, test_tables
 
 
-# def collect_data(isic, blood, img_dir, label_dir, test_size):
-#     """
-#     :param isic: boolean specifying whether data needed is ISIC data or not
-#     :param blood: boolean specifying whether data needed is blood data or not
-#     :param img_dir: directory where images are found
-#     :param label_dir: directory where labels are found
-#     :param test_size: split value used to split part of dataframe into test set
-#     :return: training, validation and test dataframe containing image paths and labels
-#     """
-#
-#     if isic:
-#         dataframe = import_ISIC(img_dir, label_dir)
-#         # split the dataframe into stratified training and test set
-#         X_train, X_test, y_train, y_test = train_test_split(dataframe['path'], dataframe['class'],
-#                                                             stratify=dataframe['class'].values,
-#                                                             shuffle=True, test_size=test_size, random_state=24)
-#         df_train = pd.concat([X_train, y_train], axis=1).reset_index(drop=True)
-#         X_train, X_val, y_train, y_val = train_test_split(df_train['path'], df_train['class'],
-#                                                             stratify=df_train['class'].values,
-#                                                             shuffle=True, test_size=test_size, random_state=24)
-#         # append labels to dataframes containing image paths and reset the index
-#         df_train = pd.concat([X_train, y_train], axis=1).reset_index(drop=True)
-#         df_val = pd.concat([X_val, y_val], axis=1).reset_index(drop=True)
-#         df_test = pd.concat([X_test, y_test], axis=1).reset_index(drop=True)
-#
-#     elif blood:
-#         df_train, df_test = import_blood(img_dir)  # collect train and test dataframe
-#         X_train, X_val, y_train, y_val = train_test_split(df_train['path'], df_train['class'],
-#                                                           stratify=df_train['class'].values,
-#                                                           shuffle=True, test_size=test_size, random_state=24)
-#         df_train = pd.concat([X_train, y_train], axis=1).reset_index(drop=True)
-#         df_val = pd.concat([X_val, y_val], axis=1).reset_index(drop=True)
-#
-#     return df_train, df_val, df_test
-
-def collect_data(isic, blood):
+def import_SLT10():
     """
-    :param isic: boolean specifying whether data needed is ISIC data or not
-    :param blood: boolean specifying whether data needed is blood data or not
-    :return: training and test dataframe containing image paths and labels
+    import file retrieved from: https://github.com/mttk/STL10/blob/master/stl10_input.py as suggested by SLT10 owners
+    at Stanford on site https://cs.stanford.edu/~acoates/stl10/
+    :return: images and labels of SLT-10 training dataset
     """
+    # path to the binary train file with image data
+    TRAIN_DATA_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/train_X.bin'
+    # path to the binary train file with labels
+    TRAIN_LABEL_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/train_y.bin'
+    # path to the binary train file with image data
+    TEST_DATA_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/test_X.bin'
+    # path to the binary train file with labels
+    TEST_LABEL_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/test_y.bin'
 
-    if isic:
+    with open(TRAIN_DATA_PATH, 'rb') as f:
+        # read whole file in uint8 chunks
+        all_train = np.fromfile(f, dtype=np.uint8)
+
+        # We force the data into 3x96x96 chunks, since the images are stored in "column-major order", meaning
+        # that "the first 96*96 values are the red channel, the next 96*96 are green, and the last are blue."
+        # The -1 is since the size of the pictures depends on the input file, and this way numpy determines
+        # the size on its own.
+        train_images = np.reshape(all_train, (-1, 3, 96, 96))
+
+        # Now transpose the images into a standard image format readable by, for example, matplotlib.imshow
+        # You might want to comment this line or reverse the shuffle if you will use a learning algorithm like CNN,
+        # since they like their channels separated.
+        train_images = np.transpose(train_images, (0, 3, 2, 1))
+
+    with open(TEST_DATA_PATH, 'rb') as f:
+        # read whole file in uint8 chunks
+        all_test = np.fromfile(f, dtype=np.uint8)
+        test_images = np.reshape(all_test, (-1, 3, 96, 96))
+        test_images = np.transpose(test_images, (0, 3, 2, 1))
+
+    with open(TRAIN_LABEL_PATH, 'rb') as f:
+        train_labels = np.fromfile(f, dtype=np.uint8)
+
+    with open(TEST_LABEL_PATH, 'rb') as f:
+        test_labels = np.fromfile(f, dtype=np.uint8)
+
+    # combine all data (to prevent accuracy issues due to very large test set)
+    images = np.concatenate((train_images, test_images), axis=0)
+    labels = np.concatenate((train_labels, test_labels), axis=0)
+
+    # decrement all labels with 1 to make sure the one-hot encoding happens right (takes max label + 1 as number of
+    # classes so would become 11 classes instead of 10 if decrementing does not happen)
+    labels_new = []
+    for label in labels:
+        label = label - 1
+        labels_new.append(label)
+    labels = np.array(labels_new)
+
+    # split data in train-val-test set (train 1000, val 150 and test 150 per class)
+    X_train, X_test, y_train, y_test = train_test_split(images, labels, stratify=labels, shuffle=True, random_state=2,
+                                                        test_size=150 / 1300)
+    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
+                                                      test_size=150 / 1150)
+
+    return X_train, X_val, X_test, y_train, y_val, y_test
+
+
+def collect_data(target_data):
+    """
+    :param target_data: dataset used as target dataset
+    :return: dataframe containing image paths and labels
+    """
+    if target_data == 'isic':
         dataframe = import_ISIC()  # collect data
 
-    elif blood:
+    elif target_data == 'blood':
         # df_train, df_test = import_blood()  # collect train and test dataframe
         dataframe = import_blood()
 
     return dataframe
-

@@ -31,7 +31,7 @@
 #     :param img_width: target width of image in pixels
 #     :param batch_size: amount of images processed per batch
 #     :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
-#     :return: training and validation generator, training and test dataset, and dictionary containing weights for all
+#     :return: training and validation generator, training and test dataset, and dictionary containing model_weights for all
 #     unique labels in the dataset
 #     """
 #     if augment:
@@ -77,7 +77,7 @@
 #         validate_filenames=False
 #     )
 #
-#     # create balancing weights corresponding to the frequency of items in every class
+#     # create balancing model_weights corresponding to the frequency of items in every class
 #     class_weights = class_weight.compute_class_weight('balanced', np.unique(train_generator.classes),
 #                                                       train_generator.classes)
 #     class_weights = {i: class_weights[i] for i in range(len(class_weights))}
@@ -104,7 +104,7 @@
 #     :param epochs: number of epochs the model needs to run
 #     :param color: boolean specifying whether the images are in color or not
 #     :param dropout: fraction of nodes in layer that are deactivated
-#     :param imagenet: boolean specifying whether or not to use pretrained imagenet weights in initialization model
+#     :param imagenet: boolean specifying whether or not to use pretrained imagenet model_weights in initialization model
 #     :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
 #     :return: model and test generator needed for AUC calculation
 #     """
@@ -137,18 +137,18 @@
 #     if model_choice == "efficientnet":
 #         if imagenet:
 #             # collect efficient net and exclude top layers
-#             efficient_net = EfficientNetB1(include_top=False, weights="imagenet", input_shape=input_shape)
+#             efficient_net = EfficientNetB1(include_top=False, model_weights="imagenet", input_shape=input_shape)
 #         else:
 #             # collect efficient net and exclude top layers
-#             efficient_net = EfficientNetB1(include_top=False, weights=None, input_shape=input_shape)
+#             efficient_net = EfficientNetB1(include_top=False, model_weights=None, input_shape=input_shape)
 #         model.add(efficient_net)  # attach efficient net to new model
 #     elif model_choice == "resnet":
 #         if imagenet:
 #             # collect efficient net and exclude top layers
-#             resnet = ResNet50(include_top=False, weights="imagenet", input_shape=input_shape)
+#             resnet = ResNet50(include_top=False, model_weights="imagenet", input_shape=input_shape)
 #         else:
 #             # collect efficient net and exclude top layers
-#             resnet = ResNet50(include_top=False, weights=None, input_shape=input_shape)
+#             resnet = ResNet50(include_top=False, model_weights=None, input_shape=input_shape)
 #         model.add(resnet)  # attach efficient net to new model
 #     # add new top layers to enable prediction for target dataset
 #     model.add(GlobalAveragePooling2D(name='gap'))
@@ -167,14 +167,14 @@
 #               validation_steps=validation_gen.samples // batch_size,
 #               class_weight=class_weight_dict)
 #
-#     # save model and weights in json files
+#     # save model and model_weights in json files
 #     model_json = model.to_json()
 #     with open("/Users/IrmavandenBrandt/Downloads/Internship/models/model_{}.json".format(model_choice), "w") \
 #             as json_file:  # where to store models?
 #         json_file.write(model_json)
-#     # serialize weights to HDF5
+#     # serialize model_weights to HDF5
 #     model.save_weights("/Users/IrmavandenBrandt/Downloads/Internship/models/model_{}.h5".format(model_choice))
-#     # where to store weights?
+#     # where to store model_weights?
 #     print("Saved model to disk")
 #
 #     # create test generator

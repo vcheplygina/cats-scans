@@ -1,26 +1,58 @@
-#%%
+# %%
 from sacred import Experiment
 from sacred.observers import MongoObserver
-from tf_generators_models_kfold import run_model
+from run_model import run_model_target, run_model_source, create_upload_zip, save_pred_model
 import tensorflow as tf
+from sklearn.metrics import roc_auc_score
+from tf_generators_models_kfold import create_model, compute_class_weights
+import numpy as np
 
-# initialize experiment
-ex = Experiment('Efficientnet_ISIC_pretrained=Full_Imagenet')
+# initialize experiment name. NOTE: this should be updated with every new experiment
+ex = Experiment('Metrics_plot_test')
+# create link with sacred MongoDB Atlas database
 ex.observers.append(MongoObserver(url="mongodb+srv://Irma:MIA-Bas-Veronika@cats-scans.eqbh3.mongodb.net/sacred"
                                       "?retryWrites=true&w=majority"))
 
 
 @ex.config
 def cfg():
-    batch_size = 128
-    num_epochs = 20
-    learning_rate = 0.00001
+    """
+    :return: parameter settings used in the experiment. NOTE: this should be updated with every new experiment
+    """
+    target = True
+    # define source data
+    source_data = "imagenet"
+    # define target dataset
+    target_data = "isic"
+    x_col = "path"
+    y_col = "class"
+    augment = True
+    n_folds = 5
     img_length = 112
     img_width = 112
-    drop_out = 0.2
-    augment = True
-    imagenet = True
-    model_choice = 'efficientnet'
+    learning_rate = 0.00001
+    batch_size = 128
+    epochs = 50
+    color = True
+    dropout = 0.2
+    model_choice = "resnet"
+
+    # target = False
+    # define source data
+    # source_data = None
+    # define target dataset
+    # target_data = None
+    # augment = False
+    # n_folds = 5
+    # img_length = 32
+    # img_width = 32
+    # learning_rate = 0.0001
+    # batch_size = 128
+    # epochs = 1
+    # color = True
+    # dropout = 0.2
+    # imagenet = False
+    # model_choice = "efficientnet"
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
@@ -36,24 +68,134 @@ class MetricsLoggerCallback(tf.keras.callbacks.Callback):
 
 
 @ex.automain
-def run(_run, batch_size, num_epochs, learning_rate, img_length, img_width, drop_out, augment, imagenet, model_choice):
+def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, img_length, img_width, learning_rate,
+        batch_size, epochs, color, dropout, model_choice):
     """
     :param _run:
-    :param batch_size:
-    :param num_epochs:
-    :param learning_rate:
-    :param img_length:
-    :param img_width:
-    :param drop_out:
-    :param augment:
-    :param imagenet:
-    :param model_choice:
-    :return:
+    :param target: boolean specifying whether the run is for target data or source data
+    :param target_data: dataset used as target dataset
+    :param source_data: dataset used as source dataset
+    :param x_col: column in dataframe containing the image paths
+    :param y_col: column in dataframe containing the target labels
+    :param augment: boolean specifying whether to use data augmentation or not
+    :param n_folds: amount of folds used in the n-fold cross validation
+    :param img_length: target length of image in pixels
+    :param img_width: target width of image in pixels
+    :param learning_rate: learning rate used by optimizer
+    :param batch_size: number of images processed in one batch
+    :param epochs: number of iterations of the model per fold
+    :param color: boolean specifying whether the images are in color or not
+    :param dropout: fraction of nodes in layer that are deactivated
+    :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
+    :return: experiment
     """
-    acc_per_fold, loss_per_fold, auc_per_fold = run_model(isic=True, blood=False, x_col="path", y_col="class",
-                                                          augment=augment, img_length=img_length, img_width=img_width,
-                                                          learning_rate=learning_rate, batch_size=batch_size,
-                                                          epochs=num_epochs, color=True, dropout=drop_out,
-                                                          imagenet=imagenet, model_choice=model_choice)
 
-    return acc_per_fold, loss_per_fold, auc_per_fold
+    # TODO: clean this code
+    if target:
+        dataframe, skf, train_datagen, valid_datagen, x_col, y_col = run_model_target(target_data, x_col, y_col,
+                                                                                      augment, n_folds)
+
+        # initialize empty lists storing accuracy, loss and multi-class auc per fold
+        acc_per_fold = []
+        loss_per_fold = []
+        auc_per_fold = []
+
+        fold_no = 1  # initialize fold counter
+
+        for train_index, val_index in skf.split(np.zeros(len(dataframe)), y=dataframe[['class']]):
+            print(f'Starting fold {fold_no}')
+
+            train_data = dataframe.iloc[train_index]  # create training dataframe with indices from fold split
+            valid_data = dataframe.iloc[val_index]  # create validation dataframe with indices from fold split
+
+            train_generator = train_datagen.flow_from_dataframe(
+                dataframe=train_data,
+                x_col=x_col,
+                y_col=y_col,
+                target_size=(img_length, img_width),
+                batch_size=batch_size,
+                class_mode='categorical',
+                validate_filenames=False)
+
+            validation_generator = valid_datagen.flow_from_dataframe(
+                dataframe=valid_data,
+                x_col=x_col,
+                y_col=y_col,
+                target_size=(img_length, img_width),
+                batch_size=batch_size,
+                class_mode='categorical',
+                validate_filenames=False,
+                shuffle=False)
+
+            # compute number of nodes needed in prediction layer (i.e. number of unique classes)
+            num_classes = len(list(dataframe[y_col].unique()))
+
+            model = create_model(learning_rate, img_length, img_width, color, dropout, source_data, model_choice,
+                                 num_classes)  # create model
+
+            class_weights = compute_class_weights(train_generator.classes)  # get class model_weights to balance classes
+
+            model.fit(train_generator,
+                      steps_per_epoch=train_generator.samples // batch_size,
+                      epochs=epochs,
+                      class_weight=class_weights,
+                      validation_data=validation_generator,
+                      validation_steps=validation_generator.samples // batch_size,
+                      callbacks=[MetricsLoggerCallback(_run)])
+
+            # compute loss and accuracy on validation set
+            valid_loss, valid_acc = model.evaluate(validation_generator, verbose=1)
+            print(f'Validation loss for fold {fold_no}:', valid_loss, f' and Validation accuracy for fold {fold_no}:',
+                  valid_acc)
+            acc_per_fold.append(valid_acc)
+            loss_per_fold.append(valid_loss)
+
+            predictions = model.predict(validation_generator)  # get predictions
+
+            # compute OneVsRest multi-class macro AUC on the test set
+            OneVsRest_auc = roc_auc_score(validation_generator.classes, predictions, multi_class='ovr', average='macro')
+            print(f'Validation auc: {OneVsRest_auc}')
+            auc_per_fold.append(OneVsRest_auc)
+
+            # save predictions and models in local memory
+            save_pred_model(source_data, target_data, model_choice, fold_no, model, predictions)
+
+            fold_no += 1
+
+        # create zip file with predictions and models and upload to OSF
+        create_upload_zip(n_folds, model_choice, source_data, target_data)
+
+        # compute average scores for accuracy, loss and auc
+        print('Score per fold')
+        for i in range(0, len(acc_per_fold)):
+            print('------------------------------------------------------------------------')
+            print(f'> Fold {i + 1} - Loss: {loss_per_fold[i]} - Accuracy: {acc_per_fold[i]}%, - AUC: {auc_per_fold[i]}')
+        print('Average scores for all folds:')
+        print(f'> Accuracy: {np.mean(acc_per_fold)} (+- {np.std(acc_per_fold)})')
+        print(f'> Loss: {np.mean(loss_per_fold)} (+- {np.std(loss_per_fold)})')
+        print(f'> AUC: {np.mean(auc_per_fold)} (+- {np.std(auc_per_fold)})')
+
+        return acc_per_fold, loss_per_fold, auc_per_fold
+
+    else:
+        model, train_generator, validation_generator, test_generator, class_weights = run_model_source(augment,
+                                                                                                       img_length,
+                                                                                                       img_width,
+                                                                                                       learning_rate,
+                                                                                                       batch_size,
+                                                                                                       epochs, color,
+                                                                                                       dropout,
+                                                                                                       source_data,
+                                                                                                       model_choice)
+
+        model.fit(train_generator,
+                  epochs=epochs,
+                  class_weight=class_weights,
+                  validation_data=validation_generator,
+                  callbacks=[MetricsLoggerCallback(_run)])
+
+        # compute loss and accuracy on validation set
+        test_loss, test_acc = model.evaluate(test_generator, verbose=1)
+        print(f'Test loss:', test_loss, f' and Test accuracy:', test_acc)
+
+        return test_loss, test_acc
