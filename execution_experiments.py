@@ -1,13 +1,13 @@
 # %%
 from sacred import Experiment
-from sacred.observers import MongoObserver
+# from sacred.observers import MongoObserver
 from run_model import run_model_target, run_model_source, create_upload_zip, save_pred_model
 import tensorflow as tf
 from sklearn.metrics import roc_auc_score
 from tf_generators_models_kfold import create_model, compute_class_weights
 import numpy as np
 from neptunecontrib.monitoring.sacred import NeptuneObserver
-
+from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=Imagenet_source=Chest_test')
@@ -75,6 +75,13 @@ class MetricsLoggerCallback(tf.keras.callbacks.Callback):
         self._run.log_scalar("training.acc", logs.get('accuracy'))
         self._run.log_scalar("validation.loss", logs.get('val_loss'))
         self._run.log_scalar("validation.acc", logs.get('val_accuracy'))
+
+
+def scheduler(epochs, learning_rate):
+    if epochs < 30:
+        return learning_rate
+    else:
+        return learning_rate * 0.1
 
 
 @ex.automain
@@ -202,7 +209,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                   epochs=epochs,
                   class_weight=class_weights,
                   validation_data=validation_generator,
-                  callbacks=[MetricsLoggerCallback(_run)])
+                  callbacks=[MetricsLoggerCallback(_run),
+                             callbacks.LearningRateScheduler(scheduler)])
 
         # compute loss and accuracy on validation set
         test_loss, test_acc = model.evaluate(test_generator, verbose=1)
@@ -211,6 +219,6 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
         # save model model_weights
         model.save(f'model_weights_{model_choice}_pretrained={source_data}.h5')
 
-
+        create_upload_zip(n_folds, model_choice, source_data, target_data)
 
         return test_loss, test_acc
