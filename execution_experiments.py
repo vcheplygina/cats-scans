@@ -10,13 +10,11 @@ from neptunecontrib.monitoring.sacred import NeptuneObserver
 
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-# ex = Experiment('EfficientNet_pretraining=SLT10')
-ex = Experiment('Resnet_pretrained=Imagenet_source=Isic')
+# ex = Experiment('Resnet_pretrained=Imagenet_source=Chest_test')
+# ex = Experiment('Resnet_pretrained=Imagenet_source=Isic')
+ex = Experiment('Efficientnet_pretraining=SLT10')
 ex.observers.append(NeptuneObserver(api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiMjc4MGU5ZDUtMzk3Yy00YjE3LTliY2QtMThkMDJkZTMxNGMzIn0=",
                                     project_name='irmavdbrandt/cats-scans'))
-
-
-
 
 # create link with sacred MongoDB Atlas database
 # ex.observers.append(MongoObserver(url="mongodb://localhost:27017/database"))
@@ -29,42 +27,42 @@ def cfg():
     """
     :return: parameter settings used in the experiment. NOTE: this should be updated with every new experiment
     """
-    target = True
-    # define source data
-    source_data = "imagenet"
-    # define target dataset
-    target_data = "isic"
-    x_col = "path"
-    y_col = "class"
-    augment = True
-    n_folds = 5
-    img_length = 112
-    img_width = 112
-    learning_rate = 0.00001
-    batch_size = 128
-    epochs = 50
-    color = True
-    dropout = 0.4
-    model_choice = "resnet"
-
-    # target = False
+    # target = True
     # # define source data
-    # source_data = None
+    # source_data = "imagenet"
     # # define target dataset
-    # target_data = None
-    # x_col = None
-    # y_col = None
-    # augment = False
-    # n_folds = None
-    # img_length = 96
-    # img_width = 96
-    # learning_rate = 0.001  # with 0.0001 it goes too slow
+    # target_data = "chest"
+    # x_col = "path"
+    # y_col = "class"
+    # augment = True
+    # n_folds = 5
+    # img_length = 112
+    # img_width = 112
+    # learning_rate = 0.00001
     # batch_size = 128
-    # epochs = 15
+    # epochs = 50
     # color = True
-    # dropout = 0.2
-    # imagenet = False
-    # model_choice = "efficientnet"
+    # dropout = 0.5
+    # model_choice = "resnet"
+
+    target = False
+    # define source data
+    source_data = None
+    # define target dataset
+    target_data = None
+    x_col = None
+    y_col = None
+    augment = True
+    n_folds = None
+    img_length = 96
+    img_width = 96
+    learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
+    batch_size = 128
+    epochs = 15
+    color = True
+    dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
+    imagenet = False
+    model_choice = "efficientnet"
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
@@ -209,5 +207,10 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
         # compute loss and accuracy on validation set
         test_loss, test_acc = model.evaluate(test_generator, verbose=1)
         print(f'Test loss:', test_loss, f' and Test accuracy:', test_acc)
+
+        # save model model_weights
+        model.save(f'model_weights_{model_choice}_pretrained={source_data}.h5')
+
+
 
         return test_loss, test_acc

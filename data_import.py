@@ -61,89 +61,36 @@ def import_ISIC():
     return train_labels
 
 
-def import_blood():
+def import_chest():
     """
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    img_dir = "/Users/IrmavandenBrandt/Downloads/Internship/blood_data/9232-29380-bundle-archive/dataset-master" \
-              "/dataset-master/JPEGImages"
-    label_dir = "/Users/IrmavandenBrandt/Downloads/Internship/blood_data/9232-29380-bundle-archive/dataset-master" \
-                "/dataset-master/labels.csv"
+    data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/chest_xray/chest_xray"
 
-    # get image paths by selecting files from directory that end with .jpg
-    images = [os.path.join(img_dir, f) for f in os.listdir(img_dir) if f.endswith('.jpg')]
+    # set paths where training and test data can be found
+    train_images = os.path.join(data_dir, "train")
+    val_images = os.path.join(data_dir, "val")
+    test_images = os.path.join(data_dir, "test")
+    types = list(os.listdir(train_images))  # get types of blood (e.g. labels)
 
-    # import labels and set image id as index column
-    labels = pd.read_csv(label_dir)
-    del labels['Unnamed: 0']
-    labels["Image"] = labels["Image"].astype(str)
-    labels["Category"] = labels["Category"].astype(str)
-    labels = labels.set_index("Image")
+    # initiliaze empty lists that will store entries for train and test dataframes
+    dataframe_entries = []
 
-    tables = []  # initiliaze empty list that will store entries for dataframe
-
-    for e, img_path in enumerate(images):
-        img_id = img_path[-9:-4]  # get image id from image path
-        img_id = img_id.lstrip('0')
-        if img_id == '':
-            img_id = '0'
-        extracted_label = labels.loc[img_id]  # extract label from label csv
-
-        if (extracted_label['Category'] == 'nan') or (len(extracted_label['Category']) > 15):
-            continue
-        elif extracted_label['Category'] == 'BASOPHIL':
+    for type_set in types:
+        if type_set == ".DS_Store":
             continue
         else:
-            data_frame = pd.DataFrame([img_path], columns=['path'])  # add img path to dataframe
-            data_frame['class'] = extracted_label['Category']
-        tables.append(data_frame)  # combine entry with other entries for dataframe
+            for image_dir in [train_images, val_images, test_images]:
+                sub_folder = os.path.join(image_dir, type_set)  # set path to images
+                image = [os.path.join(sub_folder, f) for f in os.listdir(sub_folder) if f.endswith('.jpeg')]
+                entry = pd.DataFrame(image, columns=['path'])  # add image in dataframe column 'path'
+                entry['class'] = type_set  # add label in dataframe in column 'class'
+                dataframe_entries.append(entry)  # combine entry with other entries for dataframe
 
-    train_labels = pd.concat(tables, ignore_index=True)  # create dataframe from list of tables and reset index
-    print(train_labels['class'].value_counts())  # get information on distribution of labels in dataframe
+    dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
+    print(dataframe['class'].value_counts())  # get information on distribution of labels in dataframe
 
-    return train_labels
-
-
-# def import_blood():
-#     """
-#     :return: dataframe with image paths in column "path" and image labels in column "class"
-#     """
-#     data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/blood_data/9232-29380-bundle-archive/dataset2-master" \
-#                "/dataset2-master/images"
-#
-#     # set paths where training and test data can be found
-#     train_images = os.path.join(data_dir, "TRAIN")
-#     test_images = os.path.join(data_dir, "TEST")
-#     types = list(os.listdir(train_images))  # get types of blood (e.g. labels)
-#
-#     # initiliaze empty lists that will store entries for train and test dataframes
-#     train_tables = []
-#     test_tables = []
-#
-#     for type_set in types:
-#         if type_set == '.DS_Store':
-#             continue
-#         else:
-#             train_sub_folder = os.path.join(train_images, type_set)  # set path to images
-#             train_image = [os.path.join(train_sub_folder, f) for f in os.listdir(train_sub_folder) if
-#                            f.endswith('.jpeg')]
-#             train_data_frame = pd.DataFrame(train_image, columns=['path'])  # add image in dataframe column 'path'
-#             train_data_frame['class'] = type_set  # add label in dataframe in column 'class'
-#             train_tables.append(train_data_frame)  # combine entry with other entries for dataframe
-#
-#             test_sub_folder = os.path.join(test_images, type_set)  # set path to images
-#             test_image = [os.path.join(test_sub_folder, f) for f in os.listdir(test_sub_folder) if f.endswith('.jpeg')]
-#             test_data_frame = pd.DataFrame(test_image, columns=['path'])  # add image in dataframe column 'path'
-#             test_data_frame['class'] = type_set  # add label in dataframe in column 'class'
-#             test_tables.append(test_data_frame)  # combine entry with other entries for dataframe
-#
-#     train_tables = pd.concat(train_tables, ignore_index=True)  # create dataframe from list of tables and reset index
-#     print(train_tables['class'].value_counts())  # get information on distribution of labels in dataframe
-#
-#     test_tables = pd.concat(test_tables, ignore_index=True)  # create dataframe from list of tables and reset index
-#     print(test_tables['class'].value_counts())  # get information on distribution of labels in dataframe
-#
-#     return train_tables, test_tables
+    return dataframe
 
 
 def import_SLT10():
@@ -215,10 +162,9 @@ def collect_data(target_data):
     :return: dataframe containing image paths and labels
     """
     if target_data == 'isic':
-        dataframe = import_ISIC()  # collect data
+        dataframe = import_ISIC()
 
-    elif target_data == 'blood':
-        # df_train, df_test = import_blood()  # collect train and test dataframe
-        dataframe = import_blood()
+    elif target_data == 'chest':
+        dataframe = import_chest()
 
     return dataframe

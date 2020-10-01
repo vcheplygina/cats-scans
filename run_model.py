@@ -266,15 +266,22 @@ def create_upload_zip(n_folds, model_choice, source_data, target_data):
     :param target_data: dataset used as target dataset
     :return:
     """
-    with ZipFile(f'{model_choice}_target={target_data}_source={source_data}.zip', 'w') as zip_object:
-        for i in range(1, n_folds+1):
-            # Add multiple files to the zip
-            zip_object.write(f'predictions_{model_choice}_target={target_data}_source={source_data}_fold{i}.csv')
-            zip_object.write(f'model_weights_{model_choice}_target={target_data}_source={source_data}_fold{i}.h5')
+    if target_data is None:
+        with ZipFile(f'{model_choice}_target={target_data}_source={source_data}.zip', 'w') as zip_object:
+            zip_object.write(f'model_weights_{model_choice}_pretrained={source_data}.h5')
 
             # delete .csv and .h5 files from local memory
-            os.remove(f'predictions_{model_choice}_target={target_data}_source={source_data}_fold{i}.csv')
-            os.remove(f'model_weights_{model_choice}_target={target_data}_source={source_data}_fold{i}.h5')
+            os.remove(f'model_weights_{model_choice}_pretrained={source_data}.h5')
+    else:
+        with ZipFile(f'{model_choice}_target={target_data}_source={source_data}.zip', 'w') as zip_object:
+            for i in range(1, n_folds+1):
+                # Add multiple files to the zip
+                zip_object.write(f'predictions_{model_choice}_target={target_data}_source={source_data}_fold{i}.csv')
+                zip_object.write(f'model_weights_{model_choice}_target={target_data}_source={source_data}_fold{i}.h5')
+
+                # delete .csv and .h5 files from local memory
+                os.remove(f'predictions_{model_choice}_target={target_data}_source={source_data}_fold{i}.csv')
+                os.remove(f'model_weights_{model_choice}_target={target_data}_source={source_data}_fold{i}.h5')
 
     # upload zip to OSF
     upload_zip_to_osf(f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name={model_choice}_target={target_data}_source={source_data}.zip',
