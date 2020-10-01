@@ -87,7 +87,6 @@ def run_model_source(augment, img_length, img_width, learning_rate, batch_size, 
     #     url=f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=model_{model_choice}_slt10.h5',
     #     file=model.save(f'model_{model_choice}_slt10.h5'),
     #     name=f'model_{model_choice}_slt10.h5')
-    print(f'Saved model and model_weights in OSF')
 
     return model, train_generator, validation_generator, test_generator, class_weights
 

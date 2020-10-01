@@ -10,7 +10,7 @@ from neptunecontrib.monitoring.sacred import NeptuneObserver
 
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Resnet_pretrained=Imagenet_source=Isic')
+ex = Experiment('EfficientNet_pretraining=SLT10')
 ex.observers.append(NeptuneObserver(api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiMjc4MGU5ZDUtMzk3Yy00YjE3LTliY2QtMThkMDJkZTMxNGMzIn0=",
                                     project_name='irmavdbrandt/cats-scans'))
 
@@ -39,25 +39,27 @@ def cfg():
     n_folds = 5
     img_length = 112
     img_width = 112
-    learning_rate = 0.000001
+    learning_rate = 0.00001
     batch_size = 128
     epochs = 50
     color = True
-    dropout = 0.2
+    dropout = 0.4
     model_choice = "resnet"
 
     # target = False
-    # define source data
+    # # define source data
     # source_data = None
-    # define target dataset
+    # # define target dataset
     # target_data = None
+    # x_col = None
+    # y_col = None
     # augment = False
-    # n_folds = 5
-    # img_length = 32
-    # img_width = 32
-    # learning_rate = 0.0001
+    # n_folds = None
+    # img_length = 96
+    # img_width = 96
+    # learning_rate = 0.001  # with 0.0001 it goes too slow
     # batch_size = 128
-    # epochs = 1
+    # epochs = 15
     # color = True
     # dropout = 0.2
     # imagenet = False
