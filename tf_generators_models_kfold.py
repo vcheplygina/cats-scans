@@ -88,6 +88,7 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
         model.add(Dense(num_classes, activation='softmax'))
         loss = losses.categorical_crossentropy
     print(model.summary())
+    print(loss)
     model.trainable = True  # set all layers in model to be trainable
 
     model.compile(loss=loss,
