@@ -83,11 +83,14 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
     if target_data == "chest":  # maybe make this statement: if num_class = 2:
         print('binary case')
         model.add(Dense(1, activation='sigmoid'))
+        loss = losses.binary_crossentropy
     else:
         model.add(Dense(num_classes, activation='softmax'))
+        loss = losses.categorical_crossentropy
+    print(model.summary())
     model.trainable = True  # set all layers in model to be trainable
 
-    model.compile(loss=losses.categorical_crossentropy,
+    model.compile(loss=loss,
                   optimizer=optimizers.Adam(lr=learning_rate),
                   metrics=['accuracy'])
 
