@@ -43,7 +43,7 @@ def create_generators_dataframes(augment):
 
 def create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data, model_choice, num_classes):
     """
-    :param target_data:
+    :param target_data: dataset used as target dataset
     :param learning_rate: learning rate used by optimizer
     :param img_length: target length of image in pixels
     :param img_width: target width of image in pixels
@@ -81,6 +81,7 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
     model.add(GlobalAveragePooling2D(name='gap'))
     model.add(Dropout(dropout, name='dropout_out'))
     if target_data == "chest":  # maybe make this statement: if num_class = 2:
+        print('binary case')
         model.add(Dense(1, activation='sigmoid'))
     else:
         model.add(Dense(num_classes, activation='softmax'))
