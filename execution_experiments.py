@@ -127,24 +127,45 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
             train_data = dataframe.iloc[train_index]  # create training dataframe with indices from fold split
             valid_data = dataframe.iloc[val_index]  # create validation dataframe with indices from fold split
 
-            train_generator = train_datagen.flow_from_dataframe(
-                dataframe=train_data,
-                x_col=x_col,
-                y_col=y_col,
-                target_size=(img_length, img_width),
-                batch_size=batch_size,
-                class_mode='categorical',
-                validate_filenames=False)
+            if target_data == "chest":
+                train_generator = train_datagen.flow_from_dataframe(
+                    dataframe=train_data,
+                    x_col=x_col,
+                    y_col=y_col,
+                    target_size=(img_length, img_width),
+                    batch_size=batch_size,
+                    class_mode='binary',
+                    validate_filenames=False)
+            else:
+                train_generator = train_datagen.flow_from_dataframe(
+                    dataframe=train_data,
+                    x_col=x_col,
+                    y_col=y_col,
+                    target_size=(img_length, img_width),
+                    batch_size=batch_size,
+                    class_mode='categorical',
+                    validate_filenames=False)
 
-            validation_generator = valid_datagen.flow_from_dataframe(
-                dataframe=valid_data,
-                x_col=x_col,
-                y_col=y_col,
-                target_size=(img_length, img_width),
-                batch_size=batch_size,
-                class_mode='categorical',
-                validate_filenames=False,
-                shuffle=False)
+            if target_data == "chest":
+                validation_generator = valid_datagen.flow_from_dataframe(
+                    dataframe=valid_data,
+                    x_col=x_col,
+                    y_col=y_col,
+                    target_size=(img_length, img_width),
+                    batch_size=batch_size,
+                    class_mode='binary',
+                    validate_filenames=False,
+                    shuffle=False)
+            else:
+                validation_generator = valid_datagen.flow_from_dataframe(
+                    dataframe=valid_data,
+                    x_col=x_col,
+                    y_col=y_col,
+                    target_size=(img_length, img_width),
+                    batch_size=batch_size,
+                    class_mode='categorical',
+                    validate_filenames=False,
+                    shuffle=False)
 
             # compute number of nodes needed in prediction layer (i.e. number of unique classes)
             num_classes = len(list(dataframe[y_col].unique()))
