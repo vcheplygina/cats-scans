@@ -66,11 +66,11 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
         if source_data == "imagenet":
             # collect efficient net and exclude top layers
             efficient_net = EfficientNetB3(include_top=False, weights="imagenet", input_shape=input_shape)
-        elif source_data == "slt10":
-            # collect efficient net and exclude top layers
-            efficient_net = EfficientNetB3(include_top=False,
-                                           weights=f'weights_{model_choice}_pretrained={source_data}.h5',
-                                           input_shape=input_shape)
+        # elif source_data == "slt10":  # todo: add clause so that this only occurs when target run
+        #     # collect efficient net and exclude top layers
+        #     efficient_net = EfficientNetB3(include_top=False,
+        #                                    weights=f'weights_{model_choice}_pretrained={source_data}.h5',
+        #                                    input_shape=input_shape)
         else:
             # collect efficient net and exclude top layers
             efficient_net = EfficientNetB3(include_top=False, weights=None, input_shape=input_shape)
@@ -79,11 +79,11 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
         if source_data == "imagenet":
             # collect efficient net and exclude top layers
             resnet = ResNet50(include_top=False, weights="imagenet", input_shape=input_shape)
-        elif source_data == "slt10":
-            # collect efficient net and exclude top layers
-            efficient_net = EfficientNetB3(include_top=False,
-                                           weights=f'weights_{model_choice}_pretrained={source_data}.h5',
-                                           input_shape=input_shape)
+        # elif source_data == "slt10":  # todo: add clause so that this only occurs when target run
+        #     # collect efficient net and exclude top layers
+        #     efficient_net = EfficientNetB3(include_top=False,
+        #                                    weights=f'weights_{model_choice}_pretrained={source_data}.h5',
+        #                                    input_shape=input_shape)
         else:
             # collect efficient net and exclude top layers
             resnet = ResNet50(include_top=False, weights=None, input_shape=input_shape)
