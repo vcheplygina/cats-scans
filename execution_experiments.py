@@ -10,9 +10,10 @@ from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Resnet_pretrained=Imagenet_source=Chest')
+# ex = Experiment('Resnet_pretrained=Imagenet_source=Chest')
 # ex = Experiment('Resnet_pretrained=Imagenet_source=Isic')
-# ex = Experiment('Efficientnet_pretraining=SLT10')
+ex = Experiment('Efficientnet_pretraining=SLT10')
+
 ex.observers.append(NeptuneObserver(
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiMjc4MGU5ZDUtMzk3Yy00YjE3LTliY2QtMThkMDJkZTMxNGMzIn0=",
     project_name='irmavdbrandt/cats-scans'))
@@ -29,42 +30,42 @@ def cfg():
     """
     :return: parameter settings used in the experiment. NOTE: this should be updated with every new experiment
     """
-    target = True
-    # define source data
-    source_data = "imagenet"
-    # define target dataset
-    target_data = "chest"
-    x_col = "path"
-    y_col = "class"
-    augment = True
-    n_folds = 5
-    img_length = 112
-    img_width = 112
-    learning_rate = 0.000001
-    batch_size = 128
-    epochs = 50
-    color = True
-    dropout = 0.2
-    model_choice = "resnet"
-
-    # target = False
+    # target = True
     # # define source data
-    # source_data = "slt10"
+    # source_data = "imagenet"
     # # define target dataset
-    # target_data = None
-    # x_col = None
-    # y_col = None
+    # target_data = "chest"
+    # x_col = "path"
+    # y_col = "class"
     # augment = True
-    # n_folds = None
-    # img_length = 96
-    # img_width = 96
-    # learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
+    # n_folds = 5
+    # img_length = 112
+    # img_width = 112
+    # learning_rate = 0.000001
     # batch_size = 128
     # epochs = 50
     # color = True
-    # dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
-    # imagenet = False
+    # dropout = 0.2
     # model_choice = "resnet"
+
+    target = False
+    # define source data
+    source_data = "slt10"
+    # define target dataset
+    target_data = None
+    x_col = None
+    y_col = None
+    augment = True
+    n_folds = None
+    img_length = 96
+    img_width = 96
+    learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
+    batch_size = 128
+    epochs = 50
+    color = True
+    dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
+    imagenet = False
+    model_choice = "efficientnet"
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
@@ -109,7 +110,6 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
     :return: experiment
     """
 
-    # TODO: clean this code
     if target:
         dataframe, skf, train_datagen, valid_datagen, x_col, y_col = run_model_target(target_data, x_col, y_col,
                                                                                       augment, n_folds)
@@ -147,7 +147,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                     validate_filenames=False)
 
             if target_data == "chest":
-                validation_generator = valid_datagen.flow_from_dataframe(
+                valid_generator = valid_datagen.flow_from_dataframe(
                     dataframe=valid_data,
                     x_col=x_col,
                     y_col=y_col,
@@ -157,7 +157,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                     validate_filenames=False,
                     shuffle=False)
             else:
-                validation_generator = valid_datagen.flow_from_dataframe(
+                valid_generator = valid_datagen.flow_from_dataframe(
                     dataframe=valid_data,
                     x_col=x_col,
                     y_col=y_col,
@@ -179,24 +179,24 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                       steps_per_epoch=train_generator.samples // batch_size,
                       epochs=epochs,
                       class_weight=class_weights,
-                      validation_data=validation_generator,
-                      validation_steps=validation_generator.samples // batch_size,
+                      validation_data=valid_generator,
+                      validation_steps=valid_generator.samples // batch_size,
                       callbacks=[MetricsLoggerCallback(_run)])
 
             # compute loss and accuracy on validation set
-            valid_loss, valid_acc = model.evaluate(validation_generator, verbose=1)
+            valid_loss, valid_acc = model.evaluate(valid_generator, verbose=1)
             print(f'Validation loss for fold {fold_no}:', valid_loss, f' and Validation accuracy for fold {fold_no}:',
                   valid_acc)
             acc_per_fold.append(valid_acc)
             loss_per_fold.append(valid_loss)
 
-            predictions = model.predict(validation_generator)  # get predictions
+            predictions = model.predict(valid_generator)  # get predictions
 
             # compute OneVsRest multi-class macro AUC on the test set
             if target_data == "chest":
-                OneVsRest_auc = roc_auc_score(validation_generator.classes, predictions, average='macro')
+                OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, average='macro')
             else:
-                OneVsRest_auc = roc_auc_score(validation_generator.classes, predictions, multi_class='ovr',
+                OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, multi_class='ovr',
                                               average='macro')
             print(f'Validation auc: {OneVsRest_auc}')
             auc_per_fold.append(OneVsRest_auc)
@@ -222,20 +222,24 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
         return acc_per_fold, loss_per_fold, auc_per_fold
 
     else:
-        model, train_generator, validation_generator, test_generator, class_weights = run_model_source(augment,
-                                                                                                       img_length,
-                                                                                                       img_width,
-                                                                                                       learning_rate,
-                                                                                                       batch_size,
-                                                                                                       epochs, color,
-                                                                                                       dropout,
-                                                                                                       source_data,
-                                                                                                       model_choice)
+        num_classes, train_generator, valid_generator, test_generator, class_weights = run_model_source(augment,
+                                                                                                        img_length,
+                                                                                                        img_width,
+                                                                                                        learning_rate,
+                                                                                                        batch_size,
+                                                                                                        epochs,
+                                                                                                        color,
+                                                                                                        dropout,
+                                                                                                        source_data,
+                                                                                                        model_choice)
+
+        model = create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data,
+                             model_choice, num_classes)  # create model
 
         model.fit(train_generator,
                   epochs=epochs,
                   class_weight=class_weights,
-                  validation_data=validation_generator,
+                  validation_data=valid_generator,
                   callbacks=[MetricsLoggerCallback(_run),
                              callbacks.LearningRateScheduler(scheduler)])
 
@@ -244,7 +248,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
         print(f'Test loss:', test_loss, f' and Test accuracy:', test_acc)
 
         # save model model_weights
-        model.save(f'model_weights_{model_choice}_pretrained={source_data}.h5')
+        model.save_weights(f'weights_{model_choice}_pretrained={source_data}.h5')
 
         create_upload_zip(n_folds, model_choice, source_data, target_data)
 

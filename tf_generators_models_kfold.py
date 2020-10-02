@@ -15,8 +15,8 @@ os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 def create_generators_dataframes(augment):
     """
     :param augment: boolean specifying whether to use data augmentation or not
-    :return: training and validation generator, training and test dataset, and dictionary containing model_weights for all
-    unique labels in the dataset
+    :return: training and validation generator, training and test dataset, and dictionary containing model_weights for
+    all unique labels in the dataset
     """
     if augment:
         train_datagen = ImageDataGenerator(
@@ -41,7 +41,8 @@ def create_generators_dataframes(augment):
     return train_datagen, valid_datagen
 
 
-def create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data, model_choice, num_classes):
+def create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data, model_choice,
+                 num_classes):
     """
     :param target_data: dataset used as target dataset
     :param learning_rate: learning rate used by optimizer
@@ -65,6 +66,11 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
         if source_data == "imagenet":
             # collect efficient net and exclude top layers
             efficient_net = EfficientNetB3(include_top=False, weights="imagenet", input_shape=input_shape)
+        elif source_data == "slt10":
+            # collect efficient net and exclude top layers
+            efficient_net = EfficientNetB3(include_top=False,
+                                           weights=f'weights_{model_choice}_pretrained={source_data}.h5',
+                                           input_shape=input_shape)
         else:
             # collect efficient net and exclude top layers
             efficient_net = EfficientNetB3(include_top=False, weights=None, input_shape=input_shape)
@@ -73,6 +79,11 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
         if source_data == "imagenet":
             # collect efficient net and exclude top layers
             resnet = ResNet50(include_top=False, weights="imagenet", input_shape=input_shape)
+        elif source_data == "slt10":
+            # collect efficient net and exclude top layers
+            efficient_net = EfficientNetB3(include_top=False,
+                                           weights=f'weights_{model_choice}_pretrained={source_data}.h5',
+                                           input_shape=input_shape)
         else:
             # collect efficient net and exclude top layers
             resnet = ResNet50(include_top=False, weights=None, input_shape=input_shape)
@@ -81,14 +92,11 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
     model.add(GlobalAveragePooling2D(name='gap'))
     model.add(Dropout(dropout, name='dropout_out'))
     if target_data == "chest":  # maybe make this statement: if num_class = 2:
-        print('binary case')
         model.add(Dense(1, activation='sigmoid'))
         loss = losses.binary_crossentropy
     else:
         model.add(Dense(num_classes, activation='softmax'))
         loss = losses.categorical_crossentropy
-    print(model.summary())
-    print(loss)
     model.trainable = True  # set all layers in model to be trainable
 
     model.compile(loss=loss,

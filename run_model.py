@@ -28,10 +28,8 @@ def run_model_source(augment, img_length, img_width, learning_rate, batch_size, 
     train_datagen, valid_datagen = create_generators_dataframes(augment)
 
     # import data into function
-    X_train, X_val, X_test, y_train, y_val, y_test = import_SLT10()
-    print('length: ', len(y_train), ' frequencies: ', np.unique(y_train, return_counts=True))
-    print('length: ', len(y_val), ' frequencies: ', np.unique(y_val, return_counts=True))
-    print('length: ', len(y_test), ' frequencies: ', np.unique(y_test, return_counts=True))
+    if source_data == 'slt10':
+        X_train, X_val, X_test, y_train, y_val, y_test = import_SLT10()
 
     num_classes = len(np.unique(y_train))  # compute the number of unique classes in the dataset
 
@@ -63,32 +61,7 @@ def run_model_source(augment, img_length, img_width, learning_rate, batch_size, 
         shuffle=False,
         seed=2)
 
-    model = create_model(learning_rate, img_length, img_width, color, dropout, source_data, model_choice,
-                         num_classes)  # create model
-
-    # model.fit(train_generator,
-    #           # steps_per_epoch=train_generator.samples // batch_size,
-    #           epochs=epochs,
-    #           class_weight=class_weights,
-    #           validation_data=validation_generator,
-    #           # validation_steps=test_generator.samples // batch_size,
-    #           )
-    #
-    # # compute loss and accuracy on validation set
-    # test_loss, test_acc = model.evaluate(test_generator, verbose=1)
-    # print(f'Test loss:', test_loss, f' and Test accuracy:', test_acc)
-
-    # upload_to_osf(
-    #     url=f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=model_{model_choice}_slt10.json',
-    #     file=model.to_json(),
-    #     name=f'model_{model_choice}_slt10.json')
-    # # save model_weights in h5 file and upload to OSF
-    # upload_to_osf(
-    #     url=f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=model_{model_choice}_slt10.h5',
-    #     file=model.save(f'model_{model_choice}_slt10.h5'),
-    #     name=f'model_{model_choice}_slt10.h5')
-
-    return model, train_generator, validation_generator, test_generator, class_weights
+    return num_classes, train_generator, validation_generator, test_generator, class_weights
 
 
 def run_model_target(target_data, x_col, y_col, augment, n_folds):
@@ -142,8 +115,8 @@ def create_upload_zip(n_folds, model_choice, source_data, target_data):
         with ZipFile(f'{model_choice}_target={target_data}_source={source_data}.zip', 'w') as zip_object:
             zip_object.write(f'model_weights_{model_choice}_pretrained={source_data}.h5')
 
-            # delete .csv and .h5 files from local memory
-            os.remove(f'model_weights_{model_choice}_pretrained={source_data}.h5')
+            # # delete .csv and .h5 files from local memory
+            # os.remove(f'model_weights_{model_choice}_pretrained={source_data}.h5')
     else:
         with ZipFile(f'{model_choice}_target={target_data}_source={source_data}.zip', 'w') as zip_object:
             for i in range(1, n_folds+1):
