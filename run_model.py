@@ -300,3 +300,4 @@ def create_upload_zip(n_folds, model_choice, source_data, target_data):
 #                                        learning_rate=0.0001, batch_size=128,
 #                                        epochs=10, color=True, dropout=0.2,
 #                                        imagenet=False, model_choice="efficientnet")
+
