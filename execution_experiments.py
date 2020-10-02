@@ -175,7 +175,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
             # compute OneVsRest multi-class macro AUC on the test set
             if target_data == "chest":
                 print(predictions.shape)
-                print(validation_generator.classes.shape)
+                print(validation_generator.classes)
+                print(len(validation_generator.classes))
                 OneVsRest_auc = roc_auc_score(validation_generator.classes, predictions, average='macro')
             else:
                 OneVsRest_auc = roc_auc_score(validation_generator.classes, predictions, multi_class='ovr',
