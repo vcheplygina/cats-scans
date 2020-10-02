@@ -41,8 +41,9 @@ def create_generators_dataframes(augment):
     return train_datagen, valid_datagen
 
 
-def create_model(learning_rate, img_length, img_width, color, dropout, source_data, model_choice, num_classes):
+def create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data, model_choice, num_classes):
     """
+    :param target_data:
     :param learning_rate: learning rate used by optimizer
     :param img_length: target length of image in pixels
     :param img_width: target width of image in pixels
@@ -79,7 +80,10 @@ def create_model(learning_rate, img_length, img_width, color, dropout, source_da
     # add new top layers to enable prediction for target dataset
     model.add(GlobalAveragePooling2D(name='gap'))
     model.add(Dropout(dropout, name='dropout_out'))
-    model.add(Dense(num_classes, activation='softmax'))
+    if target_data == "chest":  # maybe make this statement: if num_class = 2:
+        model.add(Dense(1, activation='sigmoid'))
+    else:
+        model.add(Dense(num_classes, activation='softmax'))
     model.trainable = True  # set all layers in model to be trainable
 
     model.compile(loss=losses.categorical_crossentropy,

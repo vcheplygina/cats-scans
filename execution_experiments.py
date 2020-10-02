@@ -149,8 +149,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
             # compute number of nodes needed in prediction layer (i.e. number of unique classes)
             num_classes = len(list(dataframe[y_col].unique()))
 
-            model = create_model(learning_rate, img_length, img_width, color, dropout, source_data, model_choice,
-                                 num_classes)  # create model
+            model = create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data,
+                                 model_choice, num_classes)  # create model
 
             class_weights = compute_class_weights(train_generator.classes)  # get class model_weights to balance classes
 
@@ -170,13 +170,9 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
             loss_per_fold.append(valid_loss)
 
             predictions = model.predict(validation_generator)  # get predictions
-            print(predictions)
 
             # compute OneVsRest multi-class macro AUC on the test set
             if target_data == "chest":
-                print(predictions.shape)
-                print(validation_generator.classes)
-                print(len(validation_generator.classes))
                 OneVsRest_auc = roc_auc_score(validation_generator.classes, predictions, average='macro')
             else:
                 OneVsRest_auc = roc_auc_score(validation_generator.classes, predictions, multi_class='ovr',
