@@ -10,7 +10,7 @@ from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Resnet_pretrained=Imagenet_source=Chest_test')
+ex = Experiment('Resnet_pretrained=Imagenet_source=Chest')
 # ex = Experiment('Resnet_pretrained=Imagenet_source=Isic')
 # ex = Experiment('Efficientnet_pretraining=SLT10')
 ex.observers.append(NeptuneObserver(
@@ -38,13 +38,13 @@ def cfg():
     y_col = "class"
     augment = True
     n_folds = 5
-    img_length = 32
-    img_width = 32
-    learning_rate = 0.00001
+    img_length = 112
+    img_width = 112
+    learning_rate = 0.000001
     batch_size = 128
-    epochs = 1
+    epochs = 50
     color = True
-    dropout = 0.5
+    dropout = 0.2
     model_choice = "resnet"
 
     # target = False
