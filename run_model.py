@@ -104,7 +104,7 @@ def create_upload_zip(n_folds, model_choice, source_data, target_data):
     """
     if target_data is None:
         with ZipFile(f'{model_choice}_target={target_data}_source={source_data}.zip', 'w') as zip_object:
-            zip_object.write(f'model_weights_{model_choice}_pretrained={source_data}.h5')
+            zip_object.write(f'weights_{model_choice}_pretrained={source_data}.h5')
 
             # # delete .csv and .h5 files from local memory
             # os.remove(f'model_weights_{model_choice}_pretrained={source_data}.h5')

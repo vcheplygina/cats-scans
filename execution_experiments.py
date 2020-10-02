@@ -9,9 +9,9 @@ from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('EfficientNet_pretrained=Imagenet_source=Chest')
+# ex = Experiment('EfficientNet_pretrained=Imagenet_source=Chest')
 # ex = Experiment('Resnet_pretrained=Imagenet_source=Isic')
-# ex = Experiment('Efficientnet_pretraining=SLT10')
+ex = Experiment('Efficientnet_pretraining=SLT10')
 
 ex.observers.append(NeptuneObserver(
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiMjc4MGU5ZDUtMzk3Yy00YjE3LTliY2QtMThkMDJkZTMxNGMzIn0=",
@@ -33,7 +33,7 @@ def cfg():
     # define source data
     source_data = "imagenet"
     # define target dataset
-    target_data = "chest"
+    target_data = "isic"
     x_col = "path"
     y_col = "class"
     augment = True
@@ -56,8 +56,8 @@ def cfg():
     # y_col = None
     # augment = True
     # n_folds = None
-    # img_length = 96
-    # img_width = 96
+    # img_length = 96   # when textures: 300
+    # img_width = 96    # when textures: 300
     # learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
     # batch_size = 128
     # epochs = 50
