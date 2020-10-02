@@ -1,4 +1,3 @@
-# %%
 from sacred import Experiment
 # from sacred.observers import MongoObserver
 from run_model import run_model_target, run_model_source, create_upload_zip, save_pred_model
@@ -46,7 +45,7 @@ def cfg():
     epochs = 50
     color = True
     dropout = 0.4
-    model_choice = "resnet"
+    model_choice = "efficientnet"
 
     # target = False
     # # define source data
@@ -128,44 +127,28 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
             valid_data = dataframe.iloc[val_index]  # create validation dataframe with indices from fold split
 
             if target_data == "chest":
-                train_generator = train_datagen.flow_from_dataframe(
-                    dataframe=train_data,
-                    x_col=x_col,
-                    y_col=y_col,
-                    target_size=(img_length, img_width),
-                    batch_size=batch_size,
-                    class_mode='binary',
-                    validate_filenames=False)
+                class_mode = "binary"
             else:
-                train_generator = train_datagen.flow_from_dataframe(
-                    dataframe=train_data,
-                    x_col=x_col,
-                    y_col=y_col,
-                    target_size=(img_length, img_width),
-                    batch_size=batch_size,
-                    class_mode='categorical',
-                    validate_filenames=False)
+                class_mode = "categorical"
 
-            if target_data == "chest":
-                valid_generator = valid_datagen.flow_from_dataframe(
-                    dataframe=valid_data,
-                    x_col=x_col,
-                    y_col=y_col,
-                    target_size=(img_length, img_width),
-                    batch_size=batch_size,
-                    class_mode='binary',
-                    validate_filenames=False,
-                    shuffle=False)
-            else:
-                valid_generator = valid_datagen.flow_from_dataframe(
-                    dataframe=valid_data,
-                    x_col=x_col,
-                    y_col=y_col,
-                    target_size=(img_length, img_width),
-                    batch_size=batch_size,
-                    class_mode='categorical',
-                    validate_filenames=False,
-                    shuffle=False)
+            train_generator = train_datagen.flow_from_dataframe(
+                dataframe=train_data,
+                x_col=x_col,
+                y_col=y_col,
+                target_size=(img_length, img_width),
+                batch_size=batch_size,
+                class_mode=class_mode,
+                validate_filenames=False)
+
+            valid_generator = valid_datagen.flow_from_dataframe(
+                dataframe=valid_data,
+                x_col=x_col,
+                y_col=y_col,
+                target_size=(img_length, img_width),
+                batch_size=batch_size,
+                class_mode=class_mode,
+                validate_filenames=False,
+                shuffle=False)
 
             # compute number of nodes needed in prediction layer (i.e. number of unique classes)
             num_classes = len(list(dataframe[y_col].unique()))
@@ -223,15 +206,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
     else:
         num_classes, train_generator, valid_generator, test_generator, class_weights = run_model_source(augment,
-                                                                                                        img_length,
-                                                                                                        img_width,
-                                                                                                        learning_rate,
                                                                                                         batch_size,
-                                                                                                        epochs,
-                                                                                                        color,
-                                                                                                        dropout,
-                                                                                                        source_data,
-                                                                                                        model_choice)
+                                                                                                        source_data)
 
         model = create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data,
                              model_choice, num_classes)  # create model

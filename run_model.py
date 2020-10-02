@@ -1,27 +1,18 @@
 from sklearn.model_selection import StratifiedKFold
 from requests_osf import upload_zip_to_osf
-# from csv_writer import create_metrics_csv
-from data_import import collect_data, import_SLT10
-from tf_generators_models_kfold import create_model, create_generators_dataframes, compute_class_weights
+from data_import import collect_target_data, import_SLT10, import_textures_dtd
+from tf_generators_models_kfold import create_generators_dataframes, compute_class_weights
 import numpy as np
 from keras.utils import to_categorical
 from zipfile import ZipFile
 import os
 
 
-def run_model_source(augment, img_length, img_width, learning_rate, batch_size, epochs,
-                     color, dropout, source_data, model_choice):
+def run_model_source(augment, batch_size, source_data):
     """
     :param augment: boolean specifying whether to use data augmentation or not
-    :param img_length: target length of image in pixels
-    :param img_width: target width of image in pixels
-    :param learning_rate: learning rate used by optimizer
     :param batch_size: amount of images processed per batch
-    :param epochs: number of epochs the model needs to run
-    :param color: boolean specifying whether the images are in color or not
-    :param dropout: fraction of nodes in layer that are deactivated
     :param source_data: dataset used as source dataset
-    :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
     :return: model and test generator needed for AUC calculation:
     """
     # get generators
@@ -30,6 +21,9 @@ def run_model_source(augment, img_length, img_width, learning_rate, batch_size, 
     # import data into function
     if source_data == 'slt10':
         X_train, X_val, X_test, y_train, y_val, y_test = import_SLT10()
+
+    elif source_data == 'textures':
+        X_train, X_val, X_test, y_train, y_val, y_test = import_textures_dtd()
 
     num_classes = len(np.unique(y_train))  # compute the number of unique classes in the dataset
 
@@ -40,26 +34,23 @@ def run_model_source(augment, img_length, img_width, learning_rate, batch_size, 
     y_val = to_categorical(y_val, num_classes=num_classes)
     y_test = to_categorical(y_test, num_classes=num_classes)
 
-    train_generator = train_datagen.flow(
-        x=X_train,
-        y=y_train,
-        batch_size=batch_size,
-        shuffle=True,
-        seed=2)
+    train_generator = train_datagen.flow(x=X_train,
+                                         y=y_train,
+                                         batch_size=batch_size,
+                                         shuffle=True,
+                                         seed=2)
 
-    validation_generator = valid_datagen.flow(
-        x=X_val,
-        y=y_val,
-        batch_size=batch_size,
-        shuffle=False,
-        seed=2)
+    validation_generator = valid_datagen.flow(x=X_val,
+                                              y=y_val,
+                                              batch_size=batch_size,
+                                              shuffle=False,
+                                              seed=2)
 
-    test_generator = valid_datagen.flow(
-        x=X_test,
-        y=y_test,
-        batch_size=batch_size,
-        shuffle=False,
-        seed=2)
+    test_generator = valid_datagen.flow(x=X_test,
+                                        y=y_test,
+                                        batch_size=batch_size,
+                                        shuffle=False,
+                                        seed=2)
 
     return num_classes, train_generator, validation_generator, test_generator, class_weights
 
@@ -78,7 +69,7 @@ def run_model_target(target_data, x_col, y_col, augment, n_folds):
     train_datagen, valid_datagen = create_generators_dataframes(augment)
 
     # import data into function
-    dataframe = collect_data(target_data)
+    dataframe = collect_target_data(target_data)
 
     skf = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=2)  # create k-folds validator object with k=5
 
@@ -119,7 +110,7 @@ def create_upload_zip(n_folds, model_choice, source_data, target_data):
             # os.remove(f'model_weights_{model_choice}_pretrained={source_data}.h5')
     else:
         with ZipFile(f'{model_choice}_target={target_data}_source={source_data}.zip', 'w') as zip_object:
-            for i in range(1, n_folds+1):
+            for i in range(1, n_folds + 1):
                 # Add multiple files to the zip
                 zip_object.write(f'predictions_{model_choice}_target={target_data}_source={source_data}_fold{i}.csv')
                 zip_object.write(f'model_weights_{model_choice}_target={target_data}_source={source_data}_fold{i}.h5')
@@ -129,20 +120,7 @@ def create_upload_zip(n_folds, model_choice, source_data, target_data):
                 os.remove(f'model_weights_{model_choice}_target={target_data}_source={source_data}_fold{i}.h5')
 
     # upload zip to OSF
-    upload_zip_to_osf(f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name={model_choice}_target={target_data}_source={source_data}.zip',
-                      f'{model_choice}_target={target_data}_source={source_data}.zip',
-                      f'{model_choice}_target={target_data}_source={source_data}.zip')
-
-# # %%
-# acc_per_fold, loss_per_fold, auc_per_fold = run_model_target(isic=True, blood=False, x_col="path", y_col="class",
-#                                                              augment=True, img_length=32, img_width=32,
-#                                                              learning_rate=0.00001, batch_size=128,
-#                                                              epochs=1, color=True, dropout=0.2,
-#                                                              imagenet=True, model_choice="efficientnet")
-
-# %%
-# test_loss, test_acc = run_model_source(augment=False, img_length=96, img_width=96,
-#                                        learning_rate=0.0001, batch_size=128,
-#                                        epochs=10, color=True, dropout=0.2,
-#                                        imagenet=False, model_choice="efficientnet")
-
+    upload_zip_to_osf(
+        f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name={model_choice}_target={target_data}_source={source_data}.zip',
+        f'{model_choice}_target={target_data}_source={source_data}.zip',
+        f'{model_choice}_target={target_data}_source={source_data}.zip')
