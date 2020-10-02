@@ -10,7 +10,7 @@ from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Resnet_pretrained=Imagenet_source=Chest')
+ex = Experiment('Resnet_pretrained=Imagenet_source=Chest_test')
 # ex = Experiment('Resnet_pretrained=Imagenet_source=Isic')
 # ex = Experiment('Efficientnet_pretraining=SLT10')
 ex.observers.append(NeptuneObserver(api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiMjc4MGU5ZDUtMzk3Yy00YjE3LTliY2QtMThkMDJkZTMxNGMzIn0=",
@@ -36,11 +36,11 @@ def cfg():
     y_col = "class"
     augment = True
     n_folds = 5
-    img_length = 112
-    img_width = 112
+    img_length = 32
+    img_width = 32
     learning_rate = 0.00001
     batch_size = 128
-    epochs = 50
+    epochs = 1
     color = True
     dropout = 0.5
     model_choice = "resnet"
@@ -168,6 +168,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
             loss_per_fold.append(valid_loss)
 
             predictions = model.predict(validation_generator)  # get predictions
+            print(predictions)
 
             # compute OneVsRest multi-class macro AUC on the test set
             OneVsRest_auc = roc_auc_score(validation_generator.classes, predictions, multi_class='ovr', average='macro')
