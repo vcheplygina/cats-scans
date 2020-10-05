@@ -7,7 +7,7 @@ from tf_generators_models_kfold import create_model, compute_class_weights
 import numpy as np
 from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
-
+#%%
 # initialize experiment name. NOTE: this should be updated with every new experiment
 ex = Experiment('EfficientNet_pretrained=Imagenet_target=ISIC')
 # ex = Experiment('Resnet_pretrained=Imagenet_source=Isic')
@@ -224,8 +224,11 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
         print(f'Test loss:', test_loss, f' and Test accuracy:', test_acc)
 
         # save model model_weights
-        model.save_weights(f'weights_{model_choice}_pretrained={source_data}.h5')
+        model.save(f'model_weights_{model_choice}_pretrained={source_data}.h5')
 
         create_upload_zip(n_folds, model_choice, source_data, target_data)
 
         return test_loss, test_acc
+
+
+

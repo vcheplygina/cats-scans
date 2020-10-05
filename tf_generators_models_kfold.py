@@ -1,4 +1,6 @@
 from tensorflow.keras import optimizers, losses, models
+from keras.models import load_model
+from keras import Model
 from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from efficientnet.keras import EfficientNetB3
@@ -60,42 +62,46 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
     else:
         input_shape = (img_length, img_width, 1)  # add 1 channels in case of gray image
 
-    model = models.Sequential()  # initialize new model
-    if model_choice == "efficientnet":
-        if source_data == "imagenet":
-            # collect efficient net and exclude top layers
-            efficient_net = EfficientNetB3(include_top=False, weights="imagenet", input_shape=input_shape)
-        elif (source_data == "slt10") & (target_data is not None):  # todo: test clause
-            # collect efficient net and exclude top layers
-            efficient_net = EfficientNetB3(include_top=False,
-                                           weights=f'weights_{model_choice}_pretrained={source_data}.h5',
-                                           input_shape=input_shape)
+    if (source_data != "imagenet") & (target_data is not None):
+        # collect pretrained efficientnet model on source data
+        pretrained = load_model(
+                f'model_weights_{model_choice}_pretrained={source_data}.h5')
+        # remove top layer that has been specialized on source dataset output
+        if num_classes == 2:
+            output_layer = Dense(1, activation='sigmoid')(pretrained.layers[-2].output)
+            loss = losses.binary_crossentropy
         else:
-            # collect efficient net and exclude top layers
-            efficient_net = EfficientNetB3(include_top=False, weights=None, input_shape=input_shape)
-        model.add(efficient_net)  # attach efficient net to new model
-    elif model_choice == "resnet":
-        if source_data == "imagenet":
-            # collect efficient net and exclude top layers
-            resnet = ResNet50(include_top=False, weights="imagenet", input_shape=input_shape)
-        elif (source_data == "slt10") & (target_data is not None):
-            # collect efficient net and exclude top layers
-            resnet = EfficientNetB3(include_top=False,
-                                    weights=f'weights_{model_choice}_pretrained={source_data}.h5',
-                                    input_shape=input_shape)
-        else:
-            # collect efficient net and exclude top layers
-            resnet = ResNet50(include_top=False, weights=None, input_shape=input_shape)
-        model.add(resnet)  # attach efficient net to new model
-    # add new top layers to enable prediction for target dataset
-    model.add(GlobalAveragePooling2D(name='gap'))
-    model.add(Dropout(dropout, name='dropout_out'))
-    if target_data == "chest":  # maybe make this statement: if num_class = 2:
-        model.add(Dense(1, activation='sigmoid'))
-        loss = losses.binary_crossentropy
+            output_layer = Dense(num_classes, activation='softmax')(pretrained.layers[-2].output)
+            loss = losses.categorical_crossentropy
+        model = Model(inputs=pretrained.input, outputs=output_layer)
     else:
-        model.add(Dense(num_classes, activation='softmax'))
-        loss = losses.categorical_crossentropy
+        model = models.Sequential()  # initialize new model
+        if model_choice == 'effcientnet':
+            if source_data == "imagenet":
+                # collect efficient net and exclude top layers
+                efficient_net = EfficientNetB3(include_top=False, weights="imagenet", input_shape=input_shape)
+            else:
+                # collect efficient net and exclude top layers
+                efficient_net = EfficientNetB3(include_top=False, weights=None, input_shape=input_shape)
+            model.add(efficient_net)  # attach efficient net to new model
+        elif model_choice == "resnet":
+            if source_data == "imagenet":
+                # collect efficient net and exclude top layers
+                resnet = ResNet50(include_top=False, weights="imagenet", input_shape=input_shape)
+            else:
+                # collect efficient net and exclude top layers
+                resnet = ResNet50(include_top=False, weights=None, input_shape=input_shape)
+            model.add(resnet)  # attach efficient net to new model
+        # add new top layers to enable prediction for target dataset
+        model.add(GlobalAveragePooling2D(name='gap'))
+        model.add(Dropout(dropout, name='dropout_out'))
+        if num_classes == 2:
+            model.add(Dense(1, activation='sigmoid'))
+            loss = losses.binary_crossentropy
+        else:
+            model.add(Dense(num_classes, activation='softmax'))
+            loss = losses.categorical_crossentropy
+
     model.trainable = True  # set all layers in model to be trainable
 
     model.compile(loss=loss,
