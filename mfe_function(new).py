@@ -1,6 +1,9 @@
 import keras
 import numpy as np
 from scipy.stats import kurtosis, skew, entropy as scipy_entropy
+from PIL import Image
+from os import listdir
+from os.path import isfile, join
 # from utils import meta_entropy, meta_skew, meta_kurtosis, meta_median, meta_std, meta_mean, meta_sparsity, meta_xy_axis
 #%% Utils
 
@@ -44,10 +47,37 @@ def meta_xy_axis(image):
     xy_axis = (image.shape[0]+image.shape[1])/2
     return xy_axis
 
+#%% Get local jpg images and convert them to numpy arrays
+
+def get_train_images(dataset = 'ISIC2018', subset = 5):
+    """Retrieve files from local depository and convert them to numpy arrays"""
+    if dataset == 'ISIC2017':
+        path_to_dataset = 'datasets/ISIC2017/ISIC2017_Task3_Training_Input/'
+    elif dataset == 'ISIC2018':
+        path_to_dataset = 'datasets/ISIC2018/ISIC2018_Task3_Training_Input/'
+    elif dataset == 'chest_xray':
+        path_to_dataset = 'datasets/chest_xray/train/NORMALJPG/'
+    else:
+        return None
+
+    dataset_filenames = [f for f in listdir(path_to_dataset) if
+                         isfile(join(path_to_dataset, f))][:subset]  # Take only 5 images for fast computation times
+
+    train_images = []
+
+    for image_name in dataset_filenames:
+        image = Image.open(path_to_dataset + image_name)
+        image = np.asarray(image)
+        train_images.append(image)
+
+    train_images = np.array(train_images)
+
+    return train_images
+
 #%% Function
 
 def feature_extraction(datasets, subset = 20):
-    """calculates the similarity vector based on meta-features between datasets"""
+    """Calculates the similarity vector based on meta-features between datasets"""
     # Importing datasets and defining subsets
 
     data_vectors = []
@@ -67,7 +97,19 @@ def feature_extraction(datasets, subset = 20):
             data = train_images[:subset]
         elif data == 'cifar100':
             cifar100 = keras.datasets.cifar100
-            (train_images2, train_labels2), (test_images2, test_labels2) = cifar100.load_data()
+            (train_images, train_labels), (test_images, test_labels) = cifar100.load_data()
+            data = train_images[:subset]
+        elif data == 'ISIC2017':
+            train_images = get_train_images(dataset='ISIC2017', subset=subset)
+            train_labels = 2
+            data = train_images[:subset]
+        elif data == 'ISIC2018':
+            train_images = get_train_images(dataset='ISIC2018', subset=subset)
+            train_labels = 2
+            data = train_images[:subset]
+        elif data == 'chest_xray':
+            train_images = get_train_images(dataset='chest_xray', subset=subset)
+            train_labels = 2
             data = train_images[:subset]
         else:
             return None
@@ -76,7 +118,7 @@ def feature_extraction(datasets, subset = 20):
 
         image_count = data.shape[0]
         image_size = data.shape[1] * data.shape[2]
-        label_count = len(np.unique((train_labels)))-1
+        label_count = len(np.unique(train_labels))-1
 
         # Statistical meta-features
 
@@ -90,38 +132,38 @@ def feature_extraction(datasets, subset = 20):
         data_xy_axis = []
 
         for image in data:
-            data_entropy.append(round(meta_entropy(image, base=len(image.shape)), 2))
-            data_skewness.append(round(meta_skew(image), 2))
-            data_kurtosis.append(round(meta_kurtosis(image), 2))
-            data_median.append(round(meta_median(image), 2))
-            data_std.append(round(meta_std(image), 2))
-            data_mean.append(round(meta_mean(image), 2))
-            data_sparsity.append(round(meta_sparsity(image), 2))
-            data_xy_axis.append(round(meta_xy_axis(image), 2))
+            data_entropy.append(meta_entropy(image, base=len(image.shape)))
+            data_skewness.append(meta_skew(image))
+            data_kurtosis.append(meta_kurtosis(image))
+            data_median.append(meta_median(image))
+            data_std.append(meta_std(image))
+            data_mean.append(meta_mean(image))
+            data_sparsity.append(meta_sparsity(image))
+            data_xy_axis.append(meta_xy_axis(image))
 
-        entropy_mean = np.mean(data_entropy)
-        entropy_std = np.std(data_entropy)
+        entropy_mean = round(np.mean(data_entropy))
+        entropy_std = round(np.std(data_entropy))
 
-        skewness_mean = np.mean(data_skewness)
-        skewness_std = np.std(data_skewness)
+        skewness_mean = round(np.mean(data_skewness))
+        skewness_std = round(np.std(data_skewness))
 
-        kurtosis_mean = np.mean(data_kurtosis)
-        kurtosis_std = np.std(data_kurtosis)
+        kurtosis_mean = round(np.mean(data_kurtosis))
+        kurtosis_std = round(np.std(data_kurtosis))
 
-        median_mean = np.mean(data_median)
-        median_std = np.std(data_median)
+        median_mean = round(np.mean(data_median))
+        median_std = round(np.std(data_median))
 
-        std_mean = np.mean(data_std)
-        std_std = np.std(data_std)
+        std_mean = round(np.mean(data_std))
+        std_std = round(np.std(data_std))
 
-        mean_mean = np.mean(data_mean)
-        mean_std = np.std(data_mean)
+        mean_mean = round(np.mean(data_mean))
+        mean_std = round(np.std(data_mean))
 
-        sparsity_mean = np.mean(data_sparsity)
-        sparsity_std = np.std(data_sparsity)
+        sparsity_mean = round(np.mean(data_sparsity))
+        sparsity_std = round(np.std(data_sparsity))
 
-        xy_axis_mean = np.mean(data_xy_axis)
-        xy_axis_std = np.std(data_xy_axis)
+        xy_axis_mean = round(np.mean(data_xy_axis))
+        xy_axis_std = round(np.std(data_xy_axis))
 
         # Combine meta-features
         all_features = [image_count, image_size, label_count, entropy_mean, entropy_std, skewness_mean, skewness_std, kurtosis_mean, kurtosis_std, median_mean,
@@ -136,8 +178,17 @@ def feature_extraction(datasets, subset = 20):
 
         data_vectors.append(meta_features)
 
-    return data_vectors
+    # Similarity matrix calculation
 
-feature_extraction(datasets=['mnist', 'cifar10'], subset=10)
+    sim_mat = np.zeros((len(data_vectors), len(data_vectors)))
+
+    for row in range(len(data_vectors)):
+        for column in range(len(data_vectors)):
+            euc_dst = np.linalg.norm(np.asarray(data_vectors[row]) - np.asarray(data_vectors[column]))
+            sim_mat[row][column] = np.around(euc_dst, decimals=2)
+
+    return sim_mat
+
+feature_extraction(datasets=['ISIC2017', 'ISIC2018', 'chest_xray'], subset=10)
 
 #%% Test
