@@ -44,8 +44,8 @@ def cfg():
     batch_size = 128
     epochs = 50
     color = True
-    dropout = 0.2
-    model_choice = "efficientnet"
+    dropout = 0.5
+    model_choice = "resnet"
 
     # target = False
     # # define source data
