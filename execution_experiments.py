@@ -164,7 +164,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                       class_weight=class_weights,
                       validation_data=valid_generator,
                       validation_steps=valid_generator.samples // batch_size,
-                      callbacks=[MetricsLoggerCallback(_run),
+                      callbacks=[MetricsLoggerCallback(_run)]
                                  # callbacks.LearningRateScheduler(scheduler)]
                                  )
 
