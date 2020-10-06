@@ -40,11 +40,11 @@ def cfg():
     n_folds = 5
     img_length = 112
     img_width = 112
-    learning_rate = 0.0000001   # used to be 1.0e-6 but leads to big overfitting (with dropout = 0.4)
+    learning_rate = 0.000001   # try again 1.0e-06 but now with scheduler (with epochs < 20) and dropout=0.5
     batch_size = 128
     epochs = 50
     color = True
-    dropout = 0.2    # used to be 1.0e-6 but leads to big overfitting (with dropout = 0.4)
+    dropout = 0.5
     model_choice = "efficientnet"
 
     # target = False
@@ -80,7 +80,7 @@ class MetricsLoggerCallback(tf.keras.callbacks.Callback):
 
 
 def scheduler(epochs, learning_rate):
-    if epochs < 30:
+    if epochs < 20:
         return learning_rate
     else:
         return learning_rate * 0.1
@@ -164,7 +164,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                       class_weight=class_weights,
                       validation_data=valid_generator,
                       validation_steps=valid_generator.samples // batch_size,
-                      callbacks=[MetricsLoggerCallback(_run)])
+                      callbacks=[MetricsLoggerCallback(_run),
+                                 callbacks.LearningRateScheduler(scheduler)])
 
             # compute loss and accuracy on validation set
             valid_loss, valid_acc = model.evaluate(valid_generator, verbose=1)

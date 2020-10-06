@@ -210,4 +210,3 @@ def collect_target_data(target_data):
 
     return dataframe
 
-
