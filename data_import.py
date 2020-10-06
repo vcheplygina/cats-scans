@@ -59,8 +59,8 @@ def import_chest():
     """
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/chest_xray/chest_xray"
-    # data_dir = "/data/ivdbrandt/chest_xray"
+    # data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/chest_xray/chest_xray"
+    data_dir = "/data/ivdbrandt/chest_xray"
 
     # set paths where training and test data can be found
     train_images = os.path.join(data_dir, "train")
