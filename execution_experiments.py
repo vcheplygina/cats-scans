@@ -9,7 +9,7 @@ from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 #%%
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('EfficientNet_pretrained=slt10_target=chest')
+ex = Experiment('Resnet_pretrained=slt10_target=chest')
 # ex = Experiment('Resnet_pretrained=Imagenet_source=Isic')
 # ex = Experiment('Efficientnet_pretraining=SLT10')
 
