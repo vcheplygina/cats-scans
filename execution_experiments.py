@@ -40,11 +40,11 @@ def cfg():
     n_folds = 5
     img_length = 112
     img_width = 112
-    learning_rate = 0.000001
+    learning_rate = 0.0000001   # used to be 1.0e-6 but leads to big overfitting (with dropout = 0.4)
     batch_size = 128
     epochs = 50
     color = True
-    dropout = 0.4
+    dropout = 0.2    # used to be 1.0e-6 but leads to big overfitting (with dropout = 0.4)
     model_choice = "efficientnet"
 
     # target = False
@@ -231,6 +231,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
         return test_loss, test_acc
 
 #%%
-x = np.array([0.689, 0.700, 0.692, 0.692, 0.689])
+import numpy as np
+x = np.array([0.869, 0.879, 0.876, 0.864, 0.875])
 print(np.mean(x), np.std(x))
 
