@@ -165,7 +165,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                       validation_data=valid_generator,
                       validation_steps=valid_generator.samples // batch_size,
                       callbacks=[MetricsLoggerCallback(_run),
-                                 callbacks.LearningRateScheduler(scheduler)])
+                                 # callbacks.LearningRateScheduler(scheduler)]
+                                 )
 
             # compute loss and accuracy on validation set
             valid_loss, valid_acc = model.evaluate(valid_generator, verbose=1)
@@ -233,6 +234,6 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
 #%%
 import numpy as np
-x = np.array([0.869, 0.879, 0.876, 0.864, 0.875])
+x = np.array([0.800, 0.802, 0.762, 0.768, 0.810])
 print(np.mean(x), np.std(x))
 
