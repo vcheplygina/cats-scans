@@ -45,7 +45,7 @@ def cfg():
     epochs = 50
     color = True
     dropout = 0.5
-    model_choice = "efficientnet"
+    model_choice = "resnet"
 
     # target = False
     # # define source data
