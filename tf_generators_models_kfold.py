@@ -79,10 +79,10 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
         if model_choice == 'efficientnet':
             if source_data == "imagenet":
                 # collect efficient net and exclude top layers
-                efficient_net = EfficientNetB1(include_top=False, weights="imagenet", input_shape=input_shape)
+                efficient_net = EfficientNetB3(include_top=False, weights="imagenet", input_shape=input_shape)
             else:
                 # collect efficient net and exclude top layers
-                efficient_net = EfficientNetB1(include_top=False, weights=None, input_shape=input_shape)
+                efficient_net = EfficientNetB3(include_top=False, weights=None, input_shape=input_shape)
             model.add(efficient_net)  # attach efficient net to new model
         elif model_choice == "resnet":
             if source_data == "imagenet":

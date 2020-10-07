@@ -58,7 +58,7 @@ def cfg():
     n_folds = None
     img_length = 96   # when textures: 300
     img_width = 96    # when textures: 300
-    learning_rate = 0.01  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
+    learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
     batch_size = 128
     epochs = 50
     color = True
