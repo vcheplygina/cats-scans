@@ -57,13 +57,13 @@ def cfg():
     y_col = None
     augment = True
     n_folds = None
-    img_length = 150   # when textures: 300
-    img_width = 150    # when textures: 300
+    img_length = 150
+    img_width = 150
     learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
     batch_size = 64
-    epochs = 50
+    epochs = 70
     color = True
-    dropout = 0.2  # with 0.4 and lr=0.001 still quick overfit
+    dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
     imagenet = False
     model_choice = "efficientnet"
     seed = 2
@@ -238,7 +238,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
         return test_loss, test_acc
 
 #%%
-import numpy as np
+
 x = np.array([0.630, 0.642, 0.635, 0.638, 0.640])
 print(np.mean(x), np.std(x))
 
