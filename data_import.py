@@ -178,9 +178,7 @@ def import_textures_dtd():
         if type_set == ".DS_Store":
             continue
         else:
-            print(type_set)
             sub_folder = os.path.join(data_dir, type_set)  # set path to images
-            print(sub_folder)
             image = [os.path.join(sub_folder, f) for f in os.listdir(sub_folder) if f.endswith('.jpg')]
             entry = pd.DataFrame(image, columns=['path'])  # add image in dataframe column 'path'
             entry['class'] = type_set  # add label in dataframe in column 'class'
@@ -196,7 +194,6 @@ def import_textures_dtd():
     X_train, X_val, y_train, y_val = train_test_split(X_train, X_train['class'], stratify=X_train['class'], shuffle=True,
                                                       random_state=2,
                                                       test_size=round(len(dataframe) * 0.1))  # take ~10% as validation set
-    print(X_test.head())
 
     return X_train, X_val, X_test
 
