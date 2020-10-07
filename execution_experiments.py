@@ -217,9 +217,10 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                              model_choice, num_classes)  # create model
 
         model.fit(train_generator,
-                  epochs=epochs,
+                  steps_per_epoch=train_generator.samples // batch_size,
                   class_weight=class_weights,
                   validation_data=valid_generator,
+                  validation_steps=valid_generator.samples // batch_size,
                   callbacks=[MetricsLoggerCallback(_run),
                              callbacks.LearningRateScheduler(scheduler)
                              ])
