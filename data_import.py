@@ -189,10 +189,10 @@ def import_textures_dtd():
     dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
     print(dataframe['class'].value_counts())  # get information on distribution of labels in dataframe
 
-    # revert labels to integers
-    labels = np.array(dataframe['class'])
-    le = LabelEncoder()
-    labels = le.fit_transform(labels)
+    # # revert labels to integers
+    # labels = np.array(dataframe['class'])
+    # le = LabelEncoder()
+    # labels = le.fit_transform(labels)
 
     # split data in train-val-test set (train 1000, val 150 and test 150 per class)
     X_train, X_test, y_train, y_test = train_test_split(dataframe, labels, stratify=labels,

@@ -30,11 +30,6 @@ def run_model_source(augment, batch_size, source_data):
 
     class_weights = compute_class_weights(y_train)  # get class model_weights to balance classes
 
-    # convert labels to one-hot encoded labels
-    y_train = to_categorical(y_train, num_classes=num_classes)
-    y_val = to_categorical(y_val, num_classes=num_classes)
-    y_test = to_categorical(y_test, num_classes=num_classes)
-
     if source_data == "textures":
         train_dataframe_img = pd.DataFrame(X_train, columns=['path'])
         print(y_train)
@@ -74,6 +69,11 @@ def run_model_source(augment, batch_size, source_data):
                                             seed=2)
 
     else:
+        # convert labels to one-hot encoded labels
+        y_train = to_categorical(y_train, num_classes=num_classes)
+        y_val = to_categorical(y_val, num_classes=num_classes)
+        y_test = to_categorical(y_test, num_classes=num_classes)
+
         train_generator = train_datagen.flow(x=X_train,
                                              y=y_train,
                                              batch_size=batch_size,
