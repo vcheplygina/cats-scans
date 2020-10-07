@@ -165,8 +165,8 @@ def import_textures_dtd():
     """
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    # data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/dtd/images"
-    data_dir = "/data/ivdbrandt/dtd/images"
+    data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/dtd/images"
+    # data_dir = "/data/ivdbrandt/dtd/images"
 
     # set paths where training and test data can be found
     types = list(os.listdir(data_dir))  # get all different labels

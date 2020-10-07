@@ -28,10 +28,11 @@ def run_model_source(augment, batch_size, source_data):
     elif source_data == 'textures':
         train_dataframe, val_dataframe, test_dataframe = import_textures_dtd()
         num_classes = len(np.unique(train_dataframe['class']))  # compute the number of unique classes in the dataset
+        print(num_classes)
         class_weights = compute_class_weights(train_dataframe['class'])  # get class model_weights to balance classes
 
     if source_data == "textures":
-
+        print("textures")
         train_generator = train_datagen.flow_from_dataframe(dataframe=train_dataframe,
                                                             x_col='path',
                                                             y_col='class',
