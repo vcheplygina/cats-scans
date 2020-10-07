@@ -62,7 +62,7 @@ def cfg():
     batch_size = 128
     epochs = 50
     color = True
-    dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
+    dropout = 0.2  # with 0.4 and lr=0.001 still quick overfit
     imagenet = False
     model_choice = "efficientnet"
 
