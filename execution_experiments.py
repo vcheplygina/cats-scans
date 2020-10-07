@@ -40,11 +40,11 @@ def cfg():
     n_folds = 5
     img_length = 112
     img_width = 112
-    learning_rate = 0.00001   # try again 1.0e-06 but now with scheduler (with epochs < 20) and dropout=0.5
+    learning_rate = 0.00001
     batch_size = 128
     epochs = 50
     color = True
-    dropout = 0.5
+    dropout = 0.3
     model_choice = "resnet"
 
     # target = False
