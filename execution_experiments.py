@@ -211,7 +211,9 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
     else:
         num_classes, train_generator, valid_generator, test_generator, class_weights = run_model_source(augment,
                                                                                                         batch_size,
-                                                                                                        source_data)
+                                                                                                        source_data,
+                                                                                                        img_length,
+                                                                                                        img_width)
 
         model = create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data,
                              model_choice, num_classes)  # create model

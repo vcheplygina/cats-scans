@@ -9,11 +9,13 @@ import os
 import pandas as pd
 
 
-def run_model_source(augment, batch_size, source_data):
+def run_model_source(augment, batch_size, source_data, img_length, img_width):
     """
     :param augment: boolean specifying whether to use data augmentation or not
     :param batch_size: amount of images processed per batch
     :param source_data: dataset used as source dataset
+    :param img_length: target length of image in pixels
+    :param img_width: target width of image in pixels
     :return: model and test generator needed for AUC calculation:
     """
     # get generators
@@ -36,6 +38,7 @@ def run_model_source(augment, batch_size, source_data):
         train_generator = train_datagen.flow_from_dataframe(dataframe=train_dataframe,
                                                             x_col='path',
                                                             y_col='class',
+                                                            target_size=(img_length, img_width),
                                                             batch_size=batch_size,
                                                             shuffle=True,
                                                             class_mode="categorical",
@@ -44,6 +47,7 @@ def run_model_source(augment, batch_size, source_data):
         validation_generator = valid_datagen.flow_from_dataframe(dataframe=val_dataframe,
                                                                  x_col='path',
                                                                  y_col='class',
+                                                                 target_size=(img_length, img_width),
                                                                  batch_size=batch_size,
                                                                  shuffle=False,
                                                                  class_mode="categorical",
@@ -52,6 +56,7 @@ def run_model_source(augment, batch_size, source_data):
         test_generator = valid_datagen.flow_from_dataframe(dataframe=test_dataframe,
                                                            x_col='path',
                                                            y_col='class',
+                                                           target_size=(img_length, img_width),
                                                            batch_size=batch_size,
                                                            shuffle=False,
                                                            class_mode="categorical",
