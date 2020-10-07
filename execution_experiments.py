@@ -82,7 +82,7 @@ class MetricsLoggerCallback(tf.keras.callbacks.Callback):
 
 
 def scheduler(epochs, learning_rate):
-    if epochs < 30:
+    if epochs < 40:
         return learning_rate
     else:
         return learning_rate * 0.1
@@ -223,7 +223,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                   class_weight=class_weights,
                   validation_data=valid_generator,
                   callbacks=[MetricsLoggerCallback(_run),
-                             # callbacks.LearningRateScheduler(scheduler)
+                             callbacks.LearningRateScheduler(scheduler)
                              ])
 
         # compute loss and accuracy on validation set
