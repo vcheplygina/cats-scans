@@ -64,7 +64,7 @@ def cfg():
     color = True
     dropout = 0.2  # with 0.4 and lr=0.001 still quick overfit
     imagenet = False
-    model_choice = "resnet"
+    model_choice = "efficientnet"
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
