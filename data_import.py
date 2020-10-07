@@ -195,7 +195,7 @@ def import_textures_dtd():
     # labels = le.fit_transform(labels)
 
     # split data in train-val-test set (train 1000, val 150 and test 150 per class)
-    X_train, X_test, y_train, y_test = train_test_split(dataframe, labels, stratify=labels,
+    X_train, X_test, y_train, y_test = train_test_split(dataframe, dataframe['class'], stratify=dataframe['class'],
                                                         shuffle=True, random_state=2,
                                                         test_size=round(len(dataframe) * 0.1))  # take ~10% as test set
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
