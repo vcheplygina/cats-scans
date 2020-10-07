@@ -29,42 +29,42 @@ def cfg():
     """
     :return: parameter settings used in the experiment. NOTE: this should be updated with every new experiment
     """
-    target = True
-    # define source data
-    source_data = "slt10"
-    # define target dataset
-    target_data = "isic"
-    x_col = "path"
-    y_col = "class"
-    augment = True
-    n_folds = 5
-    img_length = 112
-    img_width = 112
-    learning_rate = 0.00001
-    batch_size = 128
-    epochs = 50
-    color = True
-    dropout = 0.2
-    model_choice = "resnet"
-
-    # target = False
+    # target = True
     # # define source data
     # source_data = "slt10"
     # # define target dataset
-    # target_data = None
-    # x_col = None
-    # y_col = None
+    # target_data = "isic"
+    # x_col = "path"
+    # y_col = "class"
     # augment = True
-    # n_folds = None
-    # img_length = 96   # when textures: 300
-    # img_width = 96    # when textures: 300
-    # learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
+    # n_folds = 5
+    # img_length = 112
+    # img_width = 112
+    # learning_rate = 0.00001
     # batch_size = 128
     # epochs = 50
     # color = True
-    # dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
-    # imagenet = False
-    # model_choice = "efficientnet"
+    # dropout = 0.2
+    # model_choice = "resnet"
+
+    target = False
+    # define source data
+    source_data = "slt10"
+    # define target dataset
+    target_data = None
+    x_col = None
+    y_col = None
+    augment = True
+    n_folds = None
+    img_length = 96   # when textures: 300
+    img_width = 96    # when textures: 300
+    learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
+    batch_size = 128
+    epochs = 50
+    color = True
+    dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
+    imagenet = False
+    model_choice = "efficientnet"
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
@@ -80,7 +80,7 @@ class MetricsLoggerCallback(tf.keras.callbacks.Callback):
 
 
 def scheduler(epochs, learning_rate):
-    if epochs < 30:
+    if epochs < 20:
         return learning_rate
     else:
         return learning_rate * 0.1
