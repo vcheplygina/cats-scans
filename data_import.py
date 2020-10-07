@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import numpy as np
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
 
 
 def import_ISIC():
@@ -188,8 +189,13 @@ def import_textures_dtd():
     dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
     print(dataframe['class'].value_counts())  # get information on distribution of labels in dataframe
 
+    # revert labels to integers
+    labels = np.array(dataframe['class'])
+    le = LabelEncoder()
+    labels = le.fit_transform(labels)
+
     # split data in train-val-test set (train 1000, val 150 and test 150 per class)
-    X_train, X_test, y_train, y_test = train_test_split(dataframe, dataframe['class'], stratify=dataframe['class'],
+    X_train, X_test, y_train, y_test = train_test_split(dataframe, labels, stratify=labels,
                                                         shuffle=True, random_state=2,
                                                         test_size=round(len(dataframe) * 0.1))  # take ~10% as test set
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
