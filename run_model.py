@@ -36,7 +36,8 @@ def run_model_source(augment, batch_size, source_data):
     y_test = to_categorical(y_test, num_classes=num_classes)
 
     if source_data == "textures":
-        train_dataframe = pd.DataFrame([X_train, y_train], columns=['path', 'class'])
+        train_dataframe = pd.DataFrame({'path': X_train,
+                                        'class': y_train})
         print(train_dataframe.head())
         valid_dataframe = pd.DataFrame([X_val, y_val], columns=['path', 'class'])
         test_dataframe = pd.DataFrame([X_test, y_test], columns=['path', 'class'])
