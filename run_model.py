@@ -32,10 +32,8 @@ def run_model_source(augment, batch_size, source_data):
 
     if source_data == "textures":
         train_dataframe_img = pd.DataFrame(X_train, columns=['path'])
-        print(y_train)
         train_dataframe_labels = pd.DataFrame(y_train, columns=['class'])
         train_dataframe = pd.concat([train_dataframe_img, train_dataframe_labels], axis=1, sort=False)
-        print(train_dataframe.head())
         val_dataframe_img = pd.DataFrame(X_val, columns=['path'])
         val_dataframe_labels = pd.DataFrame(y_val, columns=['class'])
         val_dataframe = pd.concat([val_dataframe_img, val_dataframe_labels], axis=1, sort=False)
