@@ -3,7 +3,7 @@ from keras.models import load_model
 from keras import Model
 from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from efficientnet.keras import EfficientNetB3
+from efficientnet.keras import EfficientNetB3, EfficientNetB1
 from keras.applications.resnet50 import ResNet50, preprocess_input
 import os
 from sklearn.utils import class_weight
@@ -79,10 +79,10 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
         if model_choice == 'effcientnet':
             if source_data == "imagenet":
                 # collect efficient net and exclude top layers
-                efficient_net = EfficientNetB3(include_top=False, weights="imagenet", input_shape=input_shape)
+                efficient_net = EfficientNetB1(include_top=False, weights="imagenet", input_shape=input_shape)
             else:
                 # collect efficient net and exclude top layers
-                efficient_net = EfficientNetB3(include_top=False, weights=None, input_shape=input_shape)
+                efficient_net = EfficientNetB1(include_top=False, weights=None, input_shape=input_shape)
             model.add(efficient_net)  # attach efficient net to new model
         elif model_choice == "resnet":
             if source_data == "imagenet":
