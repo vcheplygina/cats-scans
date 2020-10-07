@@ -55,7 +55,7 @@ def cfg():
     target_data = None
     x_col = None
     y_col = None
-    augment = False  # try no augmentations for textures
+    augment = True
     n_folds = None
     img_length = 150   # when textures: 300
     img_width = 150    # when textures: 300
@@ -223,7 +223,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                   class_weight=class_weights,
                   validation_data=valid_generator,
                   callbacks=[MetricsLoggerCallback(_run),
-                             callbacks.LearningRateScheduler(scheduler)
+                             # callbacks.LearningRateScheduler(scheduler)
                              ])
 
         # compute loss and accuracy on validation set
