@@ -11,7 +11,7 @@ from tensorflow.keras import callbacks
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=slt10_target=isic')
 # ex = Experiment('Resnet_pretrained=Imagenet_source=Isic')
-ex = Experiment('EfficientNet_pretraining=SLT10')
+ex = Experiment('EfficientNet_pretraining=textures')
 
 ex.observers.append(NeptuneObserver(
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiMjc4MGU5ZDUtMzk3Yy00YjE3LTliY2QtMThkMDJkZTMxNGMzIn0=",
@@ -46,18 +46,19 @@ def cfg():
     # color = True
     # dropout = 0.2
     # model_choice = "resnet"
+    # seed = 2
 
     target = False
     # define source data
-    source_data = "slt10"
+    source_data = "textures"
     # define target dataset
     target_data = None
     x_col = None
     y_col = None
     augment = True
     n_folds = None
-    img_length = 96   # when textures: 300
-    img_width = 96    # when textures: 300
+    img_length = 300   # when textures: 300
+    img_width = 300    # when textures: 300
     learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
     batch_size = 128
     epochs = 50
@@ -65,6 +66,7 @@ def cfg():
     dropout = 0.2  # with 0.4 and lr=0.001 still quick overfit
     imagenet = False
     model_choice = "efficientnet"
+    seed = 2
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
