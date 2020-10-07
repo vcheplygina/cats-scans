@@ -36,13 +36,16 @@ def run_model_source(augment, batch_size, source_data):
     y_test = to_categorical(y_test, num_classes=num_classes)
 
     if source_data == "textures":
-        train_dataframe = pd.DataFrame(X_train, columns=['path'])
-        train_dataframe['class'] = y_train
+        train_dataframe_img = pd.DataFrame(X_train, columns=['path'])
+        train_dataframe_labels = pd.DataFrame(y_train, columns=['class'])
+        train_dataframe = result = pd.concat([train_dataframe_img, train_dataframe_labels], axis=1, sort=False)
         print(train_dataframe.head())
-        val_dataframe = pd.DataFrame(X_val, columns=['path'])
-        val_dataframe['class'] = y_val
-        test_dataframe = pd.DataFrame(X_test, columns=['path'])
-        test_dataframe['class'] = y_test
+        val_dataframe_img = pd.DataFrame(X_val, columns=['path'])
+        val_dataframe_labels = pd.DataFrame(y_val, columns=['class'])
+        val_dataframe = pd.concat([val_dataframe_img, val_dataframe_labels], axis=1, sort=False)
+        test_dataframe_img = pd.DataFrame(X_test, columns=['path'])
+        test_dataframe_labels = pd.DataFrame(y_test, columns=['class'])
+        test_dataframe = pd.concat([test_dataframe_img, test_dataframe_labels], axis=1, sort=False)
 
         train_generator = train_datagen.flow_from_dataframe(dataframe=train_dataframe,
                                                             x_col='path',
@@ -53,7 +56,7 @@ def run_model_source(augment, batch_size, source_data):
                                                              seed=2)
 
 
-        validation_generator = valid_datagen.flow_from_dataframe(dataframe=valid_dataframe,
+        validation_generator = valid_datagen.flow_from_dataframe(dataframe=val_dataframe,
                                                             x_col='path',
                                                             y_col='class',
                                                   batch_size=batch_size,
