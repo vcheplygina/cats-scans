@@ -219,7 +219,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                   class_weight=class_weights,
                   validation_data=valid_generator,
                   callbacks=[MetricsLoggerCallback(_run),
-                             callbacks.LearningRateScheduler(scheduler)])
+                             # callbacks.LearningRateScheduler(scheduler)
+                             ])
 
         # compute loss and accuracy on validation set
         test_loss, test_acc = model.evaluate(test_generator, verbose=1)
