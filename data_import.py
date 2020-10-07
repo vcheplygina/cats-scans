@@ -178,7 +178,10 @@ def import_textures_dtd():
             continue
         else:
             for image_dir in data_dir:
+                print(data_dir)
+                print(image_dir)
                 sub_folder = os.path.join(image_dir, type_set)  # set path to images
+                print(sub_folder)
                 image = [os.path.join(sub_folder, f) for f in os.listdir(sub_folder) if f.endswith('.jpg')]
                 entry = pd.DataFrame(image, columns=['path'])  # add image in dataframe column 'path'
                 entry['class'] = type_set  # add label in dataframe in column 'class'
