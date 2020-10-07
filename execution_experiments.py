@@ -63,7 +63,7 @@ def cfg():
     batch_size = 64
     epochs = 70
     color = True
-    dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
+    dropout = 0.7  # with 0.4 and lr=0.001 still quick overfit
     imagenet = False
     model_choice = "efficientnet"
     seed = 2
@@ -223,7 +223,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                   class_weight=class_weights,
                   validation_data=valid_generator,
                   callbacks=[MetricsLoggerCallback(_run),
-                             callbacks.LearningRateScheduler(scheduler)
+                             # callbacks.LearningRateScheduler(scheduler)
                              ])
 
         # compute loss and accuracy on validation set
