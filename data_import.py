@@ -94,23 +94,23 @@ def import_SLT10():
     at Stanford on site https://cs.stanford.edu/~acoates/stl10/
     :return: images and labels of SLT-10 training dataset
     """
-    # path to the binary train file with image data
-    TRAIN_DATA_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/train_X.bin'
-    # path to the binary train file with labels
-    TRAIN_LABEL_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/train_y.bin'
-    # path to the binary train file with image data
-    TEST_DATA_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/test_X.bin'
-    # path to the binary train file with labels
-    TEST_LABEL_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/test_y.bin'
+    # # path to the binary train file with image data
+    # TRAIN_DATA_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/train_X.bin'
+    # # path to the binary train file with labels
+    # TRAIN_LABEL_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/train_y.bin'
+    # # path to the binary train file with image data
+    # TEST_DATA_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/test_X.bin'
+    # # path to the binary train file with labels
+    # TEST_LABEL_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/test_y.bin'
 
-    # # path to the binary train file with image data
-    # TRAIN_DATA_PATH = '/data/ivdbrandt/stl10_binary/train_X.bin'
-    # # path to the binary train file with labels
-    # TRAIN_LABEL_PATH = '/data/ivdbrandt/stl10_binary/train_y.bin'
-    # # path to the binary train file with image data
-    # TEST_DATA_PATH = '/data/ivdbrandt/stl10_binary/test_X.bin'
-    # # path to the binary train file with labels
-    # TEST_LABEL_PATH = '/data/ivdbrandt/stl10_binary/test_y.bin'
+    # path to the binary train file with image data
+    TRAIN_DATA_PATH = '/data/ivdbrandt/stl10_binary/train_X.bin'
+    # path to the binary train file with labels
+    TRAIN_LABEL_PATH = '/data/ivdbrandt/stl10_binary/train_y.bin'
+    # path to the binary train file with image data
+    TEST_DATA_PATH = '/data/ivdbrandt/stl10_binary/test_X.bin'
+    # path to the binary train file with labels
+    TEST_LABEL_PATH = '/data/ivdbrandt/stl10_binary/test_y.bin'
 
     with open(TRAIN_DATA_PATH, 'rb') as f:
         # read whole file in uint8 chunks
