@@ -6,6 +6,7 @@ import numpy as np
 from keras.utils import to_categorical
 from zipfile import ZipFile
 import os
+import pandas as pd
 
 
 def run_model_source(augment, batch_size, source_data):
@@ -34,23 +35,55 @@ def run_model_source(augment, batch_size, source_data):
     y_val = to_categorical(y_val, num_classes=num_classes)
     y_test = to_categorical(y_test, num_classes=num_classes)
 
-    train_generator = train_datagen.flow(x=X_train,
-                                         y=y_train,
-                                         batch_size=batch_size,
-                                         shuffle=True,
-                                         seed=2)
+    if source_data == "textures":
+        train_dataframe = pd.Dataframe([X_train, y_train], columns=['path', 'class'])
+        print(train_dataframe.head())
+        valid_dataframe = pd.Dataframe([X_val, y_val], columns=['path', 'class'])
+        test_dataframe = pd.Dataframe([X_test, y_test], columns=['path', 'class'])
 
-    validation_generator = valid_datagen.flow(x=X_val,
-                                              y=y_val,
-                                              batch_size=batch_size,
-                                              shuffle=False,
-                                              seed=2)
+        train_generator = train_datagen.flow_from_dataframe(dataframe=train_dataframe,
+                                                            x_col='path',
+                                                            y_col='class',
+                                                             batch_size=batch_size,
+                                                             shuffle=True,
+                                                             class_mode="categorical",
+                                                             seed=2)
 
-    test_generator = valid_datagen.flow(x=X_test,
-                                        y=y_test,
-                                        batch_size=batch_size,
-                                        shuffle=False,
-                                        seed=2)
+
+        validation_generator = valid_datagen.flow_from_dataframe(dataframe=train_dataframe,
+                                                            x_col='path',
+                                                            y_col='class',
+                                                  batch_size=batch_size,
+                                                  shuffle=False,
+                                                                 class_mode="categorical",
+                                                  seed=2)
+
+        test_generator = valid_datagen.flow_from_dataframe(dataframe=train_dataframe,
+                                                            x_col='path',
+                                                            y_col='class',
+                                            batch_size=batch_size,
+                                            shuffle=False,
+                                                           class_mode="categorical",
+                                            seed=2)
+
+    else:
+        train_generator = train_datagen.flow(x=X_train,
+                                             y=y_train,
+                                             batch_size=batch_size,
+                                             shuffle=True,
+                                             seed=2)
+
+        validation_generator = valid_datagen.flow(x=X_val,
+                                                  y=y_val,
+                                                  batch_size=batch_size,
+                                                  shuffle=False,
+                                                  seed=2)
+
+        test_generator = valid_datagen.flow(x=X_test,
+                                            y=y_test,
+                                            batch_size=batch_size,
+                                            shuffle=False,
+                                            seed=2)
 
     return num_classes, train_generator, validation_generator, test_generator, class_weights
 
