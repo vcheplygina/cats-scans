@@ -55,10 +55,10 @@ def cfg():
     target_data = None
     x_col = None
     y_col = None
-    augment = True
+    augment = False  # try no augmentations for textures
     n_folds = None
-    img_length = 112   # when textures: 300
-    img_width = 112    # when textures: 300
+    img_length = 300   # when textures: 300
+    img_width = 300    # when textures: 300
     learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
     batch_size = 64
     epochs = 50
