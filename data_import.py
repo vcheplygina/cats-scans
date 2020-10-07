@@ -165,8 +165,8 @@ def import_textures_dtd():
     """
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    # data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/dtd/images"
-    data_dir = "/data/ivdbrandt/dtd/images"
+    data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/dtd/images"
+    # data_dir = "/data/ivdbrandt/dtd/images"
 
     # set paths where training and test data can be found
     types = list(os.listdir(data_dir))  # get all different labels
@@ -189,19 +189,16 @@ def import_textures_dtd():
     dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
     print(dataframe['class'].value_counts())  # get information on distribution of labels in dataframe
 
-    # # revert labels to integers
-    # labels = np.array(dataframe['class'])
-    # le = LabelEncoder()
-    # labels = le.fit_transform(labels)
-
     # split data in train-val-test set (train 1000, val 150 and test 150 per class)
     X_train, X_test, y_train, y_test = train_test_split(dataframe, dataframe['class'], stratify=dataframe['class'],
                                                         shuffle=True, random_state=2,
                                                         test_size=round(len(dataframe) * 0.1))  # take ~10% as test set
-    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
+    X_train, X_val, y_train, y_val = train_test_split(X_train, X_train['class'], stratify=X_train['class'], shuffle=True,
+                                                      random_state=2,
                                                       test_size=round(len(dataframe) * 0.1))  # take ~10% as validation set
+    print(X_test.head())
 
-    return X_train, X_val, X_test, y_train, y_val, y_test
+    return X_train, X_val, X_test
 
 
 def collect_target_data(target_data):

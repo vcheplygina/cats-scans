@@ -22,49 +22,39 @@ def run_model_source(augment, batch_size, source_data):
     # import data into function
     if source_data == 'slt10':
         X_train, X_val, X_test, y_train, y_val, y_test = import_SLT10()
+        num_classes = len(np.unique(y_train))  # compute the number of unique classes in the dataset
+        class_weights = compute_class_weights(y_train)  # get class model_weights to balance classes
 
     elif source_data == 'textures':
-        X_train, X_val, X_test, y_train, y_val, y_test = import_textures_dtd()
-
-    num_classes = len(np.unique(y_train))  # compute the number of unique classes in the dataset
-
-    class_weights = compute_class_weights(y_train)  # get class model_weights to balance classes
+        train_dataframe, val_dataframe, test_dataframe = import_textures_dtd()
+        num_classes = len(np.unique(train_dataframe['class']))  # compute the number of unique classes in the dataset
+        class_weights = compute_class_weights(train_dataframe['class'])  # get class model_weights to balance classes
 
     if source_data == "textures":
-        train_dataframe_img = pd.DataFrame(X_train, columns=['path'])
-        train_dataframe_labels = pd.DataFrame(y_train, columns=['class'])
-        train_dataframe = pd.concat([train_dataframe_img, train_dataframe_labels], axis=1, sort=False)
-        val_dataframe_img = pd.DataFrame(X_val, columns=['path'])
-        val_dataframe_labels = pd.DataFrame(y_val, columns=['class'])
-        val_dataframe = pd.concat([val_dataframe_img, val_dataframe_labels], axis=1, sort=False)
-        test_dataframe_img = pd.DataFrame(X_test, columns=['path'])
-        test_dataframe_labels = pd.DataFrame(y_test, columns=['class'])
-        test_dataframe = pd.concat([test_dataframe_img, test_dataframe_labels], axis=1, sort=False)
 
         train_generator = train_datagen.flow_from_dataframe(dataframe=train_dataframe,
                                                             x_col='path',
                                                             y_col='class',
-                                                             batch_size=batch_size,
-                                                             shuffle=True,
-                                                             class_mode="categorical",
-                                                             seed=2)
-
+                                                            batch_size=batch_size,
+                                                            shuffle=True,
+                                                            class_mode="categorical",
+                                                            seed=2)
 
         validation_generator = valid_datagen.flow_from_dataframe(dataframe=val_dataframe,
-                                                            x_col='path',
-                                                            y_col='class',
-                                                  batch_size=batch_size,
-                                                  shuffle=False,
+                                                                 x_col='path',
+                                                                 y_col='class',
+                                                                 batch_size=batch_size,
+                                                                 shuffle=False,
                                                                  class_mode="categorical",
-                                                  seed=2)
+                                                                 seed=2)
 
         test_generator = valid_datagen.flow_from_dataframe(dataframe=test_dataframe,
-                                                            x_col='path',
-                                                            y_col='class',
-                                            batch_size=batch_size,
-                                            shuffle=False,
+                                                           x_col='path',
+                                                           y_col='class',
+                                                           batch_size=batch_size,
+                                                           shuffle=False,
                                                            class_mode="categorical",
-                                            seed=2)
+                                                           seed=2)
 
     else:
         # convert labels to one-hot encoded labels
