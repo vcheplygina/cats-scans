@@ -76,7 +76,7 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
         model = Model(inputs=pretrained.input, outputs=output_layer)
     else:
         model = models.Sequential()  # initialize new model
-        if model_choice == 'effcientnet':
+        if model_choice == 'efficientnet':
             if source_data == "imagenet":
                 # collect efficient net and exclude top layers
                 efficient_net = EfficientNetB1(include_top=False, weights="imagenet", input_shape=input_shape)
