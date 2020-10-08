@@ -199,32 +199,32 @@ def import_textures_dtd():
     return X_train, X_val, X_test
 
 
-def import_PCAM():
-    """
-    :return:
-    """
-    # train_img_path = ""
-    train_label_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_train_y.h5"
-
-    val_img_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_valid_x.h5"
-    val_label_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_valid_y.h5"
-
-    test_img_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_test_x.h5"
-    test_label_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_test_y.h5"
-
-    # # x_train = HDF5Matrix(train_img_path, 'x')
-    # y_train = tf.data(train_label_path, 'y')
-    #
-    # x_val = tf.data(val_img_path, 'x')
-    # y_val = tf.data(val_label_path, 'y')
-    #
-    # x_test = tf.data(test_img_path, 'x')
-    # y_test = tf.data(test_label_path, 'y')
-
-    # combine all data to prepare for nfolds-cross-validation
-
-    # return x_train, x_val, x_test, y_train, y_val, y_test
-    return x_val, x_test, y_train, y_val, y_test
+# def import_PCAM():
+#     """
+#     :return:
+#     """
+#     # train_img_path = ""
+#     train_label_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_train_y.h5"
+#
+#     val_img_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_valid_x.h5"
+#     val_label_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_valid_y.h5"
+#
+#     test_img_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_test_x.h5"
+#     test_label_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_test_y.h5"
+#
+#     # # x_train = HDF5Matrix(train_img_path, 'x')
+#     # y_train = tf.data(train_label_path, 'y')
+#     #
+#     # x_val = tf.data(val_img_path, 'x')
+#     # y_val = tf.data(val_label_path, 'y')
+#     #
+#     # x_test = tf.data(test_img_path, 'x')
+#     # y_test = tf.data(test_label_path, 'y')
+#
+#     # combine all data to prepare for nfolds-cross-validation
+#
+#     # return x_train, x_val, x_test, y_train, y_val, y_test
+#     return x_val, x_test, y_train, y_val, y_test
 
 
 def collect_target_data(target_data):
