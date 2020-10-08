@@ -13,12 +13,18 @@ import numpy as np
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 
-def create_generators_dataframes(augment):
+def create_generators_dataframes(target_data, augment):
     """
+    :param target_data: dataset used as target dataset
     :param augment: boolean specifying whether to use data augmentation or not
     :return: training and validation generator, training and test dataset, and dictionary containing model_weights for
     all unique labels in the dataset
     """
+    if target_data == 'pcam':
+        preprocessing = lambda x: x / 255.
+    else:
+        preprocessing = preprocess_input
+
     if augment:
         train_datagen = ImageDataGenerator(
             featurewise_center=False,  # set input mean to 0 over the dataset
@@ -31,13 +37,13 @@ def create_generators_dataframes(augment):
             height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
             horizontal_flip=True,  # randomly flip images
             vertical_flip=False,
-            preprocessing_function=preprocess_input)
+            preprocessing_function=preprocessing)
 
     else:
-        train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)
+        train_datagen = ImageDataGenerator(preprocessing_function=preprocessing)
 
     # create validation generator
-    valid_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)
+    valid_datagen = ImageDataGenerator(preprocessing_function=preprocessing)
 
     return train_datagen, valid_datagen
 
@@ -65,7 +71,7 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
     if (source_data != "imagenet") & (target_data is not None):
         # collect pretrained efficientnet model on source data
         pretrained = load_model(
-                f'model_weights_{model_choice}_pretrained={source_data}.h5')
+            f'model_weights_{model_choice}_pretrained={source_data}.h5')
         # remove top layer that has been specialized on source dataset output
         if num_classes == 2:
             output_layer = Dense(1, activation='sigmoid')(pretrained.layers[-2].output)

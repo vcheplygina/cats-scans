@@ -30,4 +30,5 @@ from sklearn.svm import SVC
 #
 #     return OneVsRest_auc
 
-# learning rate used to be 0.000001
+# todo: one-vs-rest: every time make one label 0 and all others 1 (or vice versa) and then compute the fpr and tpr
+# use these in the roc_curve from sklearn
