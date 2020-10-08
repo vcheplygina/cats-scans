@@ -249,4 +249,4 @@ def collect_target_data(target_data):
 
 
 #%%
-x_val, x_test, y_train, y_val, y_test = import_PCAM()
+# x_val, x_test, y_train, y_val, y_test = import_PCAM()
