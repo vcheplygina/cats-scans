@@ -60,7 +60,7 @@ def cfg():
     img_length = 300
     img_width = 300
     learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
-    batch_size = 32
+    batch_size = 12
     epochs = 70
     color = True
     dropout = 0.7  # with 0.4 and lr=0.001 still quick overfit
