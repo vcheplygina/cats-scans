@@ -2,7 +2,8 @@ import pandas as pd
 import os
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
+from keras.utils import HDF5Matrix
+import tensorflow as tf
 
 
 def import_ISIC():
@@ -191,11 +192,39 @@ def import_textures_dtd():
     X_train, X_test, y_train, y_test = train_test_split(dataframe, dataframe['class'], stratify=dataframe['class'],
                                                         shuffle=True, random_state=2,
                                                         test_size=round(len(dataframe) * 0.1))  # take ~10% as test set
-    X_train, X_val, y_train, y_val = train_test_split(X_train, X_train['class'], stratify=X_train['class'], shuffle=True,
-                                                      random_state=2,
-                                                      test_size=round(len(dataframe) * 0.1))  # take ~10% as validation set
+    X_train, X_val, y_train, y_val = train_test_split(X_train, X_train['class'], stratify=X_train['class'],
+                                                      shuffle=True, random_state=2,
+                                                      test_size=round(len(dataframe) * 0.1))  # take ~10% as val set
 
     return X_train, X_val, X_test
+
+
+def import_PCAM():
+    """
+    :return:
+    """
+    # train_img_path = ""
+    train_label_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_train_y.h5"
+
+    val_img_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_valid_x.h5"
+    val_label_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_valid_y.h5"
+
+    test_img_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_test_x.h5"
+    test_label_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/camelyonpatch_level_2_split_test_y.h5"
+
+    # x_train = HDF5Matrix(train_img_path, 'x')
+    y_train = tf.data(train_label_path, 'y')
+
+    x_val = tf.data(val_img_path, 'x')
+    y_val = tf.data(val_label_path, 'y')
+
+    x_test = tf.data(test_img_path, 'x')
+    y_test = tf.data(test_label_path, 'y')
+
+    # combine all data to prepare for nfolds-cross-validation
+
+    # return x_train, x_val, x_test, y_train, y_val, y_test
+    return x_val, x_test, y_train, y_val, y_test
 
 
 def collect_target_data(target_data):
@@ -206,7 +235,18 @@ def collect_target_data(target_data):
     if target_data == 'isic':
         dataframe = import_ISIC()
 
+        return dataframe
+
     elif target_data == 'chest':
         dataframe = import_chest()
 
-    return dataframe
+        return dataframe
+    #
+    # elif target_data == 'pcam':
+    #     x_train, x_val, x_test, y_train, y_val, y_test = import_PCAM()
+    #
+    #     return x_train, x_val, x_test, y_train, y_val, y_test
+
+
+#%%
+x_val, x_test, y_train, y_val, y_test = import_PCAM()

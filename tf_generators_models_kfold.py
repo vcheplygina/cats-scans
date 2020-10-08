@@ -3,7 +3,7 @@ from keras.models import load_model
 from keras import Model
 from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from efficientnet.keras import EfficientNetB3, EfficientNetB1
+from efficientnet.keras import EfficientNetB3
 from keras.applications.resnet50 import ResNet50, preprocess_input
 import os
 from sklearn.utils import class_weight

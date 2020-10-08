@@ -6,7 +6,6 @@ import numpy as np
 from keras.utils import to_categorical
 from zipfile import ZipFile
 import os
-import pandas as pd
 
 
 def run_model_source(augment, batch_size, source_data, img_length, img_width):
@@ -16,8 +15,9 @@ def run_model_source(augment, batch_size, source_data, img_length, img_width):
     :param source_data: dataset used as source dataset
     :param img_length: target length of image in pixels
     :param img_width: target width of image in pixels
-    :return: model and test generator needed for AUC calculation:
+    :return: number of classes, class weights and generators needed to create and compile the model
     """
+
     # get generators
     train_datagen, valid_datagen = create_generators_dataframes(augment)
 
@@ -27,14 +27,36 @@ def run_model_source(augment, batch_size, source_data, img_length, img_width):
         num_classes = len(np.unique(y_train))  # compute the number of unique classes in the dataset
         class_weights = compute_class_weights(y_train)  # get class model_weights to balance classes
 
+        # convert labels to one-hot encoded labels
+        y_train = to_categorical(y_train, num_classes=num_classes)
+        y_val = to_categorical(y_val, num_classes=num_classes)
+        y_test = to_categorical(y_test, num_classes=num_classes)
+
+        # initiliaze generators fetching images from arrays
+        train_generator = train_datagen.flow(x=X_train,
+                                             y=y_train,
+                                             batch_size=batch_size,
+                                             shuffle=True,
+                                             seed=2)
+
+        validation_generator = valid_datagen.flow(x=X_val,
+                                                  y=y_val,
+                                                  batch_size=batch_size,
+                                                  shuffle=False,
+                                                  seed=2)
+
+        test_generator = valid_datagen.flow(x=X_test,
+                                            y=y_test,
+                                            batch_size=batch_size,
+                                            shuffle=False,
+                                            seed=2)
+
     elif source_data == 'textures':
         train_dataframe, val_dataframe, test_dataframe = import_textures_dtd()
         num_classes = len(np.unique(train_dataframe['class']))  # compute the number of unique classes in the dataset
-        print(num_classes)
         class_weights = compute_class_weights(train_dataframe['class'])  # get class model_weights to balance classes
 
-    if source_data == "textures":
-        print("textures")
+        # initiliaze generators fetching images from dataframe with image paths and labels
         train_generator = train_datagen.flow_from_dataframe(dataframe=train_dataframe,
                                                             x_col='path',
                                                             y_col='class',
@@ -62,30 +84,6 @@ def run_model_source(augment, batch_size, source_data, img_length, img_width):
                                                            class_mode="categorical",
                                                            seed=2)
 
-    else:
-        # convert labels to one-hot encoded labels
-        y_train = to_categorical(y_train, num_classes=num_classes)
-        y_val = to_categorical(y_val, num_classes=num_classes)
-        y_test = to_categorical(y_test, num_classes=num_classes)
-
-        train_generator = train_datagen.flow(x=X_train,
-                                             y=y_train,
-                                             batch_size=batch_size,
-                                             shuffle=True,
-                                             seed=2)
-
-        validation_generator = valid_datagen.flow(x=X_val,
-                                                  y=y_val,
-                                                  batch_size=batch_size,
-                                                  shuffle=False,
-                                                  seed=2)
-
-        test_generator = valid_datagen.flow(x=X_test,
-                                            y=y_test,
-                                            batch_size=batch_size,
-                                            shuffle=False,
-                                            seed=2)
-
     return num_classes, train_generator, validation_generator, test_generator, class_weights
 
 
@@ -96,18 +94,22 @@ def run_model_target(target_data, x_col, y_col, augment, n_folds):
     :param y_col: column in dataframe containing the target labels
     :param augment: boolean specifying whether to use data augmentation or not
     :param n_folds: amount of folds used in the n-fold cross validation
-    :return: model and test generator needed for AUC calculation
+    :return: dataframe and column specifiers for generators, generators and stratified folds
     """
 
     # get generators
     train_datagen, valid_datagen = create_generators_dataframes(augment)
 
-    # import data into function
-    dataframe = collect_target_data(target_data)
+    # create k-folds validator object with k=n_folds
+    skf = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=2)
 
-    skf = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=2)  # create k-folds validator object with k=5
+    # if target_data == "pcam":
 
-    return dataframe, skf, train_datagen, valid_datagen, x_col, y_col
+    # else:
+    #     # import data into function
+    #     dataframe = collect_target_data(target_data)
+    #
+    #     return dataframe, skf, train_datagen, valid_datagen, x_col, y_col
 
 
 def save_pred_model(source_data, target_data, model_choice, fold_no, model, predictions):
@@ -118,7 +120,7 @@ def save_pred_model(source_data, target_data, model_choice, fold_no, model, pred
     :param fold_no: fold number that is currently used in the run
     :param model: compiled model
     :param predictions: class predictions obtained from the model on the target test set
-    :return:
+    :return: saved predictions and model with weights
     """
     # save predictions first locally and then in osf
     np.savetxt(f'predictions_{model_choice}_target={target_data}_source={source_data}_fold{fold_no}.csv',
@@ -134,7 +136,8 @@ def create_upload_zip(n_folds, model_choice, source_data, target_data):
     :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
     :param source_data: dataset used as source dataset
     :param target_data: dataset used as target dataset
-    :return:
+    :return: zip-file uploaded on OSF containing predictions in case of target dataset and model with weights for both
+    source and target
     """
     if target_data is None:
         with ZipFile(f'{model_choice}_target={target_data}_source={source_data}.zip', 'w') as zip_object:

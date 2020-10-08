@@ -7,7 +7,8 @@ from tf_generators_models_kfold import create_model, compute_class_weights
 import numpy as np
 from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
-#%%
+
+# %%
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=slt10_target=isic')
 # ex = Experiment('Resnet_pretrained=Imagenet_source=Isic')
@@ -61,9 +62,9 @@ def cfg():
     img_width = 300
     learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
     batch_size = 12
-    epochs = 70
+    epochs = 100
     color = True
-    dropout = 0.7  # with 0.4 and lr=0.001 still quick overfit
+    dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
     imagenet = False
     model_choice = "efficientnet"
     seed = 2
@@ -133,6 +134,18 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
             else:
                 class_mode = "categorical"
 
+                # datagen = ImageDataGenerator(
+                #     preprocessing_function=lambda x: x / 255.,
+                #     width_shift_range=4,  # randomly shift images horizontally
+                #     height_shift_range=4,  # randomly shift images vertically
+                #     horizontal_flip=True,  # randomly flip images
+                #     vertical_flip=True)  # randomly flip images
+                #
+                # model.fit_generator(datagen.flow(x_train, y_train, batch_size=batch_size),
+                #                     steps_per_epoch=len(x_train) // batch_size
+                # epochs = 1024,
+                # )
+
             train_generator = train_datagen.flow_from_dataframe(
                 dataframe=train_data,
                 x_col=x_col,
@@ -168,7 +181,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                       validation_steps=valid_generator.samples // batch_size,
                       callbacks=[MetricsLoggerCallback(_run),
                                  callbacks.LearningRateScheduler(scheduler)]
-                                 )
+                      )
 
             # compute loss and accuracy on validation set
             valid_loss, valid_acc = model.evaluate(valid_generator, verbose=1)
@@ -223,7 +236,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                   class_weight=class_weights,
                   validation_data=valid_generator,
                   callbacks=[MetricsLoggerCallback(_run),
-                             # callbacks.LearningRateScheduler(scheduler)
+                             callbacks.LearningRateScheduler(scheduler)
                              ])
 
         # compute loss and accuracy on validation set
@@ -237,8 +250,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
         return test_loss, test_acc
 
-#%%
 
+# %%
 x = np.array([0.630, 0.642, 0.635, 0.638, 0.640])
 print(np.mean(x), np.std(x))
-
