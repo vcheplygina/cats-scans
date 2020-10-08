@@ -43,7 +43,7 @@ def cfg():
     img_width = 112
     learning_rate = 0.00001
     batch_size = 128
-    epochs = 1
+    epochs = 50
     color = True
     dropout = 0.2
     model_choice = "resnet"
@@ -289,7 +289,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                 # save predictions and models in local memory
                 save_pred_model(source_data, target_data, model_choice, fold_no, model, predictions)
 
-            fold_no += 1
+                fold_no += 1
 
             # create zip file with predictions and models and upload to OSF
             create_upload_zip(n_folds, model_choice, source_data, target_data)
