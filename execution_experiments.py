@@ -32,7 +32,7 @@ def cfg():
     """
     target = True
     # define source data
-    source_data = "slt10"
+    source_data = "imagenet"
     # define target dataset
     target_data = "isic"
     x_col = "path"
@@ -45,10 +45,10 @@ def cfg():
     batch_size = 128
     epochs = 50
     color = True
-    dropout = 0.2
-    model_choice = "efficientnet"
+    dropout = 0.5
+    model_choice = "resnet"
     seed = 2
-    scheduler = False
+    scheduler = True
 
     # target = False
     # # define source data
@@ -88,7 +88,7 @@ def scheduler(epochs, learning_rate):
     if epochs < 30:
         return learning_rate
     else:
-        return learning_rate * 0.1
+        return learning_rate * 0.5
 
 
 @ex.automain
