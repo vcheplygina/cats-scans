@@ -67,7 +67,6 @@ def cfg():
     dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
     imagenet = False
     model_choice = "resnet"
-    scheduler = True
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
@@ -91,7 +90,7 @@ def scheduler(epochs, learning_rate):
 
 @ex.automain
 def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, img_length, img_width, learning_rate,
-        batch_size, epochs, color, dropout, model_choice, scheduler):
+        batch_size, epochs, color, dropout, model_choice):
     """
     :param _run:
     :param target: boolean specifying whether the run is for target data or source data
@@ -109,7 +108,6 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
     :param color: boolean specifying whether the images are in color or not
     :param dropout: fraction of nodes in layer that are deactivated
     :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
-    :param scheduler: whether or not the learning rate scheduler is used
     :return: experiment
     """
 
@@ -319,7 +317,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                   epochs=epochs,
                   class_weight=class_weights,
                   validation_data=valid_generator,
-                  callbacks=callbacks_settings)
+                  callbacks=[MetricsLoggerCallback(_run),
+                              callbacks.LearningRateScheduler(scheduler)])
 
         # compute loss and accuracy on validation set
         test_loss, test_acc = model.evaluate(test_generator, verbose=1)
