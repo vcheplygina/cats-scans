@@ -48,7 +48,7 @@ def cfg():
     dropout = 0.5
     model_choice = "resnet"
     seed = 2
-    scheduler = True
+    # scheduler = True
 
     # target = False
     # # define source data
@@ -93,7 +93,7 @@ def scheduler(epochs, learning_rate):
 
 @ex.automain
 def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, img_length, img_width, learning_rate,
-        batch_size, epochs, color, dropout, model_choice, seed, scheduler):
+        batch_size, epochs, color, dropout, model_choice, seed):
     """
     :param _run:
     :param target: boolean specifying whether the run is for target data or source data
@@ -112,7 +112,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
     :param dropout: fraction of nodes in layer that are deactivated
     :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
     :param seed: seed set for experiment
-    :param scheduler: whether or not the learning rate scheduler is used
+    # :param scheduler: whether or not the learning rate scheduler is used
     :return: experiment
     """
 
