@@ -10,7 +10,7 @@ from tensorflow.keras import callbacks
 
 # %%
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Efficientnet_pretrained=slt10_target=isic')
+ex = Experiment('Resnet_pretrained=imagenet_target=isic')
 # ex = Experiment('Resnet_pretrained=Imagenet_target=pcam_test')
 # ex = Experiment('EfficientNet_pretraining=slt10_newversion')
 
