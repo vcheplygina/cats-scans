@@ -116,11 +116,11 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
     :return: experiment
     """
 
-    if scheduler:
-        callbacks_settings = [MetricsLoggerCallback(_run),
-                              callbacks.LearningRateScheduler(scheduler)]
-    else:
-        callbacks_settings = [MetricsLoggerCallback(_run)]
+    # if scheduler:
+    #     callbacks_settings = [MetricsLoggerCallback(_run),
+    #                           callbacks.LearningRateScheduler(scheduler)]
+    # else:
+    #     callbacks_settings = [MetricsLoggerCallback(_run)]
 
     if target:
         if target_data == "pcam":
@@ -265,7 +265,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                           class_weight=class_weights,
                           validation_data=valid_generator,
                           validation_steps=valid_generator.samples // batch_size,
-                          callbacks=callbacks_settings)
+                          callbacks=[MetricsLoggerCallback(_run),
+                              callbacks.LearningRateScheduler(scheduler)])
 
                 # compute loss and accuracy on validation set
                 valid_loss, valid_acc = model.evaluate(valid_generator, verbose=1)
