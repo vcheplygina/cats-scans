@@ -307,6 +307,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
         num_classes, train_generator, valid_generator, test_generator, class_weights = run_model_source(augment,
                                                                                                         batch_size,
                                                                                                         source_data,
+                                                                                                        target_data,
                                                                                                         img_length,
                                                                                                         img_width)
 

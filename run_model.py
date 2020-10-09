@@ -8,18 +8,18 @@ from zipfile import ZipFile
 import os
 
 
-def run_model_source(augment, batch_size, source_data, img_length, img_width):
+def run_model_source(augment, batch_size, source_data, target_data, img_length, img_width):
     """
     :param augment: boolean specifying whether to use data augmentation or not
     :param batch_size: amount of images processed per batch
     :param source_data: dataset used as source dataset
+    :param target_data: dataset used as target dataset
     :param img_length: target length of image in pixels
     :param img_width: target width of image in pixels
     :return: number of classes, class weights and generators needed to create and compile the model
     """
-    print(augment, batch_size, source_data, img_length, img_width)
     # get generators
-    train_datagen, valid_datagen = create_generators_dataframes(augment)
+    train_datagen, valid_datagen = create_generators_dataframes(target_data, augment)
 
     # import data into function
     if source_data == 'slt10':
