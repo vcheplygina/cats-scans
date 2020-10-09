@@ -62,7 +62,7 @@ def cfg():
     img_width = 300
     learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
     batch_size = 12
-    epochs = 80
+    epochs = 60
     color = True
     dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
     imagenet = False
@@ -82,7 +82,7 @@ class MetricsLoggerCallback(tf.keras.callbacks.Callback):
 
 
 def scheduler(epochs, learning_rate):
-    if epochs < 30:
+    if epochs < 50:
         return learning_rate
     else:
         return learning_rate * 0.5
@@ -318,7 +318,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                   epochs=epochs,
                   class_weight=class_weights,
                   validation_data=valid_generator,
-                  callbacks=[MetricsLoggerCallback(_run)])
+                  callbacks=[MetricsLoggerCallback(_run),
+                             callbacks.LearningRateScheduler(scheduler)])
 
         # compute loss and accuracy on validation set
         test_loss, test_acc = model.evaluate(test_generator, verbose=1)
