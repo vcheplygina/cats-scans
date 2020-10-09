@@ -17,7 +17,7 @@ def run_model_source(augment, batch_size, source_data, img_length, img_width):
     :param img_width: target width of image in pixels
     :return: number of classes, class weights and generators needed to create and compile the model
     """
-
+    print(augment, batch_size, source_data, img_length, img_width)
     # get generators
     train_datagen, valid_datagen = create_generators_dataframes(augment)
 
