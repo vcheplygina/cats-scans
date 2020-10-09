@@ -46,7 +46,7 @@ def cfg():
     epochs = 50
     color = True
     dropout = 0.2
-    model_choice = "resnet"
+    model_choice = "efficientnet"
     seed = 2
     scheduler = False
 
