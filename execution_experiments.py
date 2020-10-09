@@ -12,7 +12,8 @@ from tensorflow.keras import callbacks
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=imagenet_target=isic')
 # ex = Experiment('Resnet_pretrained=Imagenet_target=pcam_test')
-ex = Experiment('Resnet_pretraining=textures')
+ex = Experiment('Resnet_pretrained=textures_target=chest')
+# ex = Experiment('Resnet_pretraining=textures')
 
 ex.observers.append(NeptuneObserver(
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiMjc4MGU5ZDUtMzk3Yy00YjE3LTliY2QtMThkMDJkZTMxNGMzIn0=",
@@ -30,43 +31,43 @@ def cfg():
     """
     :return: parameter settings used in the experiment. NOTE: this should be updated with every new experiment
     """
-    # target = True
-    # # define source data
-    # source_data = "imagenet"
-    # # define target dataset
-    # target_data = "isic"
-    # x_col = "path"
-    # y_col = "class"
-    # augment = True
-    # n_folds = 5
-    # img_length = 112
-    # img_width = 112
-    # learning_rate = 0.00001
-    # batch_size = 128
-    # epochs = 50
-    # color = True
-    # dropout = 0.5
-    # model_choice = "resnet"
-    # # scheduler = True
-
-    target = False
+    target = True
     # define source data
     source_data = "textures"
     # define target dataset
-    target_data = None
-    x_col = None
-    y_col = None
+    target_data = "chest"
+    x_col = "path"
+    y_col = "class"
     augment = True
-    n_folds = None
-    img_length = 300
-    img_width = 300
-    learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
-    batch_size = 12
-    epochs = 60
+    n_folds = 5
+    img_length = 112
+    img_width = 112
+    learning_rate = 0.000001
+    batch_size = 128
+    epochs = 50
     color = True
-    dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
-    imagenet = False
+    dropout = 0.5
     model_choice = "resnet"
+    # scheduler = True
+
+    # target = False
+    # # define source data
+    # source_data = "textures"
+    # # define target dataset
+    # target_data = None
+    # x_col = None
+    # y_col = None
+    # augment = True
+    # n_folds = None
+    # img_length = 300
+    # img_width = 300
+    # learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
+    # batch_size = 12
+    # epochs = 60
+    # color = True
+    # dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
+    # imagenet = False
+    # model_choice = "resnet"
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
