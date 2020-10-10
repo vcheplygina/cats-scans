@@ -35,7 +35,7 @@ def cfg():
     # define source data
     source_data = "textures"
     # define target dataset
-    target_data = "chest"
+    target_data = "isic"
     x_col = "path"
     y_col = "class"
     augment = True
