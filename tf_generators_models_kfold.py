@@ -70,6 +70,7 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
 
     if (source_data != "imagenet") & (target_data is not None):
         # collect pretrained efficientnet model on source data
+        print(f'loading model and weights from source data {source_data} and for traget data {target_data}')
         pretrained = load_model(
             f'model_weights_{model_choice}_pretrained={source_data}.h5')
         # remove top layer that has been specialized on source dataset output

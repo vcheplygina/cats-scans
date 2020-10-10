@@ -42,13 +42,13 @@ def cfg():
     n_folds = 5
     img_length = 112
     img_width = 112
-    learning_rate = 0.00001
+    learning_rate = 0.0001
     batch_size = 128
     epochs = 50
     color = True
     dropout = 0.5
     model_choice = "resnet"
-    # scheduler = True
+    scheduler = True
 
     # target = False
     # # define source data
@@ -68,6 +68,7 @@ def cfg():
     # dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
     # imagenet = False
     # model_choice = "resnet"
+    # scheduler = True
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
@@ -83,7 +84,7 @@ class MetricsLoggerCallback(tf.keras.callbacks.Callback):
 
 
 def scheduler(epochs, learning_rate):
-    if epochs < 50:
+    if epochs < 30:
         return learning_rate
     else:
         return learning_rate * 0.5
@@ -91,7 +92,7 @@ def scheduler(epochs, learning_rate):
 
 @ex.automain
 def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, img_length, img_width, learning_rate,
-        batch_size, epochs, color, dropout, model_choice):
+        batch_size, epochs, color, dropout, model_choice, scheduler):
     """
     :param _run:
     :param target: boolean specifying whether the run is for target data or source data
@@ -109,14 +110,15 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
     :param color: boolean specifying whether the images are in color or not
     :param dropout: fraction of nodes in layer that are deactivated
     :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
+    :param scheduler: boolean specifying whether learning rate scheduler is used
     :return: experiment
     """
 
-    # if scheduler:
-    #     callbacks_settings = [MetricsLoggerCallback(_run),
-    #                           callbacks.LearningRateScheduler(scheduler)]
-    # else:
-    #     callbacks_settings = [MetricsLoggerCallback(_run)]
+    if scheduler:
+        callbacks_settings = [MetricsLoggerCallback(_run),
+                              callbacks.LearningRateScheduler(scheduler)]
+    else:
+        callbacks_settings = [MetricsLoggerCallback(_run)]
 
     if target:
         dataframe, skf, train_datagen, valid_datagen, x_col, y_col = run_model_target(target_data, x_col, y_col,
@@ -172,8 +174,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                       class_weight=class_weights,
                       validation_data=valid_generator,
                       validation_steps=valid_generator.samples // batch_size,
-                      callbacks=[MetricsLoggerCallback(_run),
-                                 callbacks.LearningRateScheduler(scheduler)])
+                      callbacks=callbacks_settings)
 
             # compute loss and accuracy on validation set
             valid_loss, valid_acc = model.evaluate(valid_generator, verbose=1)
@@ -229,8 +230,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                   epochs=epochs,
                   class_weight=class_weights,
                   validation_data=valid_generator,
-                  callbacks=[MetricsLoggerCallback(_run),
-                             callbacks.LearningRateScheduler(scheduler)])
+                  callbacks=callbacks_settings)
 
         # compute loss and accuracy on validation set
         test_loss, test_acc = model.evaluate(test_generator, verbose=1)
