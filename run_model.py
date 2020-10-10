@@ -103,16 +103,9 @@ def run_model_target(target_data, x_col, y_col, augment, n_folds):
     # create k-folds validator object with k=n_folds
     skf = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=2)
 
-    if target_data == "pcam":
-        x_all, y_all = collect_target_data(target_data)
+    dataframe = collect_target_data(target_data)
 
-        return x_all, y_all, skf, train_datagen, valid_datagen, x_col, y_col
-
-    else:
-        # import data into function
-        dataframe = collect_target_data(target_data)
-
-        return dataframe, skf, train_datagen, valid_datagen, x_col, y_col
+    return dataframe, skf, train_datagen, valid_datagen, x_col, y_col
 
 
 def save_pred_model(source_data, target_data, model_choice, fold_no, model, predictions):

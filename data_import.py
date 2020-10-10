@@ -200,18 +200,28 @@ def import_textures_dtd():
 def import_PCAM():
     """
     The .h5 files provided on https://github.com/basveeling/pcam have first been converted to numpy arrays in
-    pcam_converter.py and saved locally as numpy arrays. This function loads the local numpy arrays into the project.
+    pcam_converter.py and saved locally as png images. This function loads the png paths and labels in a dataframe.
     This was a workaround since using HDF5Matrix() from keras.utils gave errors when running Sacred.
-    :return: numpy arrays containing all images and all corresponding labels
+    :return: dataframe with image paths in column "path" and image labels in column "class"
     """
     # set data paths
-    img_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/images_pcam.npy"
-    label_path = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/labels_pcam.npy"
+    data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/png_images"
+    # data_dir = "/data/ivdbrandt/PCam/png_images"
 
-    images = np.load(img_path)
-    labels = np.load(label_path)
+    # get image paths by selecting files from directory that end with .jpg
+    images = [os.path.join(data_dir, f) for f in os.listdir(data_dir) if f.endswith('.png')]
 
-    return images, labels
+    dataframe_entries = []  # initiliaze empty list that will store entries for dataframe
+
+    for e, img_path in enumerate(images):
+        data_frame = pd.DataFrame([img_path], columns=['path'])  # add img path to dataframe
+        data_frame['class'] = img_path[-5:-4]  # add label in dataframe in column 'class'
+        dataframe_entries.append(data_frame)  # combine entry with other entries for dataframe
+
+    dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
+    print(dataframe['class'].value_counts())  # get information on distribution of labels in dataframe
+
+    return dataframe
 
 
 def collect_target_data(target_data):
@@ -222,14 +232,10 @@ def collect_target_data(target_data):
     if target_data == 'isic':
         dataframe = import_ISIC()
 
-        return dataframe
-
     elif target_data == 'chest':
         dataframe = import_chest()
 
-        return dataframe
-
     elif target_data == 'pcam':
-        images, labels = import_PCAM()
+        dataframe = import_PCAM()
 
-        return images, labels
+    return dataframe

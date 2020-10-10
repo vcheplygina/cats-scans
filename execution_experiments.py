@@ -42,7 +42,7 @@ def cfg():
     n_folds = 5
     img_length = 112
     img_width = 112
-    learning_rate = 0.000001
+    learning_rate = 0.00001
     batch_size = 128
     epochs = 50
     color = True
@@ -119,190 +119,100 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
     #     callbacks_settings = [MetricsLoggerCallback(_run)]
 
     if target:
-        if target_data == "pcam":
-            x_all, y_all, skf, train_datagen, valid_datagen, x_col, y_col = run_model_target(target_data, x_col, y_col,
-                                                                                             augment, n_folds)
+        dataframe, skf, train_datagen, valid_datagen, x_col, y_col = run_model_target(target_data, x_col, y_col,
+                                                                                      augment, n_folds)
 
-            # initialize empty lists storing accuracy, loss and multi-class auc per fold
-            acc_per_fold = []
-            loss_per_fold = []
-            auc_per_fold = []
+        # initialize empty lists storing accuracy, loss and multi-class auc per fold
+        acc_per_fold = []
+        loss_per_fold = []
+        auc_per_fold = []
 
-            fold_no = 1  # initialize fold counter
+        fold_no = 1  # initialize fold counter
 
-            for train_index, val_index in skf.split(np.zeros(len(x_all)), y=y_all):
-                print(f'Starting fold {fold_no}')
+        for train_index, val_index in skf.split(np.zeros(len(dataframe)), y=dataframe[['class']]):
+            print(f'Starting fold {fold_no}')
 
-                x_train = x_all[train_index]  # create training dataframe with indices from fold split
-                y_train = y_all[train_index]  # create training dataframe with indices from fold split
-                x_val = x_all[val_index]  # create validation dataframe with indices from fold split
-                y_val = y_all[val_index]  # create training dataframe with indices from fold split
+            train_data = dataframe.iloc[train_index]  # create training dataframe with indices from fold split
+            valid_data = dataframe.iloc[val_index]  # create validation dataframe with indices from fold split
 
-                train_generator = train_datagen.flow(x=x_train,
-                                                     y=y_train,
-                                                     batch_size=batch_size,
-                                                     seed=2)
+            if target_data == "isic":
+                class_mode = "categorical"
+            else:
+                class_mode = "binary"
 
-                valid_generator = valid_datagen.flow(x=x_val,
-                                                     y=y_val,
-                                                     batch_size=batch_size,
-                                                     shuffle=False,
-                                                     seed=2)
+            train_generator = train_datagen.flow_from_dataframe(dataframe=train_data,
+                                                                x_col=x_col,
+                                                                y_col=y_col,
+                                                                target_size=(img_length, img_width),
+                                                                batch_size=batch_size,
+                                                                class_mode=class_mode,
+                                                                validate_filenames=False)
 
-                # compute number of nodes needed in prediction layer (i.e. number of unique classes)
-                num_classes = len(np.unique(y_all))
+            valid_generator = valid_datagen.flow_from_dataframe(dataframe=valid_data,
+                                                                x_col=x_col,
+                                                                y_col=y_col,
+                                                                target_size=(img_length, img_width),
+                                                                batch_size=batch_size,
+                                                                class_mode=class_mode,
+                                                                validate_filenames=False,
+                                                                shuffle=False)
 
-                model = create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data,
-                                     model_choice, num_classes)  # create model
+            # compute number of nodes needed in prediction layer (i.e. number of unique classes)
+            num_classes = len(list(dataframe[y_col].unique()))
 
-                class_weights = compute_class_weights(
-                    train_generator.classes)  # get class model_weights to balance classes
+            model = create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data,
+                                 model_choice, num_classes)  # create model
 
-                model.fit(train_generator,
-                          steps_per_epoch=train_generator.samples // batch_size,
-                          epochs=epochs,
-                          class_weight=class_weights,
-                          validation_data=valid_generator,
-                          validation_steps=valid_generator.samples // batch_size,
-                          callbacks=callbacks_settings)
+            class_weights = compute_class_weights(
+                train_generator.classes)  # get class model_weights to balance classes
 
-                # compute loss and accuracy on validation set
-                valid_loss, valid_acc = model.evaluate(valid_generator, verbose=1)
-                print(f'Validation loss for fold {fold_no}:', valid_loss,
-                      f' and Validation accuracy for fold {fold_no}:',
-                      valid_acc)
-                acc_per_fold.append(valid_acc)
-                loss_per_fold.append(valid_loss)
+            model.fit(train_generator,
+                      steps_per_epoch=train_generator.samples // batch_size,
+                      epochs=epochs,
+                      class_weight=class_weights,
+                      validation_data=valid_generator,
+                      validation_steps=valid_generator.samples // batch_size,
+                      callbacks=[MetricsLoggerCallback(_run),
+                                 callbacks.LearningRateScheduler(scheduler)])
 
-                predictions = model.predict(valid_generator)  # get predictions
+            # compute loss and accuracy on validation set
+            valid_loss, valid_acc = model.evaluate(valid_generator, verbose=1)
+            print(f'Validation loss for fold {fold_no}:', valid_loss,
+                  f' and Validation accuracy for fold {fold_no}:',
+                  valid_acc)
+            acc_per_fold.append(valid_acc)
+            loss_per_fold.append(valid_loss)
 
-                # compute OneVsRest multi-class macro AUC on the test set
-                if target_data == "isic":
-                    OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, multi_class='ovr',
-                                                  average='macro')
-                else:
-                    OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, average='macro')
+            predictions = model.predict(valid_generator)  # get predictions
 
-                print(f'Validation auc: {OneVsRest_auc}')
-                auc_per_fold.append(OneVsRest_auc)
+            # compute OneVsRest multi-class macro AUC on the test set
+            if target_data == "isic":
+                OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, multi_class='ovr', average='macro')
+            else:
+                OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, average='macro')
+            print(f'Validation auc: {OneVsRest_auc}')
+            auc_per_fold.append(OneVsRest_auc)
 
-                # save predictions and models in local memory
-                save_pred_model(source_data, target_data, model_choice, fold_no, model, predictions)
+            # save predictions and models in local memory
+            save_pred_model(source_data, target_data, model_choice, fold_no, model, predictions)
 
             fold_no += 1
 
-            # create zip file with predictions and models and upload to OSF
-            create_upload_zip(n_folds, model_choice, source_data, target_data)
+        # create zip file with predictions and models and upload to OSF
+        create_upload_zip(n_folds, model_choice, source_data, target_data)
 
-            # compute average scores for accuracy, loss and auc
-            print('Score per fold')
-            for i in range(0, len(acc_per_fold)):
-                print('------------------------------------------------------------------------')
-                print(
-                    f'> Fold {i + 1} - Loss: {loss_per_fold[i]} - Accuracy: {acc_per_fold[i]}%, - AUC: {auc_per_fold[i]}')
-            print('Average scores for all folds:')
-            print(f'> Accuracy: {np.mean(acc_per_fold)} (+- {np.std(acc_per_fold)})')
-            print(f'> Loss: {np.mean(loss_per_fold)} (+- {np.std(loss_per_fold)})')
-            print(f'> AUC: {np.mean(auc_per_fold)} (+- {np.std(auc_per_fold)})')
+        # compute average scores for accuracy, loss and auc
+        print('Score per fold')
+        for i in range(0, len(acc_per_fold)):
+            print('------------------------------------------------------------------------')
+            print(
+                f'> Fold {i + 1} - Loss: {loss_per_fold[i]} - Accuracy: {acc_per_fold[i]}%, - AUC: {auc_per_fold[i]}')
+        print('Average scores for all folds:')
+        print(f'> Accuracy: {np.mean(acc_per_fold)} (+- {np.std(acc_per_fold)})')
+        print(f'> Loss: {np.mean(loss_per_fold)} (+- {np.std(loss_per_fold)})')
+        print(f'> AUC: {np.mean(auc_per_fold)} (+- {np.std(auc_per_fold)})')
 
-            return acc_per_fold, loss_per_fold, auc_per_fold
-
-        else:
-            dataframe, skf, train_datagen, valid_datagen, x_col, y_col = run_model_target(target_data, x_col, y_col,
-                                                                                          augment, n_folds)
-
-            # initialize empty lists storing accuracy, loss and multi-class auc per fold
-            acc_per_fold = []
-            loss_per_fold = []
-            auc_per_fold = []
-
-            fold_no = 1  # initialize fold counter
-
-            for train_index, val_index in skf.split(np.zeros(len(dataframe)), y=dataframe[['class']]):
-                print(f'Starting fold {fold_no}')
-
-                train_data = dataframe.iloc[train_index]  # create training dataframe with indices from fold split
-                valid_data = dataframe.iloc[val_index]  # create validation dataframe with indices from fold split
-
-                if target_data == "chest":
-                    class_mode = "binary"
-                else:
-                    class_mode = "categorical"
-
-                train_generator = train_datagen.flow_from_dataframe(dataframe=train_data,
-                                                                    x_col=x_col,
-                                                                    y_col=y_col,
-                                                                    target_size=(img_length, img_width),
-                                                                    batch_size=batch_size,
-                                                                    class_mode=class_mode,
-                                                                    validate_filenames=False)
-
-                valid_generator = valid_datagen.flow_from_dataframe(dataframe=valid_data,
-                                                                    x_col=x_col,
-                                                                    y_col=y_col,
-                                                                    target_size=(img_length, img_width),
-                                                                    batch_size=batch_size,
-                                                                    class_mode=class_mode,
-                                                                    validate_filenames=False,
-                                                                    shuffle=False)
-
-                # compute number of nodes needed in prediction layer (i.e. number of unique classes)
-                num_classes = len(list(dataframe[y_col].unique()))
-
-                model = create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data,
-                                     model_choice, num_classes)  # create model
-
-                class_weights = compute_class_weights(
-                    train_generator.classes)  # get class model_weights to balance classes
-
-                model.fit(train_generator,
-                          steps_per_epoch=train_generator.samples // batch_size,
-                          epochs=epochs,
-                          class_weight=class_weights,
-                          validation_data=valid_generator,
-                          validation_steps=valid_generator.samples // batch_size,
-                          callbacks=[MetricsLoggerCallback(_run),
-                              callbacks.LearningRateScheduler(scheduler)])
-
-                # compute loss and accuracy on validation set
-                valid_loss, valid_acc = model.evaluate(valid_generator, verbose=1)
-                print(f'Validation loss for fold {fold_no}:', valid_loss,
-                      f' and Validation accuracy for fold {fold_no}:',
-                      valid_acc)
-                acc_per_fold.append(valid_acc)
-                loss_per_fold.append(valid_loss)
-
-                predictions = model.predict(valid_generator)  # get predictions
-
-                # compute OneVsRest multi-class macro AUC on the test set
-                if target_data == "chest":
-                    OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, average='macro')
-                else:
-                    OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, multi_class='ovr',
-                                                  average='macro')
-                print(f'Validation auc: {OneVsRest_auc}')
-                auc_per_fold.append(OneVsRest_auc)
-
-                # save predictions and models in local memory
-                save_pred_model(source_data, target_data, model_choice, fold_no, model, predictions)
-
-                fold_no += 1
-
-            # create zip file with predictions and models and upload to OSF
-            create_upload_zip(n_folds, model_choice, source_data, target_data)
-
-            # compute average scores for accuracy, loss and auc
-            print('Score per fold')
-            for i in range(0, len(acc_per_fold)):
-                print('------------------------------------------------------------------------')
-                print(
-                    f'> Fold {i + 1} - Loss: {loss_per_fold[i]} - Accuracy: {acc_per_fold[i]}%, - AUC: {auc_per_fold[i]}')
-            print('Average scores for all folds:')
-            print(f'> Accuracy: {np.mean(acc_per_fold)} (+- {np.std(acc_per_fold)})')
-            print(f'> Loss: {np.mean(loss_per_fold)} (+- {np.std(loss_per_fold)})')
-            print(f'> AUC: {np.mean(auc_per_fold)} (+- {np.std(auc_per_fold)})')
-
-            return acc_per_fold, loss_per_fold, auc_per_fold
+        return acc_per_fold, loss_per_fold, auc_per_fold
 
     else:
         num_classes, train_generator, valid_generator, test_generator, class_weights = run_model_source(augment,
