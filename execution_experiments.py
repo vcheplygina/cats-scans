@@ -48,7 +48,7 @@ def cfg():
     color = True
     dropout = 0.5
     model_choice = "resnet"
-    scheduler = True
+    # scheduler = True
 
     # target = False
     # # define source data
@@ -92,7 +92,7 @@ def scheduler(epochs, learning_rate):
 
 @ex.automain
 def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, img_length, img_width, learning_rate,
-        batch_size, epochs, color, dropout, model_choice, scheduler):
+        batch_size, epochs, color, dropout, model_choice):
     """
     :param _run:
     :param target: boolean specifying whether the run is for target data or source data
