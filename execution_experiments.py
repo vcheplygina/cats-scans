@@ -12,7 +12,7 @@ from tensorflow.keras import callbacks
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=imagenet_target=isic')
 # ex = Experiment('Resnet_pretrained=Imagenet_target=pcam_test')
-ex = Experiment('Resnet_pretrained=textures_target=chest')
+ex = Experiment('Resnet_pretrained=textures_target=isic')
 # ex = Experiment('Resnet_pretraining=textures')
 
 ex.observers.append(NeptuneObserver(
