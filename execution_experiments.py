@@ -114,11 +114,11 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
     :return: experiment
     """
 
-    if scheduler:
-        callbacks_settings = [MetricsLoggerCallback(_run),
-                              callbacks.LearningRateScheduler(scheduler)]
-    else:
-        callbacks_settings = [MetricsLoggerCallback(_run)]
+    # if scheduler:
+    #     callbacks_settings = [MetricsLoggerCallback(_run),
+    #                           callbacks.LearningRateScheduler(scheduler)]
+    # else:
+    #     callbacks_settings = [MetricsLoggerCallback(_run)]
 
     if target:
         dataframe, skf, train_datagen, valid_datagen, x_col, y_col = run_model_target(target_data, x_col, y_col,
@@ -174,7 +174,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                       class_weight=class_weights,
                       validation_data=valid_generator,
                       validation_steps=valid_generator.samples // batch_size,
-                      callbacks=callbacks_settings)
+                      callbacks=[MetricsLoggerCallback(_run),
+                              callbacks.LearningRateScheduler(scheduler)])
 
             # compute loss and accuracy on validation set
             valid_loss, valid_acc = model.evaluate(valid_generator, verbose=1)
@@ -230,7 +231,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                   epochs=epochs,
                   class_weight=class_weights,
                   validation_data=valid_generator,
-                  callbacks=callbacks_settings)
+                  callbacks=[MetricsLoggerCallback(_run),
+                              callbacks.LearningRateScheduler(scheduler)])
 
         # compute loss and accuracy on validation set
         test_loss, test_acc = model.evaluate(test_generator, verbose=1)
@@ -245,5 +247,5 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
 
 # %%
-x = np.array([0.630, 0.642, 0.635, 0.638, 0.640])
+x = np.array([0.923, 0.912, 0.916, 0.915, 0.915])
 print(np.mean(x), np.std(x))
