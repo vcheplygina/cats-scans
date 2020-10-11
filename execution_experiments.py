@@ -68,7 +68,7 @@ def cfg():
     # dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
     # imagenet = False
     # model_choice = "resnet"
-    # scheduler = True
+    # scheduler_bool = True
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
@@ -92,7 +92,7 @@ def scheduler(epochs, learning_rate):
 
 @ex.automain
 def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, img_length, img_width, learning_rate,
-        batch_size, epochs, color, dropout, model_choice, scheduler):
+        batch_size, epochs, color, dropout, model_choice, scheduler_bool):
     """
     :param _run:
     :param target: boolean specifying whether the run is for target data or source data
@@ -114,11 +114,11 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
     :return: experiment
     """
 
-    # if scheduler:
-    #     callbacks_settings = [MetricsLoggerCallback(_run),
-    #                           callbacks.LearningRateScheduler(scheduler)]
-    # else:
-    #     callbacks_settings = [MetricsLoggerCallback(_run)]
+    if scheduler_bool:
+        callbacks_settings = [MetricsLoggerCallback(_run),
+                              callbacks.LearningRateScheduler(scheduler)]
+    else:
+        callbacks_settings = [MetricsLoggerCallback(_run)]
 
     if target:
         dataframe, skf, train_datagen, valid_datagen, x_col, y_col = run_model_target(target_data, x_col, y_col,
@@ -174,9 +174,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                       class_weight=class_weights,
                       validation_data=valid_generator,
                       validation_steps=valid_generator.samples // batch_size,
-                      callbacks=[MetricsLoggerCallback(_run),
-                                 callbacks.LearningRateScheduler(scheduler)
-                      ])
+                      callbacks=callbacks_settings)
 
             # compute loss and accuracy on validation set
             valid_loss, valid_acc = model.evaluate(valid_generator, verbose=1)
@@ -232,8 +230,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                   epochs=epochs,
                   class_weight=class_weights,
                   validation_data=valid_generator,
-                  callbacks=[MetricsLoggerCallback(_run),
-                              callbacks.LearningRateScheduler(scheduler)])
+                  callbacks=callbacks_settings)
 
         # compute loss and accuracy on validation set
         test_loss, test_acc = model.evaluate(test_generator, verbose=1)
