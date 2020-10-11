@@ -11,8 +11,8 @@ from tensorflow.keras import callbacks
 # %%
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=imagenet_target=isic')
-# ex = Experiment('Resnet_pretrained=Imagenet_target=pcam_test')
-ex = Experiment('Resnet_pretrained=textures_target=isic')
+ex = Experiment('Resnet_pretrained=Imagenet_target=pcam_test')
+# ex = Experiment('Resnet_pretrained=textures_target=isic')
 # ex = Experiment('Resnet_pretraining=textures')
 
 ex.observers.append(NeptuneObserver(
@@ -33,15 +33,15 @@ def cfg():
     """
     target = True
     # define source data
-    source_data = "textures"
+    source_data = "imagenet"
     # define target dataset
-    target_data = "isic"
+    target_data = "pcam"
     x_col = "path"
     y_col = "class"
     augment = True
     n_folds = 5
-    img_length = 112
-    img_width = 112
+    img_length = 96
+    img_width = 96
     learning_rate = 0.0001
     batch_size = 128
     epochs = 50
@@ -175,7 +175,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                       validation_data=valid_generator,
                       validation_steps=valid_generator.samples // batch_size,
                       callbacks=[MetricsLoggerCallback(_run),
-                              callbacks.LearningRateScheduler(scheduler)])
+                              # callbacks.LearningRateScheduler(scheduler)
+                      ])
 
             # compute loss and accuracy on validation set
             valid_loss, valid_acc = model.evaluate(valid_generator, verbose=1)

@@ -205,8 +205,8 @@ def import_PCAM():
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
     # set data paths
-    data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/png_images"
-    # data_dir = "/data/ivdbrandt/PCam/png_images"
+    # data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/png_images"
+    data_dir = "/data/ivdbrandt/PCam/png_images"
 
     # get image paths by selecting files from directory that end with .jpg
     images = [os.path.join(data_dir, f) for f in os.listdir(data_dir) if f.endswith('.png')]
