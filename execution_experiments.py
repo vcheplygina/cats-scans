@@ -48,7 +48,7 @@ def cfg():
     color = True
     dropout = 0.5
     model_choice = "resnet"
-    scheduler = True
+    scheduler_bool = True
 
     # target = False
     # # define source data
