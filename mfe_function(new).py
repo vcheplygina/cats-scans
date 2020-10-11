@@ -4,7 +4,9 @@ from scipy.stats import kurtosis, skew, entropy as scipy_entropy
 from PIL import Image
 from os import listdir
 from os.path import isfile, join
-# from utils import meta_entropy, meta_skew, meta_kurtosis, meta_median, meta_std, meta_mean, meta_sparsity, meta_xy_axis
+# from jpg_numpy import get_train_images
+# from meta_features import meta_entropy, meta_skew, meta_kurtosis, meta_median, meta_std, meta_mean, meta_sparsity, meta_xy_axis
+
 #%% Utils
 
 # Shannon entropy
@@ -189,6 +191,6 @@ def feature_extraction(datasets, subset = 20):
 
     return sim_mat
 
-feature_extraction(datasets=['ISIC2017', 'ISIC2018', 'chest_xray'], subset=10)
+feature_extraction(datasets=['ISIC2017', 'ISIC2018'], subset=10)
 
 #%% Test
