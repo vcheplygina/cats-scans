@@ -10,8 +10,8 @@ from tensorflow.keras import callbacks
 
 # %%
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Resnet_pretrained=imagenet_target=isic')
-# ex = Experiment('Resnet_pretrained=Imagenet_target=pcam_test')
+# ex = Experiment('Resnet_pretrained=imagenet_target=isic')
+ex = Experiment('Resnet_pretrained=Imagenet_target=pcam_test')
 # ex = Experiment('Resnet_pretrained=textures_target=isic')
 # ex = Experiment('Resnet_pretraining=textures')
 
@@ -35,13 +35,13 @@ def cfg():
     # define source data
     source_data = "imagenet"
     # define target dataset
-    target_data = "isic"
+    target_data = "pcam"
     x_col = "path"
     y_col = "class"
     augment = True
     n_folds = 5
-    img_length = 112
-    img_width = 112
+    img_length = 96
+    img_width = 96
     learning_rate = 0.00001
     batch_size = 128
     epochs = 50
@@ -247,6 +247,6 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
         return test_loss, test_acc
 
 
-# %%
-x = np.array([0.923, 0.912, 0.916, 0.915, 0.915])
-print(np.mean(x), np.std(x))
+# # %%
+# x = np.array([0.6432, 0.6578, 0.6511, 0.6388, 0.6469])
+# print(np.mean(x), np.std(x))
