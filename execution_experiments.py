@@ -175,7 +175,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                       validation_data=valid_generator,
                       validation_steps=valid_generator.samples // batch_size,
                       callbacks=[MetricsLoggerCallback(_run),
-                              # callbacks.LearningRateScheduler(scheduler)
+                                 callbacks.LearningRateScheduler(scheduler)
                       ])
 
             # compute loss and accuracy on validation set
