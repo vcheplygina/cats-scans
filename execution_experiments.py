@@ -44,7 +44,7 @@ def cfg():
     img_width = 96
     learning_rate = 0.00001
     batch_size = 128
-    epochs = 30
+    epochs = 20
     color = True
     dropout = 0.5
     model_choice = "resnet"
