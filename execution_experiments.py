@@ -10,8 +10,8 @@ from tensorflow.keras import callbacks
 
 # %%
 # initialize experiment name. NOTE: this should be updated with every new experiment
-# ex = Experiment('Resnet_pretrained=imagenet_target=isic')
-ex = Experiment('Resnet_pretrained=Imagenet_target=pcam_test')
+ex = Experiment('Resnet_pretrained=imagenet_target=isic')
+# ex = Experiment('Resnet_pretrained=Imagenet_target=pcam_test')
 # ex = Experiment('Resnet_pretrained=textures_target=isic')
 # ex = Experiment('Resnet_pretraining=textures')
 
@@ -35,20 +35,20 @@ def cfg():
     # define source data
     source_data = "imagenet"
     # define target dataset
-    target_data = "pcam"
+    target_data = "isic"
     x_col = "path"
     y_col = "class"
     augment = True
     n_folds = 5
-    img_length = 96
-    img_width = 96
-    learning_rate = 0.0001
+    img_length = 112
+    img_width = 112
+    learning_rate = 0.00001
     batch_size = 128
     epochs = 50
     color = True
     dropout = 0.5
     model_choice = "resnet"
-    # scheduler = True
+    scheduler = True
 
     # target = False
     # # define source data
@@ -84,7 +84,7 @@ class MetricsLoggerCallback(tf.keras.callbacks.Callback):
 
 
 def scheduler(epochs, learning_rate):
-    if epochs < 30:
+    if epochs < 20:
         return learning_rate
     else:
         return learning_rate * 0.5
@@ -92,7 +92,7 @@ def scheduler(epochs, learning_rate):
 
 @ex.automain
 def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, img_length, img_width, learning_rate,
-        batch_size, epochs, color, dropout, model_choice):
+        batch_size, epochs, color, dropout, model_choice, scheduler):
     """
     :param _run:
     :param target: boolean specifying whether the run is for target data or source data
