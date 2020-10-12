@@ -110,7 +110,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
     :param color: boolean specifying whether the images are in color or not
     :param dropout: fraction of nodes in layer that are deactivated
     :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
-    :param scheduler: boolean specifying whether learning rate scheduler is used
+    :param scheduler_bool: boolean specifying whether learning rate scheduler is used
     :return: experiment
     """
 
