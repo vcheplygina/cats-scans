@@ -223,6 +223,7 @@ def import_PCAM():
 
     # get subset of dataframe
     dataframe.sample(n=100000, replace=False, random_state=2)
+    print('subset created', len(dataframe))
 
     return dataframe
 
