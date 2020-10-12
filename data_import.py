@@ -8,15 +8,15 @@ def import_ISIC():
     """
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    # # local import paths
-    # img_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_Input"
-    # label_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_GroundTruth" \
-    #             "/ISIC2018_Task3_Training_GroundTruth.csv"
-
-    # server import paths
-    img_dir = "/data/ivdbrandt/ISIC2018/ISIC2018_Task3_Training_Input"
-    label_dir = "/data/ivdbrandt/ISIC2018/ISIC2018_Task3_Training_GroundTruth" \
+    # local import paths
+    img_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_Input"
+    label_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_GroundTruth" \
                 "/ISIC2018_Task3_Training_GroundTruth.csv"
+
+    # # server import paths
+    # img_dir = "/data/ivdbrandt/ISIC2018/ISIC2018_Task3_Training_Input"
+    # label_dir = "/data/ivdbrandt/ISIC2018/ISIC2018_Task3_Training_GroundTruth" \
+    #             "/ISIC2018_Task3_Training_GroundTruth.csv"
 
     # get image paths by selecting files from directory that end with .jpg
     images = [os.path.join(img_dir, f) for f in os.listdir(img_dir) if f.endswith('.jpg')]
@@ -225,7 +225,7 @@ def import_PCAM():
     subset = dataframe.sample(n=100000, replace=False, random_state=2)
     print('subset created', len(subset))
 
-    return dataframe
+    return subset
 
 
 def collect_target_data(target_data):
