@@ -221,6 +221,9 @@ def import_PCAM():
     dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
     print(dataframe['class'].value_counts())  # get information on distribution of labels in dataframe
 
+    # get subset of dataframe
+    dataframe.sample(n=100000, replace=False, random_state=2)
+
     return dataframe
 
 
