@@ -222,8 +222,8 @@ def import_PCAM():
     print(dataframe['class'].value_counts())  # get information on distribution of labels in dataframe
 
     # get subset of dataframe
-    dataframe.sample(n=100000, replace=False, random_state=2)
-    print('subset created', len(dataframe))
+    subset = dataframe.sample(n=100000, replace=False, random_state=2)
+    print('subset created', len(subset))
 
     return dataframe
 
