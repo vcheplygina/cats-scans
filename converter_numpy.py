@@ -3,21 +3,25 @@ import numpy as np
 from os import listdir
 from os.path import isfile, join
 
-#%% Get local jpg images and convert them to numpy arrays
+#%% Get local images and convert them to numpy arrays
 
-def get_train_images(dataset = 'ISIC2018', subset = 5):
+def get_train_images(dataset = 'ISIC2018', local_subset = 5):
     """Retrieve files from local depository and convert them to numpy arrays"""
     if dataset == 'ISIC2017':
         path_to_dataset = 'datasets/ISIC2017/ISIC2017_Task3_Training_Input/'
     elif dataset == 'ISIC2018':
         path_to_dataset = 'datasets/ISIC2018/ISIC2018_Task3_Training_Input/'
     elif dataset == 'chest_xray':
-        path_to_dataset = 'datasets/chest_xray/train/NORMALJPG/'
+        path_to_dataset = 'datasets/chest_xray/train/all/'
+    elif dataset == 'stl-10':
+        path_to_dataset = 'datasets/stl_10/all/'
+    elif dataset == 'dtd':
+        path_to_dataset = 'datasets/dtd/all/'
     else:
         return None
 
     dataset_filenames = [f for f in listdir(path_to_dataset) if
-                         isfile(join(path_to_dataset, f))][:subset]  # Take only 5 images for fast computation times
+                         isfile(join(path_to_dataset, f))][:local_subset]
 
     train_images = []
 
