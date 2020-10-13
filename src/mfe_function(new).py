@@ -1,7 +1,7 @@
 import keras
 import numpy as np
-from converter_numpy import get_train_images
-from meta_features import meta_entropy, meta_skew, meta_kurtosis, meta_median, meta_std, meta_mean, meta_sparsity, meta_xy_axis
+from src.converter_numpy import get_train_images
+from src.meta_features import meta_entropy, meta_skew, meta_kurtosis, meta_median, meta_std, meta_mean, meta_sparsity, meta_xy_axis
 
 #%% Function
 

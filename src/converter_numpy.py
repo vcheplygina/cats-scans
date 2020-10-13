@@ -8,15 +8,15 @@ from os.path import isfile, join
 def get_train_images(dataset = 'ISIC2018', local_subset = 5):
     """Retrieve files from local depository and convert them to numpy arrays"""
     if dataset == 'ISIC2017':
-        path_to_dataset = 'datasets/ISIC2017/ISIC2017_Task3_Training_Input/'
+        path_to_dataset = '../datasets/ISIC2017/ISIC2017_Task3_Training_Input/'
     elif dataset == 'ISIC2018':
-        path_to_dataset = 'datasets/ISIC2018/ISIC2018_Task3_Training_Input/'
+        path_to_dataset = '../datasets/ISIC2018/ISIC2018_Task3_Training_Input/'
     elif dataset == 'chest_xray':
-        path_to_dataset = 'datasets/chest_xray/train/all/'
+        path_to_dataset = '../datasets/chest_xray/train/all/'
     elif dataset == 'stl-10':
-        path_to_dataset = 'datasets/stl_10/all/'
+        path_to_dataset = '../datasets/stl_10/all/'
     elif dataset == 'dtd':
-        path_to_dataset = 'datasets/dtd/all/'
+        path_to_dataset = '../datasets/dtd/all/'
     else:
         return None
 
