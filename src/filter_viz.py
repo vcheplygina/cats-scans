@@ -24,7 +24,7 @@ first_conv = models.Model(inputs=resnet.inputs, outputs=resnet.get_layer('conv1_
 X_test_indexreset = X_test.reset_index(drop=True)
 
 #%%
-img = cv2.imread(X_test_indexreset['path'][10])
+img = cv2.imread(X_test_indexreset['path'][8])
 img_tensor = image.img_to_array(img)
 # reshape image to 300x300x3
 img_tensor = np.resize(img_tensor, (300, 300, 3))
