@@ -1,29 +1,20 @@
 from sacred import Experiment
-# from sacred.observers import MongoObserver
-from src.run_model import run_model_target, run_model_source, create_upload_zip, save_pred_model
+from .models.run_model import run_model_target, run_model_source, create_upload_zip, save_pred_model
 import tensorflow as tf
 from sklearn.metrics import roc_auc_score
-from src.tf_generators_models_kfold import create_model, compute_class_weights
+from .models.tf_generators_models_kfold import create_model, compute_class_weights
 import numpy as np
 from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 
-# %%
 # initialize experiment name. NOTE: this should be updated with every new experiment
 ex = Experiment('Resnet_pretrained=imagenet_target=isic_test')
 # ex = Experiment('Resnet_pretrained=Imagenet_target=pcam_test')
 # ex = Experiment('Resnet_pretrained=textures_target=isic')
-# ex = Experiment('Resnet_pretraining=textures')
 
 ex.observers.append(NeptuneObserver(
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiMjc4MGU5ZDUtMzk3Yy00YjE3LTliY2QtMThkMDJkZTMxNGMzIn0=",
     project_name='irmavdbrandt/cats-scans'))
-
-
-# create link with sacred MongoDB Atlas database
-# ex.observers.append(MongoObserver(url="mongodb://localhost:27017/database"))
-# url="mongodb+srv://Irma:MIA-Bas-Veronika@cats-scans.eqbh3.mongodb.net/sacred"
-#                                   "?retryWrites=true&w=majority"))
 
 
 @ex.config
@@ -32,10 +23,10 @@ def cfg():
     :return: parameter settings used in the experiment. NOTE: this should be updated with every new experiment
     """
     target = True
-    # define source data
-    source_data = "imagenet"
+    # define src data
+    source_data = "slt10"
     # define target dataset
-    target_data = "isic"
+    target_data = "pcam"
     x_col = "path"
     y_col = "class"
     augment = True
@@ -49,9 +40,10 @@ def cfg():
     dropout = 0.5
     model_choice = "resnet"
     scheduler_bool = True
+    home = '/Users/IrmavandenBrandt/Downloads/Internship'
 
     # target = False
-    # # define source data
+    # # define src data
     # source_data = "textures"
     # # define target dataset
     # target_data = None
@@ -69,6 +61,7 @@ def cfg():
     # imagenet = False
     # model_choice = "resnet"
     # scheduler_bool = True
+    # home = '/data/ivdbrandt'
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
@@ -92,12 +85,12 @@ def scheduler(epochs, learning_rate):
 
 @ex.automain
 def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, img_length, img_width, learning_rate,
-        batch_size, epochs, color, dropout, model_choice, scheduler_bool):
+        batch_size, epochs, color, dropout, model_choice, scheduler_bool, home):
     """
     :param _run:
-    :param target: boolean specifying whether the run is for target data or source data
+    :param target: boolean specifying whether the run is for target data or src data
     :param target_data: dataset used as target dataset
-    :param source_data: dataset used as source dataset
+    :param source_data: dataset used as src dataset
     :param x_col: column in dataframe containing the image paths
     :param y_col: column in dataframe containing the target labels
     :param augment: boolean specifying whether to use data augmentation or not
@@ -111,6 +104,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
     :param dropout: fraction of nodes in layer that are deactivated
     :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
     :param scheduler_bool: boolean specifying whether learning rate scheduler is used
+    :param home: part of path that is specific to user, e.g. /Users/..../
     :return: experiment
     """
 
@@ -121,7 +115,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
         callbacks_settings = [MetricsLoggerCallback(_run)]
 
     if target:
-        dataframe, skf, train_datagen, valid_datagen, x_col, y_col = run_model_target(target_data, x_col, y_col,
+        dataframe, skf, train_datagen, valid_datagen, x_col, y_col = run_model_target(home, target_data, x_col, y_col,
                                                                                       augment, n_folds)
 
         # initialize empty lists storing accuracy, loss and multi-class auc per fold
@@ -194,12 +188,12 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
             print(f'Validation auc: {OneVsRest_auc}')
             auc_per_fold.append(OneVsRest_auc)
 
-            # save predictions and models in local memory
+            # save predictions and models_base in local memory
             save_pred_model(source_data, target_data, model_choice, fold_no, model, predictions)
 
             fold_no += 1
 
-        # create zip file with predictions and models and upload to OSF
+        # create zip file with predictions and models_base and upload to OSF
         create_upload_zip(n_folds, model_choice, source_data, target_data)
 
         # compute average scores for accuracy, loss and auc
@@ -219,6 +213,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
         num_classes, train_generator, valid_generator, test_generator, class_weights = run_model_source(augment,
                                                                                                         batch_size,
                                                                                                         source_data,
+                                                                                                        home,
                                                                                                         target_data,
                                                                                                         img_length,
                                                                                                         img_width)
@@ -245,5 +240,5 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
 
 # # %%
-# x = np.array([0.6432, 0.6578, 0.6511, 0.6388, 0.6469])
+# x = np.array([0.9700, 0.9704, 0.9700, 0.9701, 0.9705])
 # print(np.mean(x), np.std(x))

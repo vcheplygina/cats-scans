@@ -11,7 +11,7 @@
 # from src.run_model import compute_class_weights
 # import seaborn as sns
 # import matplotlib.pyplot as plt
-# from keras.models import load_model
+# from keras.models_base import load_model
 #
 #
 # # import isic dataframe

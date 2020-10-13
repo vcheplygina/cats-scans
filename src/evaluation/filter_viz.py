@@ -1,6 +1,6 @@
 #%%
 from tensorflow.keras.preprocessing import image
-from src.data_import import import_textures_dtd
+# from ..io.data_import import collect_data
 from keras.models import load_model
 from keras import models
 import matplotlib.pyplot as plt
@@ -10,7 +10,7 @@ import cv2
 from PIL import Image
 
 
-X_train, X_val, X_test = import_textures_dtd()
+# X_train, X_val, X_test = collect_data(home=, target_data=)
 
 trained_model = load_model(f'/Users/IrmavandenBrandt/Downloads/model_weights_resnet_pretrained=textures.h5')
 resnet = trained_model.get_layer('resnet50')

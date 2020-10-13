@@ -1,18 +1,19 @@
 from sklearn.model_selection import StratifiedKFold
-from src.requests_osf import upload_zip_to_osf
-from src.data_import import collect_target_data, import_SLT10, import_textures_dtd
-from src.tf_generators_models_kfold import create_generators_dataframes, compute_class_weights
+from ..io.requests_osf import upload_zip_to_osf
+from ..io.data_import import collect_data
+from .tf_generators_models_kfold import create_generators_dataframes, compute_class_weights
 import numpy as np
 from keras.utils import to_categorical
 from zipfile import ZipFile
 import os
 
 
-def run_model_source(augment, batch_size, source_data, target_data, img_length, img_width):
+def run_model_source(augment, batch_size, source_data, home, target_data, img_length, img_width):
     """
     :param augment: boolean specifying whether to use data augmentation or not
     :param batch_size: amount of images processed per batch
-    :param source_data: dataset used as source dataset
+    :param source_data: dataset used as src dataset
+    :param home: part of path that is specific to user, e.g. /Users/..../
     :param target_data: dataset used as target dataset
     :param img_length: target length of image in pixels
     :param img_width: target width of image in pixels
@@ -23,7 +24,7 @@ def run_model_source(augment, batch_size, source_data, target_data, img_length, 
 
     # import data into function
     if source_data == 'slt10':
-        X_train, X_val, X_test, y_train, y_val, y_test = import_SLT10()
+        X_train, X_val, X_test, y_train, y_val, y_test = collect_data(home, target_data)
         num_classes = len(np.unique(y_train))  # compute the number of unique classes in the dataset
         class_weights = compute_class_weights(y_train)  # get class model_weights to balance classes
 
@@ -52,7 +53,7 @@ def run_model_source(augment, batch_size, source_data, target_data, img_length, 
                                             seed=2)
 
     elif source_data == 'textures':
-        train_dataframe, val_dataframe, test_dataframe = import_textures_dtd()
+        train_dataframe, val_dataframe, test_dataframe = collect_data(home, target_data)
         num_classes = len(np.unique(train_dataframe['class']))  # compute the number of unique classes in the dataset
         class_weights = compute_class_weights(train_dataframe['class'])  # get class model_weights to balance classes
 
@@ -87,8 +88,9 @@ def run_model_source(augment, batch_size, source_data, target_data, img_length, 
     return num_classes, train_generator, validation_generator, test_generator, class_weights
 
 
-def run_model_target(target_data, x_col, y_col, augment, n_folds):
+def run_model_target(home, target_data, x_col, y_col, augment, n_folds):
     """
+    :param home: part of path that is specific to user, e.g. /Users/..../
     :param target_data: dataset used as target dataset
     :param x_col: column in dataframe containing the image paths
     :param y_col: column in dataframe containing the target labels
@@ -103,14 +105,14 @@ def run_model_target(target_data, x_col, y_col, augment, n_folds):
     # create k-folds validator object with k=n_folds
     skf = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=2)
 
-    dataframe = collect_target_data(target_data)
+    dataframe = collect_data(home, target_data)
 
     return dataframe, skf, train_datagen, valid_datagen, x_col, y_col
 
 
 def save_pred_model(source_data, target_data, model_choice, fold_no, model, predictions):
     """
-    :param source_data: dataset used as source dataset
+    :param source_data: dataset used as src dataset
     :param target_data: dataset used as target dataset
     :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
     :param fold_no: fold number that is currently used in the run
@@ -130,10 +132,10 @@ def create_upload_zip(n_folds, model_choice, source_data, target_data):
     """
     :param n_folds: amount of folds used in the n-fold cross validation
     :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
-    :param source_data: dataset used as source dataset
+    :param source_data: dataset used as src dataset
     :param target_data: dataset used as target dataset
     :return: zip-file uploaded on OSF containing predictions in case of target dataset and model with weights for both
-    source and target
+    src and target
     """
     if target_data is None:
         with ZipFile(f'{model_choice}_target={target_data}_source={source_data}.zip', 'w') as zip_object:

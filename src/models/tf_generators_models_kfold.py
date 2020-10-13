@@ -57,7 +57,7 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
     :param img_width: target width of image in pixels
     :param color: boolean specifying whether the images are in color or not
     :param dropout: fraction of nodes in layer that are deactivated
-    :param source_data: dataset used as source dataset
+    :param source_data: dataset used as src dataset
     :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
     :param num_classes: number of unique classes in dataset
     :return: compiled model (i.e. resnet or efficientnet)
@@ -69,11 +69,11 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
         input_shape = (img_length, img_width, 1)  # add 1 channels in case of gray image
 
     if (source_data != "imagenet") & (target_data is not None):
-        # collect pretrained efficientnet model on source data
-        print(f'loading model and weights from source data {source_data} and for traget data {target_data}')
+        # collect pretrained efficientnet model on src data
+        print(f'loading model and weights from src data {source_data} and for traget data {target_data}')
         pretrained = load_model(
             f'model_weights_{model_choice}_pretrained={source_data}.h5')
-        # remove top layer that has been specialized on source dataset output
+        # remove top layer that has been specialized on src dataset output
         if num_classes == 2:
             output_layer = Dense(1, activation='sigmoid')(pretrained.layers[-2].output)
             loss = losses.binary_crossentropy

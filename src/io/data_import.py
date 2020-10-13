@@ -2,16 +2,19 @@ import pandas as pd
 import os
 import numpy as np
 from sklearn.model_selection import train_test_split
+from .data_paths import get_path
 
 
-def import_ISIC():
+def import_ISIC(img_dir, label_dir):
     """
+    :param img_dir: directory where images are stored
+    :param label_dir: directory where labels are stored
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    # local import paths
-    img_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_Input"
-    label_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_GroundTruth" \
-                "/ISIC2018_Task3_Training_GroundTruth.csv"
+    # # local import paths
+    # img_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_Input"
+    # label_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_GroundTruth" \
+    #             "/ISIC2018_Task3_Training_GroundTruth.csv"
 
     # # server import paths
     # img_dir = "/data/ivdbrandt/ISIC2018/ISIC2018_Task3_Training_Input"
@@ -55,12 +58,13 @@ def import_ISIC():
     return train_labels
 
 
-def import_chest():
+def import_chest(data_dir):
     """
+    :param data_dir: directory where all data is stored (images and labels)
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
     # data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/chest_xray/chest_xray"
-    data_dir = "/data/ivdbrandt/chest_xray"
+    # data_dir = "/data/ivdbrandt/chest_xray"
 
     # set paths where training and test data can be found
     train_images = os.path.join(data_dir, "train")
@@ -88,10 +92,14 @@ def import_chest():
     return dataframe
 
 
-def import_SLT10():
+def import_SLT10(TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH, TEST_LABEL_PATH):
     """
     import file retrieved from: https://github.com/mttk/STL10/blob/master/stl10_input.py as suggested by SLT10 owners
     at Stanford on site https://cs.stanford.edu/~acoates/stl10/
+    :param TRAIN_DATA_PATH: directory where training images are stored
+    :param TRAIN_LABEL_PATH: directory where training labels are stored
+    :param TEST_DATA_PATH: directory where test images are stored
+    :param TEST_LABEL_PATH: directory where test labels are stored
     :return: images and labels of SLT-10 training dataset
     """
     # # path to the binary train file with image data
@@ -103,14 +111,14 @@ def import_SLT10():
     # # path to the binary train file with labels
     # TEST_LABEL_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/test_y.bin'
 
-    # path to the binary train file with image data
-    TRAIN_DATA_PATH = '/data/ivdbrandt/stl10_binary/train_X.bin'
-    # path to the binary train file with labels
-    TRAIN_LABEL_PATH = '/data/ivdbrandt/stl10_binary/train_y.bin'
-    # path to the binary train file with image data
-    TEST_DATA_PATH = '/data/ivdbrandt/stl10_binary/test_X.bin'
-    # path to the binary train file with labels
-    TEST_LABEL_PATH = '/data/ivdbrandt/stl10_binary/test_y.bin'
+    # # path to the binary train file with image data
+    # TRAIN_DATA_PATH = '/data/ivdbrandt/stl10_binary/train_X.bin'
+    # # path to the binary train file with labels
+    # TRAIN_LABEL_PATH = '/data/ivdbrandt/stl10_binary/train_y.bin'
+    # # path to the binary train file with image data
+    # TEST_DATA_PATH = '/data/ivdbrandt/stl10_binary/test_X.bin'
+    # # path to the binary train file with labels
+    # TEST_LABEL_PATH = '/data/ivdbrandt/stl10_binary/test_y.bin'
 
     with open(TRAIN_DATA_PATH, 'rb') as f:
         # read whole file in uint8 chunks
@@ -160,11 +168,12 @@ def import_SLT10():
     return X_train, X_val, X_test, y_train, y_val, y_test
 
 
-def import_textures_dtd():
+def import_textures_dtd(data_dir):
     """
+    :param data_dir: directory where all data is stored (images and labels)
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/dtd/images"
+    # data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/dtd/images"
     # data_dir = "/data/ivdbrandt/dtd/images"
 
     # set paths where training and test data can be found
@@ -197,16 +206,17 @@ def import_textures_dtd():
     return X_train, X_val, X_test
 
 
-def import_PCAM():
+def import_PCAM(data_dir):
     """
     The .h5 files provided on https://github.com/basveeling/pcam have first been converted to numpy arrays in
     pcam_converter.py and saved locally as png images. This function loads the png paths and labels in a dataframe.
     This was a workaround since using HDF5Matrix() from keras.utils gave errors when running Sacred.
+    :param data_dir: directory where all data is stored (images and labels)
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
     # set data paths
     # data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/png_images"
-    data_dir = "/data/ivdbrandt/PCam/png_images"
+    # data_dir = "/data/ivdbrandt/PCam/png_images"
 
     # get image paths by selecting files from directory that end with .jpg
     images = [os.path.join(data_dir, f) for f in os.listdir(data_dir) if f.endswith('.png')]
@@ -228,18 +238,36 @@ def import_PCAM():
     return subset
 
 
-def collect_target_data(target_data):
+def collect_data(home, target_data):
     """
+    :param home: part of path that is specific to user, e.g. /Users/..../
     :param target_data: dataset used as target dataset
     :return: dataframe containing image paths and labels
     """
     if target_data == 'isic':
-        dataframe = import_ISIC()
+        img_dir, label_dir = get_path(home, target_data)
+        dataframe = import_ISIC(img_dir, label_dir)
+        return dataframe
 
     elif target_data == 'chest':
-        dataframe = import_chest()
+        data_dir = get_path(home, target_data)
+        dataframe = import_chest(data_dir)
+        return dataframe
+
+    elif target_data == 'slt10':
+        TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH, TEST_LABEL_PATH = get_path(home, target_data)
+        X_train, X_val, X_test, y_train, y_val, y_test = import_SLT10(TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH,
+                                                                      TEST_LABEL_PATH)
+        return X_train, X_val, X_test, y_train, y_val, y_test
+
+    elif target_data == 'textures':
+        data_dir = get_path(home, target_data)
+        X_train, X_val, X_test = import_textures_dtd(data_dir)
+        return X_train, X_val, X_test
 
     elif target_data == 'pcam':
-        dataframe = import_PCAM()
+        data_dir = get_path(home, target_data)
+        dataframe = import_PCAM(data_dir)
+        return dataframe
 
-    return dataframe
+
