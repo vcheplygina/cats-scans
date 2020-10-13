@@ -8,8 +8,8 @@ from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Resnet_pretrained=imagenet_target=isic_test')
-# ex = Experiment('Resnet_pretrained=Imagenet_target=pcam_test')
+# ex = Experiment('Resnet_pretrained=imagenet_target=isic_test')
+ex = Experiment('Resnet_pretrained=slt10_target=pcam')
 # ex = Experiment('Resnet_pretrained=textures_target=isic')
 
 ex.observers.append(NeptuneObserver(
@@ -40,7 +40,7 @@ def cfg():
     dropout = 0.5
     model_choice = "resnet"
     scheduler_bool = True
-    home = '/Users/IrmavandenBrandt/Downloads/Internship'
+    home = '/data/ivdbrandt'
 
     # target = False
     # # define src data
