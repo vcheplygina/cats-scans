@@ -1,9 +1,9 @@
 from sacred import Experiment
 # from sacred.observers import MongoObserver
-from run_model import run_model_target, run_model_source, create_upload_zip, save_pred_model
+from src.run_model import run_model_target, run_model_source, create_upload_zip, save_pred_model
 import tensorflow as tf
 from sklearn.metrics import roc_auc_score
-from tf_generators_models_kfold import create_model, compute_class_weights
+from src.tf_generators_models_kfold import create_model, compute_class_weights
 import numpy as np
 from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks

@@ -1,7 +1,7 @@
 from sklearn.model_selection import StratifiedKFold
-from requests_osf import upload_zip_to_osf
-from data_import import collect_target_data, import_SLT10, import_textures_dtd
-from tf_generators_models_kfold import create_generators_dataframes, compute_class_weights
+from src.requests_osf import upload_zip_to_osf
+from src.data_import import collect_target_data, import_SLT10, import_textures_dtd
+from src.tf_generators_models_kfold import create_generators_dataframes, compute_class_weights
 import numpy as np
 from keras.utils import to_categorical
 from zipfile import ZipFile

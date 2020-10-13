@@ -5,10 +5,10 @@ from sklearn.svm import SVC
 import pandas as pd
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import confusion_matrix
-from data_import import import_ISIC
+from src.data_import import import_ISIC
 import numpy as np
-from tf_generators_models_kfold import create_generators_dataframes
-from run_model import compute_class_weights
+from src.tf_generators_models_kfold import create_generators_dataframes
+from src.run_model import compute_class_weights
 import seaborn as sns
 import matplotlib.pyplot as plt
 

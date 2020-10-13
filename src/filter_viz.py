@@ -1,6 +1,6 @@
 #%%
 from tensorflow.keras.preprocessing import image
-from data_import import import_textures_dtd
+from src.data_import import import_textures_dtd
 from keras.models import load_model
 from keras import models
 import matplotlib.pyplot as plt
