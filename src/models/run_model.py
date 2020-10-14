@@ -66,9 +66,9 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
                                                                 random_state=2, shuffle=True)
             X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, test_size=10000,
                                                               random_state=2, shuffle=True)
-            train_dataframe = pd.concat([X_train, y_train])
-            val_dataframe = pd.concat([X_val, y_val])
-            test_dataframe = pd.concat([X_test, y_test])
+            train_dataframe = X_train
+            val_dataframe = X_val
+            test_dataframe = X_test
             print(train_dataframe.head())
             print(val_dataframe.head())
             print(test_dataframe.head())
