@@ -61,7 +61,7 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
             dataframe = collect_data(home, source_data)
 
             # split data in train, val and test (80-10-10)
-            X_train, X_test, y_train, y_test = train_test_split(dataframe['path'], dataframe['class'],
+            X_train, X_test, y_train, y_test = train_test_split(dataframe, dataframe['class'],
                                                                 stratify=dataframe['class'], test_size=10000,
                                                                 random_state=2, shuffle=True)
             X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, test_size=10000,
