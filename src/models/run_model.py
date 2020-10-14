@@ -57,6 +57,7 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
         if source_data == 'textures':
             train_dataframe, val_dataframe, test_dataframe = collect_data(home, target_data)
             class_mode = 'categorical'
+
         elif source_data == 'pcam':
             dataframe = collect_data(home, source_data)
 
@@ -69,9 +70,6 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
             train_dataframe = X_train
             val_dataframe = X_val
             test_dataframe = X_test
-            print(train_dataframe.head())
-            print(val_dataframe.head())
-            print(test_dataframe.head())
 
             class_mode = 'binary'
 
