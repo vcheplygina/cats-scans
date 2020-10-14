@@ -56,7 +56,7 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
     elif (source_data == 'textures') | (source_data == 'pcam'):
         if source_data == 'textures':
             train_dataframe, val_dataframe, test_dataframe = collect_data(home, target_data)
-
+            class_mode = 'categorical'
         elif source_data == 'pcam':
             dataframe = collect_data(home, source_data)
 
@@ -73,6 +73,8 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
             print(val_dataframe.head())
             print(test_dataframe.head())
 
+            class_mode = 'binary'
+
         num_classes = len(np.unique(train_dataframe['class']))  # compute the number of unique classes in the dataset
         class_weights = compute_class_weights(train_dataframe['class'])  # get class model_weights to balance classes
 
@@ -83,7 +85,7 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
                                                             target_size=(img_length, img_width),
                                                             batch_size=batch_size,
                                                             shuffle=True,
-                                                            class_mode="categorical",
+                                                            class_mode=class_mode,
                                                             seed=2)
 
         validation_generator = valid_datagen.flow_from_dataframe(dataframe=val_dataframe,
@@ -92,7 +94,7 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
                                                                  target_size=(img_length, img_width),
                                                                  batch_size=batch_size,
                                                                  shuffle=False,
-                                                                 class_mode="categorical",
+                                                                 class_mode=class_mode,
                                                                  seed=2)
 
         test_generator = valid_datagen.flow_from_dataframe(dataframe=test_dataframe,
@@ -101,7 +103,7 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
                                                            target_size=(img_length, img_width),
                                                            batch_size=batch_size,
                                                            shuffle=False,
-                                                           class_mode="categorical",
+                                                           class_mode=class_mode,
                                                            seed=2)
 
 
