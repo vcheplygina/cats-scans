@@ -54,11 +54,11 @@ def cfg():
     n_folds = None
     img_length = 96
     img_width = 96
-    learning_rate = 0.0001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
+    learning_rate = 0.0001
     batch_size = 128
-    epochs = 20
+    epochs = 30
     color = True
-    dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
+    dropout = 0.5
     imagenet = False
     model_choice = "resnet"
     scheduler_bool = False
