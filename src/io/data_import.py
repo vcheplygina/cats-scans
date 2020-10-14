@@ -231,5 +231,3 @@ def collect_data(home, target_data):
         data_dir = get_path(home, target_data)
         dataframe = import_PCAM(data_dir)
         return dataframe
-
-

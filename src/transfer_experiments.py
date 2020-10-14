@@ -9,8 +9,9 @@ from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=imagenet_target=isic_test')
-ex = Experiment('Resnet_pretrained=textures_target=pcam')
+# ex = Experiment('Resnet_pretrained=textures_target=pcam')
 # ex = Experiment('Resnet_pretrained=textures_target=isic')
+ex = Experiment('Resnet_pretraining=pcam')
 
 ex.observers.append(NeptuneObserver(
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiMjc4MGU5ZDUtMzk3Yy00YjE3LTliY2QtMThkMDJkZTMxNGMzIn0=",
@@ -22,46 +23,46 @@ def cfg():
     """
     :return: parameter settings used in the experiment. NOTE: this should be updated with every new experiment
     """
-    target = True
-    # define src data
-    source_data = "textures"
-    # define target dataset
-    target_data = "pcam"
-    x_col = "path"
-    y_col = "class"
-    augment = True
-    n_folds = 5
-    img_length = 96
-    img_width = 96
-    learning_rate = 0.00001
-    batch_size = 112
-    epochs = 20
-    color = True
-    dropout = 0.5
-    model_choice = "resnet"
-    scheduler_bool = True
-    home = '/data/ivdbrandt'
-
-    # target = False
+    # target = True
     # # define src data
     # source_data = "textures"
     # # define target dataset
-    # target_data = None
-    # x_col = None
-    # y_col = None
+    # target_data = "pcam"
+    # x_col = "path"
+    # y_col = "class"
     # augment = True
-    # n_folds = None
-    # img_length = 300
-    # img_width = 300
-    # learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
-    # batch_size = 12
-    # epochs = 60
+    # n_folds = 5
+    # img_length = 96
+    # img_width = 96
+    # learning_rate = 0.00001
+    # batch_size = 112
+    # epochs = 20
     # color = True
-    # dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
-    # imagenet = False
+    # dropout = 0.5
     # model_choice = "resnet"
     # scheduler_bool = True
     # home = '/data/ivdbrandt'
+
+    target = False
+    # define src data
+    source_data = "pcam"
+    # define target dataset
+    target_data = None
+    x_col = None
+    y_col = None
+    augment = True
+    n_folds = None
+    img_length = 96
+    img_width = 96
+    learning_rate = 0.001  # with 0.0001 it goes too slow, with 0.001 it goes too fast (overfitting)
+    batch_size = 128
+    epochs = 20
+    color = True
+    dropout = 0.5  # with 0.4 and lr=0.001 still quick overfit
+    imagenet = False
+    model_choice = "resnet"
+    scheduler_bool = False
+    home = '/data/ivdbrandt'
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
@@ -238,7 +239,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
         return test_loss, test_acc
 
-
+#
 # # %%
-# x = np.array([0.9700, 0.9704, 0.9700, 0.9701, 0.9705])
+# import numpy as np
+# x = np.array([0.6465, 0.6578, 0.6511, 0.6385, 0.6388])
 # print(np.mean(x), np.std(x))
