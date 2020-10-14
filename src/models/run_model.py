@@ -1,4 +1,4 @@
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedKFold, train_test_split
 from ..io.requests_osf import upload_zip_to_osf
 from ..io.data_import import collect_data
 from .tf_generators_models_kfold import create_generators_dataframes, compute_class_weights
@@ -6,6 +6,7 @@ import numpy as np
 from keras.utils import to_categorical
 from zipfile import ZipFile
 import os
+import pandas as pd
 
 
 def run_model_source(augment, batch_size, source_data, home, target_data, img_length, img_width):
@@ -52,8 +53,26 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
                                             shuffle=False,
                                             seed=2)
 
-    elif source_data == 'textures':
-        train_dataframe, val_dataframe, test_dataframe = collect_data(home, target_data)
+    elif (source_data == 'textures') | (source_data == 'pcam'):
+        if source_data == 'textures':
+            train_dataframe, val_dataframe, test_dataframe = collect_data(home, target_data)
+
+        elif source_data == 'pcam':
+            dataframe = collect_data(home, target_data)
+
+            # split data in train, val and test (80-10-10)
+            X_train, X_test, y_train, y_test = train_test_split(dataframe['path'], dataframe['class'],
+                                                                stratify=dataframe['class'], test_size=10000,
+                                                                random_state=2, shuffle=True)
+            X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, test_size=10000,
+                                                              random_state=2, shuffle=True)
+            train_dataframe = pd.concat([X_train, y_train])
+            val_dataframe = pd.concat([X_val, y_val])
+            test_dataframe = pd.concat([X_test, y_test])
+            print(train_dataframe.head())
+            print(val_dataframe.head())
+            print(test_dataframe.head())
+
         num_classes = len(np.unique(train_dataframe['class']))  # compute the number of unique classes in the dataset
         class_weights = compute_class_weights(train_dataframe['class'])  # get class model_weights to balance classes
 
@@ -84,6 +103,7 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
                                                            shuffle=False,
                                                            class_mode="categorical",
                                                            seed=2)
+
 
     return num_classes, train_generator, validation_generator, test_generator, class_weights
 
