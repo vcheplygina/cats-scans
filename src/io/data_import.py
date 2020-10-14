@@ -11,16 +11,6 @@ def import_ISIC(img_dir, label_dir):
     :param label_dir: directory where labels are stored
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    # # local import paths
-    # img_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_Input"
-    # label_dir = "/Users/IrmavandenBrandt/Downloads/Internship/ISIC2018/ISIC2018_Task3_Training_GroundTruth" \
-    #             "/ISIC2018_Task3_Training_GroundTruth.csv"
-
-    # # server import paths
-    # img_dir = "/data/ivdbrandt/ISIC2018/ISIC2018_Task3_Training_Input"
-    # label_dir = "/data/ivdbrandt/ISIC2018/ISIC2018_Task3_Training_GroundTruth" \
-    #             "/ISIC2018_Task3_Training_GroundTruth.csv"
-
     # get image paths by selecting files from directory that end with .jpg
     images = [os.path.join(img_dir, f) for f in os.listdir(img_dir) if f.endswith('.jpg')]
 
@@ -63,9 +53,6 @@ def import_chest(data_dir):
     :param data_dir: directory where all data is stored (images and labels)
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    # data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/chest_xray/chest_xray"
-    # data_dir = "/data/ivdbrandt/chest_xray"
-
     # set paths where training and test data can be found
     train_images = os.path.join(data_dir, "train")
     val_images = os.path.join(data_dir, "val")
@@ -102,24 +89,6 @@ def import_SLT10(TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH, TEST_LABEL_P
     :param TEST_LABEL_PATH: directory where test labels are stored
     :return: images and labels of SLT-10 training dataset
     """
-    # # path to the binary train file with image data
-    # TRAIN_DATA_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/train_X.bin'
-    # # path to the binary train file with labels
-    # TRAIN_LABEL_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/train_y.bin'
-    # # path to the binary train file with image data
-    # TEST_DATA_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/test_X.bin'
-    # # path to the binary train file with labels
-    # TEST_LABEL_PATH = '/Users/IrmavandenBrandt/Downloads/Internship/data_slt10/stl10_binary/test_y.bin'
-
-    # # path to the binary train file with image data
-    # TRAIN_DATA_PATH = '/data/ivdbrandt/stl10_binary/train_X.bin'
-    # # path to the binary train file with labels
-    # TRAIN_LABEL_PATH = '/data/ivdbrandt/stl10_binary/train_y.bin'
-    # # path to the binary train file with image data
-    # TEST_DATA_PATH = '/data/ivdbrandt/stl10_binary/test_X.bin'
-    # # path to the binary train file with labels
-    # TEST_LABEL_PATH = '/data/ivdbrandt/stl10_binary/test_y.bin'
-
     with open(TRAIN_DATA_PATH, 'rb') as f:
         # read whole file in uint8 chunks
         all_train = np.fromfile(f, dtype=np.uint8)
@@ -173,9 +142,6 @@ def import_textures_dtd(data_dir):
     :param data_dir: directory where all data is stored (images and labels)
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    # data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/dtd/images"
-    # data_dir = "/data/ivdbrandt/dtd/images"
-
     # set paths where training and test data can be found
     types = list(os.listdir(data_dir))  # get all different labels
 
@@ -214,10 +180,6 @@ def import_PCAM(data_dir):
     :param data_dir: directory where all data is stored (images and labels)
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    # set data paths
-    # data_dir = "/Users/IrmavandenBrandt/Downloads/Internship/PCam/png_images"
-    # data_dir = "/data/ivdbrandt/PCam/png_images"
-
     # get image paths by selecting files from directory that end with .jpg
     images = [os.path.join(data_dir, f) for f in os.listdir(data_dir) if f.endswith('.png')]
 
