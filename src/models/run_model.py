@@ -58,7 +58,7 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
             train_dataframe, val_dataframe, test_dataframe = collect_data(home, target_data)
 
         elif source_data == 'pcam':
-            dataframe = collect_data(home, target_data)
+            dataframe = collect_data(home, source_data)
 
             # split data in train, val and test (80-10-10)
             X_train, X_test, y_train, y_test = train_test_split(dataframe['path'], dataframe['class'],
