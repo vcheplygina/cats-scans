@@ -39,6 +39,6 @@ def get_path(home, target_data):
         return data_dir
 
     if target_data == 'imagenet_subset':
-        data_dir = f'{home}/imagenet_textures'
+        data_dir = f'{home}/sti10'
 
         return data_dir
