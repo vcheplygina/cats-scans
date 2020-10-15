@@ -1,11 +1,12 @@
 import keras
 import numpy as np
-from src.converter_numpy import get_train_images
-from src.meta_features import meta_entropy, meta_skew, meta_kurtosis, meta_median, meta_std, meta_mean, meta_sparsity, meta_xy_axis
+import os
+from src.io.converter_numpy import get_train_images
+from src.similarity.meta_features import meta_entropy, meta_skew, meta_kurtosis, meta_median, meta_std, meta_mean, meta_sparsity, meta_xy_axis
 
 #%% Function
 
-def feature_extraction(datasets, subset = 20):
+def feature_extraction(datasets, subset = 50):
     """Calculates the similarity vector between datasets based on meta-features"""
     # Importing datasets and defining subsets
 
@@ -15,54 +16,53 @@ def feature_extraction(datasets, subset = 20):
         if dataset == 'mnist':
             mnist = keras.datasets.mnist
             (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
-            data = train_images[:subset]
         elif dataset == 'fashion_mnist':
             fashion_mnist = keras.datasets.fashion_mnist
             (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
-            data = train_images[:subset]
         elif dataset == 'cifar10':
             cifar10 = keras.datasets.cifar10
             (train_images, train_labels), (test_images, test_labels) = cifar10.load_data()
-            data = train_images[:subset]
         elif dataset == 'cifar100':
             cifar100 = keras.datasets.cifar100
             (train_images, train_labels), (test_images, test_labels) = cifar100.load_data()
-            data = train_images[:subset]
         elif dataset == 'ISIC2017':
             train_images = get_train_images(dataset='ISIC2017', local_subset=subset)
             train_labels = 2
-            data = train_images[:subset]            # overbodig vanwege local_subset
         elif dataset == 'ISIC2018':
             train_images = get_train_images(dataset='ISIC2018', local_subset=subset)
             train_labels = 2
-            data = train_images[:subset]            # overbodig vanwege local_subset
         elif dataset == 'chest_xray':
             train_images = get_train_images(dataset='chest_xray', local_subset=subset)
-            train_labels = 2
-            data = train_images[:subset]            # overbodig vanwege local_subset
+            train_labels = len(next(os.walk('C:/Users/20169385/PycharmProjects/cats-scans/local_data/datasets' + '/chest_xray/train/'))[1])
         elif dataset == 'stl-10':
             train_images = get_train_images(dataset='stl-10', local_subset=subset)
-            train_labels = 2
-            data = train_images[:subset]            # overbodig vanwege local_subset
+            train_labels = len(next(os.walk('C:/Users/20169385/PycharmProjects/cats-scans/local_data/datasets' + '/stl_10/'))[1])
         elif dataset == 'dtd':
             train_images = get_train_images(dataset='dtd', local_subset=subset)
-            train_labels = 47
-            data = train_images[:subset]            # overbodig vanwege local_subset
+            train_labels = len(next(os.walk('C:/Users/20169385/PycharmProjects/cats-scans/local_data/datasets' + '/dtd/'))[1])
+        elif dataset == 'pcam':
+            train_images = get_train_images(dataset='pcam', local_subset=subset)
+            train_labels = len(next(os.walk('C:/Users/20169385/PycharmProjects/cats-scans/local_data/datasets' + '/pcam/pcam_subset/'))[1])
         else:
             print('Dataset not available')
             break
 
+        if dataset == 'mnist' or 'fashion_mnist' or 'cifar10' or 'cifar100':
+            data = train_images[:subset]
+        else:
+            data = train_images
+
         # General meta-features
 
-        if dataset == 'chest_xray' or dataset == 'dtd':
+        if dataset == 'chest_xray' or dataset == 'dtd' or dataset == 'pcam':
             image_count = data.shape[0]
             image_size = data[0].shape[0] * data[0].shape[1]
-            label_count = train_labels
 
         else:
             image_count = data.shape[0]
             image_size = data.shape[1] * data.shape[2]
-            label_count = train_labels
+
+        label_count = train_labels
 
         # Statistical meta-features
 
@@ -142,7 +142,7 @@ def feature_extraction(datasets, subset = 20):
     return sim_mat
 #%% Function call
 
-feature_extraction(datasets=['chest_xray', 'ISIC2018', 'stl-10', 'dtd'], subset=10)
+feature_extraction(datasets=['chest_xray', 'ISIC2018', 'stl-10', 'dtd', 'pcam'], subset=50)
 
 #%% Test
 
