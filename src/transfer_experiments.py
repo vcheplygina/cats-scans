@@ -11,7 +11,7 @@ from tensorflow.keras import callbacks
 # ex = Experiment('Resnet_pretrained=imagenet_target=isic_test')
 # ex = Experiment('Resnet_pretrained=textures_target=pcam')
 # ex = Experiment('Resnet_pretrained=pcam_target=isic')
-ex = Experiment('Resnet_pretraining=pcam')
+ex = Experiment('Resnet_pretraining=STI10-_test')
 
 ex.observers.append(NeptuneObserver(
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiMjc4MGU5ZDUtMzk3Yy00YjE3LTliY2QtMThkMDJkZTMxNGMzIn0=",
@@ -45,18 +45,18 @@ def cfg():
 
     target = False
     # define src data
-    source_data = "pcam"
+    source_data = "sti10"
     # define target dataset
     target_data = None
     x_col = None
     y_col = None
     augment = True
     n_folds = None
-    img_length = 96
-    img_width = 96
-    learning_rate = 0.00001
+    img_length = 112
+    img_width = 112
+    learning_rate = 0.001
     batch_size = 128
-    epochs = 40
+    epochs = 20
     color = True
     dropout = 0.5
     imagenet = False

@@ -200,7 +200,7 @@ def import_PCAM(data_dir):
     return subset
 
 
-def import_imagenet_subset(data_dir):
+def import_STI10(data_dir):
     """
     :param data_dir: directory where all data is stored (images and labels)
     :return: images and labels of own subset created from ImageNet
@@ -250,7 +250,7 @@ def collect_data(home, target_data):
         dataframe = import_PCAM(data_dir)
         return dataframe
 
-    elif target_data == 'subset_imagenet':
+    elif target_data == 'sti10':
         data_dir = get_path(home, target_data)
-        X_train, X_val, X_test, y_train, y_val, y_test = import_imagenet_subset(data_dir)
+        X_train, X_val, X_test, y_train, y_val, y_test = import_STI10(data_dir)
         return X_train, X_val, X_test, y_train, y_val, y_test
