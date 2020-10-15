@@ -37,3 +37,8 @@ def get_path(home, target_data):
         data_dir = f'{home}/PCam/png_images'
 
         return data_dir
+
+    if target_data == 'imagenet_subset':
+        data_dir = f'{home}/imagenet_textures'
+
+        return data_dir

@@ -81,13 +81,13 @@ def import_chest(data_dir):
 
 def import_STL10(TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH, TEST_LABEL_PATH):
     """
-    import file retrieved from: https://github.com/mttk/STL10/blob/master/stl10_input.py as suggested by SLT10 owners
+    import file retrieved from: https://github.com/mttk/STL10/blob/master/stl10_input.py as suggested by STL-10 owners
     at Stanford on site https://cs.stanford.edu/~acoates/stl10/
     :param TRAIN_DATA_PATH: directory where training images are stored
     :param TRAIN_LABEL_PATH: directory where training labels are stored
     :param TEST_DATA_PATH: directory where test images are stored
     :param TEST_LABEL_PATH: directory where test labels are stored
-    :return: images and labels of SLT-10 training dataset
+    :return: images and labels of STL-10 training dataset
     """
     with open(TRAIN_DATA_PATH, 'rb') as f:
         # read whole file in uint8 chunks
@@ -200,6 +200,24 @@ def import_PCAM(data_dir):
     return subset
 
 
+def import_imagenet_subset(data_dir):
+    """
+    :param data_dir: directory where all data is stored (images and labels)
+    :return: images and labels of own subset created from ImageNet
+    """
+    images = np.load(f'{data_dir}/all_imgs')
+    labels = np.load(f'{data_dir}/all_labels')
+
+    # split data in train-val-test set (train 80% - val 10% - test 10%)
+    ten_percent = 0.1 * len(images)  # define 10% of whole dataset, pass on to split function
+    X_train, X_test, y_train, y_test = train_test_split(images, labels, stratify=labels, shuffle=True, random_state=2,
+                                                        test_size=ten_percent)
+    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
+                                                      test_size=ten_percent)
+
+    return X_train, X_val, X_test, y_train, y_val, y_test
+
+
 def collect_data(home, target_data):
     """
     :param home: part of path that is specific to user, e.g. /Users/..../
@@ -231,3 +249,8 @@ def collect_data(home, target_data):
         data_dir = get_path(home, target_data)
         dataframe = import_PCAM(data_dir)
         return dataframe
+
+    elif target_data == 'subset_imagenet':
+        data_dir = get_path(home, target_data)
+        X_train, X_val, X_test, y_train, y_val, y_test = import_imagenet_subset(data_dir)
+        return X_train, X_val, X_test, y_train, y_val, y_test

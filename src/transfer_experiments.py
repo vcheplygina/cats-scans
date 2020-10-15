@@ -10,7 +10,7 @@ from tensorflow.keras import callbacks
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=imagenet_target=isic_test')
 # ex = Experiment('Resnet_pretrained=textures_target=pcam')
-# ex = Experiment('Resnet_pretrained=textures_target=isic')
+# ex = Experiment('Resnet_pretrained=pcam_target=isic')
 ex = Experiment('Resnet_pretraining=pcam')
 
 ex.observers.append(NeptuneObserver(
@@ -25,9 +25,9 @@ def cfg():
     """
     # target = True
     # # define src data
-    # source_data = "textures"
+    # source_data = "pcam"
     # # define target dataset
-    # target_data = "pcam"
+    # target_data = "isic"
     # x_col = "path"
     # y_col = "class"
     # augment = True
@@ -54,7 +54,7 @@ def cfg():
     n_folds = None
     img_length = 96
     img_width = 96
-    learning_rate = 0.000001
+    learning_rate = 0.00001
     batch_size = 128
     epochs = 50
     color = True
