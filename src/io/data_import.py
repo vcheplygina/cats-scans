@@ -79,7 +79,7 @@ def import_chest(data_dir):
     return dataframe
 
 
-def import_SLT10(TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH, TEST_LABEL_PATH):
+def import_STL10(TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH, TEST_LABEL_PATH):
     """
     import file retrieved from: https://github.com/mttk/STL10/blob/master/stl10_input.py as suggested by SLT10 owners
     at Stanford on site https://cs.stanford.edu/~acoates/stl10/
@@ -216,9 +216,9 @@ def collect_data(home, target_data):
         dataframe = import_chest(data_dir)
         return dataframe
 
-    elif target_data == 'slt10':
+    elif target_data == 'stl10':
         TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH, TEST_LABEL_PATH = get_path(home, target_data)
-        X_train, X_val, X_test, y_train, y_val, y_test = import_SLT10(TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH,
+        X_train, X_val, X_test, y_train, y_val, y_test = import_STL10(TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH,
                                                                       TEST_LABEL_PATH)
         return X_train, X_val, X_test, y_train, y_val, y_test
 
