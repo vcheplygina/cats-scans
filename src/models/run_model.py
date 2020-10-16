@@ -53,7 +53,7 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
                                             shuffle=False,
                                             seed=2)
 
-    elif (source_data == 'textures') | (source_data == 'pcam'):
+    else:
         if source_data == 'textures':
             train_dataframe, val_dataframe, test_dataframe = collect_data(home, source_data)
             class_mode = 'categorical'
