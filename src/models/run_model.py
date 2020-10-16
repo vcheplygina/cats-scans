@@ -55,10 +55,10 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
 
     elif (source_data == 'textures') | (source_data == 'pcam'):
         if source_data == 'textures':
-            train_dataframe, val_dataframe, test_dataframe = collect_data(home, target_data)
+            train_dataframe, val_dataframe, test_dataframe = collect_data(home, source_data)
             class_mode = 'categorical'
 
-        elif source_data == 'pcam':
+        elif (source_data == 'pcam') | (source_data == 'isic'):
             dataframe = collect_data(home, source_data)
 
             # split data in train, val and test (80-10-10)
@@ -71,7 +71,10 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
             val_dataframe = X_val
             test_dataframe = X_test
 
-            class_mode = 'binary'
+            if source_data == 'pcam':
+                class_mode = 'binary'
+            elif source_data == 'isic':
+                class_mode = 'categorical'
 
         num_classes = len(np.unique(train_dataframe['class']))  # compute the number of unique classes in the dataset
         class_weights = compute_class_weights(train_dataframe['class'])  # get class model_weights to balance classes
