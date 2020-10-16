@@ -18,15 +18,15 @@ def get_path(home, target_data):
 
     if target_data == 'slt10':
         # path to the binary train file with image data
-        TRAIN_DATA_PATH = f'{home}/stl10_binary/train_X.bin'
+        train_img_path = f'{home}/stl10_binary/train_X.bin'
         # path to the binary train file with labels
-        TRAIN_LABEL_PATH = f'{home}/stl10_binary/train_y.bin'
+        train_label_path = f'{home}/stl10_binary/train_y.bin'
         # path to the binary train file with image data
-        TEST_DATA_PATH = f'{home}/stl10_binary/test_X.bin'
+        test_img_path = f'{home}/stl10_binary/test_X.bin'
         # path to the binary train file with labels
-        TEST_LABEL_PATH = f'{home}/stl10_binary/test_y.bin'
+        test_label_path = f'{home}/stl10_binary/test_y.bin'
 
-        return TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH, TEST_LABEL_PATH
+        return train_img_path, train_label_path, test_img_path, test_label_path
 
     if target_data == 'textures':
         data_dir = f'{home}/dtd/images'

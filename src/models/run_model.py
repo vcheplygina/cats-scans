@@ -6,7 +6,6 @@ import numpy as np
 from keras.utils import to_categorical
 from zipfile import ZipFile
 import os
-import pandas as pd
 
 
 def run_model_source(augment, batch_size, source_data, home, target_data, img_length, img_width):
@@ -107,7 +106,6 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
                                                            shuffle=False,
                                                            class_mode=class_mode,
                                                            seed=2)
-
 
     return num_classes, train_generator, validation_generator, test_generator, class_weights
 

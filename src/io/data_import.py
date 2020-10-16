@@ -79,17 +79,17 @@ def import_chest(data_dir):
     return dataframe
 
 
-def import_STL10(TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH, TEST_LABEL_PATH):
+def import_STL10(train_img_path, train_label_path, test_img_path, test_label_path):
     """
     import file retrieved from: https://github.com/mttk/STL10/blob/master/stl10_input.py as suggested by STL-10 owners
     at Stanford on site https://cs.stanford.edu/~acoates/stl10/
-    :param TRAIN_DATA_PATH: directory where training images are stored
-    :param TRAIN_LABEL_PATH: directory where training labels are stored
-    :param TEST_DATA_PATH: directory where test images are stored
-    :param TEST_LABEL_PATH: directory where test labels are stored
+    :param train_img_path: directory where training images are stored
+    :param train_label_path: directory where training labels are stored
+    :param test_img_path: directory where test images are stored
+    :param test_label_path: directory where test labels are stored
     :return: images and labels of STL-10 training dataset
     """
-    with open(TRAIN_DATA_PATH, 'rb') as f:
+    with open(train_img_path, 'rb') as f:
         # read whole file in uint8 chunks
         all_train = np.fromfile(f, dtype=np.uint8)
 
@@ -104,16 +104,16 @@ def import_STL10(TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH, TEST_LABEL_P
         # since they like their channels separated.
         train_images = np.transpose(train_images, (0, 3, 2, 1))
 
-    with open(TEST_DATA_PATH, 'rb') as f:
+    with open(test_img_path, 'rb') as f:
         # read whole file in uint8 chunks
         all_test = np.fromfile(f, dtype=np.uint8)
         test_images = np.reshape(all_test, (-1, 3, 96, 96))
         test_images = np.transpose(test_images, (0, 3, 2, 1))
 
-    with open(TRAIN_LABEL_PATH, 'rb') as f:
+    with open(train_label_path, 'rb') as f:
         train_labels = np.fromfile(f, dtype=np.uint8)
 
-    with open(TEST_LABEL_PATH, 'rb') as f:
+    with open(test_label_path, 'rb') as f:
         test_labels = np.fromfile(f, dtype=np.uint8)
 
     # combine all data (to prevent accuracy issues due to very large test set)
@@ -235,9 +235,9 @@ def collect_data(home, target_data):
         return dataframe
 
     elif target_data == 'stl10':
-        TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH, TEST_LABEL_PATH = get_path(home, target_data)
-        X_train, X_val, X_test, y_train, y_val, y_test = import_STL10(TRAIN_DATA_PATH, TRAIN_LABEL_PATH, TEST_DATA_PATH,
-                                                                      TEST_LABEL_PATH)
+        train_img_path, train_label_path, test_img_path, test_label_path = get_path(home, target_data)
+        X_train, X_val, X_test, y_train, y_val, y_test = import_STL10(train_img_path, train_label_path, test_img_path,
+                                                                      test_label_path)
         return X_train, X_val, X_test, y_train, y_val, y_test
 
     elif target_data == 'textures':
