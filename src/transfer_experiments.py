@@ -35,9 +35,9 @@ def cfg():
     n_folds = 5
     img_length = 96
     img_width = 96
-    learning_rate = 0.0001
+    learning_rate = 0.00001
     batch_size = 112
-    epochs = 50
+    epochs = 20
     color = True
     dropout = 0.5
     model_choice = "resnet"
