@@ -6,7 +6,7 @@ from src.similarity.meta_features import meta_entropy, meta_skew, meta_kurtosis,
 
 #%% Function
 
-def feature_extraction(datasets, subset = 50):
+def feature_extraction(datasets, mfe_path, mfe_subset):
     """Calculates the similarity vector between datasets based on meta-features"""
     # Importing datasets and defining subsets
 
@@ -26,29 +26,29 @@ def feature_extraction(datasets, subset = 50):
             cifar100 = keras.datasets.cifar100
             (train_images, train_labels), (test_images, test_labels) = cifar100.load_data()
         elif dataset == 'ISIC2017':
-            train_images = get_train_images(dataset='ISIC2017', local_subset=subset)
+            train_images = get_train_images(dataset='ISIC2017', converter_path=mfe_path, converter_subset=mfe_subset)
             train_labels = 2
         elif dataset == 'ISIC2018':
-            train_images = get_train_images(dataset='ISIC2018', local_subset=subset)
+            train_images = get_train_images(dataset='ISIC2018', converter_path=mfe_path, converter_subset=mfe_subset)
             train_labels = 2
         elif dataset == 'chest_xray':
-            train_images = get_train_images(dataset='chest_xray', local_subset=subset)
-            train_labels = len(next(os.walk('C:/Users/20169385/PycharmProjects/cats-scans/local_data/datasets' + '/chest_xray/train/'))[1])
+            train_images = get_train_images(dataset='chest_xray', converter_path=mfe_path, converter_subset=mfe_subset)
+            train_labels = len(next(os.walk(mfe_path + '/chest_xray/train/'))[1])
         elif dataset == 'stl-10':
-            train_images = get_train_images(dataset='stl-10', local_subset=subset)
-            train_labels = len(next(os.walk('C:/Users/20169385/PycharmProjects/cats-scans/local_data/datasets' + '/stl_10/'))[1])
+            train_images = get_train_images(dataset='stl-10', converter_path=mfe_path, converter_subset=mfe_subset)
+            train_labels = len(next(os.walk(mfe_path + '/stl_10/'))[1])
         elif dataset == 'dtd':
-            train_images = get_train_images(dataset='dtd', local_subset=subset)
-            train_labels = len(next(os.walk('C:/Users/20169385/PycharmProjects/cats-scans/local_data/datasets' + '/dtd/'))[1])
+            train_images = get_train_images(dataset='dtd', converter_path=mfe_path, converter_subset=mfe_subset)
+            train_labels = len(next(os.walk(mfe_path + '/dtd/'))[1])
         elif dataset == 'pcam':
-            train_images = get_train_images(dataset='pcam', local_subset=subset)
-            train_labels = len(next(os.walk('C:/Users/20169385/PycharmProjects/cats-scans/local_data/datasets' + '/pcam/pcam_subset/'))[1])
+            train_images = get_train_images(dataset='pcam', converter_path=mfe_path, converter_subset=mfe_subset)
+            train_labels = len(next(os.walk(mfe_path + '/pcam/pcam_subset/'))[1])
         else:
             print('Dataset not available')
             break
 
         if dataset == 'mnist' or 'fashion_mnist' or 'cifar10' or 'cifar100':
-            data = train_images[:subset]
+            data = train_images[:mfe_subset]
         else:
             data = train_images
 
@@ -110,13 +110,8 @@ def feature_extraction(datasets, subset = 50):
         xy_axis_std = round(np.std(data_xy_axis))
 
         # Combine meta-features
-        all_features = [image_count, image_size, label_count, entropy_mean, entropy_std, skewness_mean, skewness_std, kurtosis_mean, kurtosis_std, median_mean,
+        meta_vector = [image_count, image_size, label_count, entropy_mean, entropy_std, skewness_mean, skewness_std, kurtosis_mean, kurtosis_std, median_mean,
                         median_std, std_mean, std_std, mean_mean, mean_std, sparsity_mean, sparsity_std, xy_axis_mean, xy_axis_std]
-
-        meta_vector = []
-
-        for index in range(len(all_features)):
-            meta_vector.append(all_features[index])
 
         # Zero mean and unit variance
 
@@ -140,18 +135,4 @@ def feature_extraction(datasets, subset = 50):
             sim_mat[row][column] = np.around(euc_dst, decimals=2)
 
     return sim_mat
-#%% Function call
 
-feature_extraction(datasets=['chest_xray', 'ISIC2018', 'stl-10', 'dtd', 'pcam'], subset=50)
-
-#%% Test
-
-# vector_mean = np.mean(vector)
-# vector_std = np.std(vector)
-#
-# print(vector)
-#
-# for i in range(len(vector)):
-#     vector[i] = (vector[i] - vector_mean)/vector_std
-#
-# print(vector)
