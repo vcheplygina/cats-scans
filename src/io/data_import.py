@@ -138,7 +138,6 @@ def import_STL10(train_img_path, train_label_path, test_img_path, test_label_pat
 
     print(X_train.shape)
 
-
     return X_train, X_val, X_test, y_train, y_val, y_test
 
 
@@ -210,9 +209,10 @@ def import_STI10(data_dir):
     :param data_dir: directory where all data is stored (images and labels)
     :return: images and labels of own subset created from ImageNet
     """
-    images = np.load(f'{data_dir}/all_imgs.npy', allow_pickle=True)
-    labels = np.load(f'{data_dir}/all_labels.npy', allow_pickle=True)
+    images = np.fromfile(f'{data_dir}/all_imgs.npy', dtype=np.uint8)
+    labels = np.fromfile(f'{data_dir}/all_labels.npy', dtype=np.uint8)
 
+    print(images.shape)
     # all_imgs = np.reshape(images,
 
     # convert labels to integers
