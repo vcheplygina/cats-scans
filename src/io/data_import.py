@@ -210,14 +210,14 @@ def import_STI10(data_dir):
     labels = np.load(f'{data_dir}/all_labels.npy', allow_pickle=True)
 
     # convert labels to integers
-    labelencoder = preprocessing.LabelEncoder()
-    labels = labelencoder.fit_transform(labels)
-    print(labelencoder.classes_)
-    print(labels)
+    encoder = preprocessing.LabelEncoder.fit(labels)
+    print(list(encoder.classes_))
+    int_labels = encoder.transform(labels)
+    print(int_labels)
 
     # split data in train-val-test set (train 80% - val 10% - test 10%)
     ten_percent = round(0.1 * len(images))  # define 10% of whole dataset, pass on to split function
-    X_train, X_test, y_train, y_test = train_test_split(images, labels, stratify=labels, shuffle=True, random_state=2,
+    X_train, X_test, y_train, y_test = train_test_split(images, int_labels, stratify=int_labels, shuffle=True, random_state=2,
                                                         test_size=ten_percent)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
                                                       test_size=ten_percent)
