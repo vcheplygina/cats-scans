@@ -93,6 +93,7 @@ def import_STL10(train_img_path, train_label_path, test_img_path, test_label_pat
     with open(train_img_path, 'rb') as f:
         # read whole file in uint8 chunks
         all_train = np.fromfile(f, dtype=np.uint8)
+        print(all_train.shape)
 
         # We force the data into 3x96x96 chunks, since the images are stored in "column-major order", meaning
         # that "the first 96*96 values are the red channel, the next 96*96 are green, and the last are blue."
@@ -211,6 +212,8 @@ def import_STI10(data_dir):
     """
     images = np.load(f'{data_dir}/all_imgs.npy', allow_pickle=True)
     labels = np.load(f'{data_dir}/all_labels.npy', allow_pickle=True)
+
+    all_imgs = np.reshape(images,
 
     # convert labels to integers
     encoder = preprocessing.LabelEncoder()
