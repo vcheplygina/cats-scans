@@ -9,7 +9,7 @@ from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=imagenet_target=isic_test')
-ex = Experiment('Resnet_pretrained=isic_target=chest')
+ex = Experiment('Resnet_pretrained=pcam_target=chest')
 # ex = Experiment('Resnet_pretraining=STI10_test')
 # ex = Experiment('Resnet_pretraining=isic')
 
@@ -26,7 +26,7 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "isic"
+    source_data = "pcam"
     # define target dataset
     target_data = "chest"
     x_col = "path"
