@@ -213,7 +213,8 @@ def import_STI10(data_dir):
     labels = np.fromfile(f'{data_dir}/all_labels.npy', dtype=np.uint8)
 
     print(images.shape)
-    # all_imgs = np.reshape(images,
+    all_imgs = np.reshape(images, (-1, 375, 500, 3))
+    print(all_imgs.shape)
 
     # convert labels to integers
     encoder = preprocessing.LabelEncoder()
@@ -223,8 +224,8 @@ def import_STI10(data_dir):
     print(int_labels)
 
     # split data in train-val-test set (train 80% - val 10% - test 10%)
-    ten_percent = round(0.1 * len(images))  # define 10% of whole dataset, pass on to split function
-    X_train, X_test, y_train, y_test = train_test_split(images, int_labels, stratify=int_labels, shuffle=True, random_state=2,
+    ten_percent = round(0.1 * len(int_labels))  # define 10% of whole dataset, pass on to split function
+    X_train, X_test, y_train, y_test = train_test_split(all_imgs, int_labels, stratify=int_labels, shuffle=True, random_state=2,
                                                         test_size=ten_percent)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
                                                       test_size=ten_percent)
