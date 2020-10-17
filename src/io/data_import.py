@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from .data_paths import get_path
 from sklearn import preprocessing
+import cv2
 
 
 def import_ISIC(img_dir, label_dir):
@@ -215,13 +216,12 @@ def import_STI10(data_dir):
     # reshape array into (8060, .., .., 3)
     print(images.shape)
 
-    import cv2
     img_4d = []
     for img in images:
-        if len(img.shape) == 3:
-            img_4d.append(cv2.resize(img, (112, 112, 3)))
-
-    all_img = np.array(img_4d).reshape(len(img_4d), 112, 112, 3)
+        img_4d.append(cv2.resize(img, (112, 112, 3)))
+    img_4d_arr = np.array(img_4d)
+    all_img = np.reshape(img_4d_arr, (len(img_4d_arr), 112, 112, 3))
+    print(all_img.shape)
 
     # convert labels to integers
     encoder = preprocessing.LabelEncoder()
