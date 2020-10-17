@@ -218,7 +218,8 @@ def import_STI10(data_dir):
 
     img_4d = []
     for img in images:
-        img_4d.append(cv2.resize(img, (112, 112, 3)))
+        img = cv2.resize(img, (112, 112, 3))
+        img_4d.append(img)
     img_4d_arr = np.array(img_4d)
     all_img = np.reshape(img_4d_arr, (len(img_4d_arr), 112, 112, 3))
     print(all_img.shape)
