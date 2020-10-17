@@ -16,7 +16,7 @@ def get_path(home, target_data):
 
         return data_dir
 
-    if target_data == 'slt10':
+    if target_data == 'stl10':
         # path to the binary train file with image data
         train_img_path = f'{home}/stl10_binary/train_X.bin'
         # path to the binary train file with labels
