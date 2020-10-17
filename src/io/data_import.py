@@ -213,17 +213,13 @@ def import_STI10(data_dir):
     images = np.load(f'{data_dir}/all_imgs.npy', allow_pickle=True)
     labels = np.load(f'{data_dir}/all_labels.npy', allow_pickle=True)
 
-    # reshape array into (8060, .., .., 3)
-    print(images.shape)
-
+    # reshape array into (8060, 112, 112, 3)
     img_4d = []
     for img in images:
         img = cv2.resize(img, (112, 112))
-        print(img.shape)
         img_4d.append(img)
     img_4d_arr = np.array(img_4d)
     all_img = np.reshape(img_4d_arr, (len(img_4d_arr), 112, 112, 3))
-    print(all_img.shape)
 
     # convert labels to integers
     encoder = preprocessing.LabelEncoder()
@@ -234,7 +230,7 @@ def import_STI10(data_dir):
 
     # split data in train-val-test set (train 80% - val 10% - test 10%)
     ten_percent = round(0.1 * len(int_labels))  # define 10% of whole dataset, pass on to split function
-    X_train, X_test, y_train, y_test = train_test_split(images, int_labels, stratify=int_labels, shuffle=True, random_state=2,
+    X_train, X_test, y_train, y_test = train_test_split(all_img, int_labels, stratify=int_labels, shuffle=True, random_state=2,
                                                         test_size=ten_percent)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
                                                       test_size=ten_percent)
