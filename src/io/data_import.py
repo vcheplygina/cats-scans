@@ -209,6 +209,8 @@ def import_STI10(data_dir):
     images = np.load(f'{data_dir}/all_imgs.npy', allow_pickle=True)
     labels = np.load(f'{data_dir}/all_labels.npy', allow_pickle=True)
 
+    print(images)
+
     # convert labels to integers
     encoder = preprocessing.LabelEncoder()
     encoder = encoder.fit(labels)
@@ -222,7 +224,6 @@ def import_STI10(data_dir):
                                                         test_size=ten_percent)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
                                                       test_size=ten_percent)
-
 
     return X_train, X_val, X_test, y_train, y_val, y_test
 
