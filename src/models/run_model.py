@@ -24,7 +24,7 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
 
     # import data into function
     if (source_data == 'stl10') | (source_data == 'sti10'):
-        X_train, X_val, X_test, y_train, y_val, y_test = collect_data(home, target_data)
+        X_train, X_val, X_test, y_train, y_val, y_test = collect_data(home, source_data)
         num_classes = len(np.unique(y_train))  # compute the number of unique classes in the dataset
         class_weights = compute_class_weights(y_train)  # get class model_weights to balance classes
 
