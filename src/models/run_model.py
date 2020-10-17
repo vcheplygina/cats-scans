@@ -57,7 +57,7 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
             train_dataframe, val_dataframe, test_dataframe = collect_data(home, source_data)
             class_mode = 'categorical'
 
-        else:
+        elif (source_data == 'isic') | (source_data == 'pcam'):
             dataframe = collect_data(home, source_data)
 
             # split data in train, val and test (80-10-10)
@@ -70,6 +70,9 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
             train_dataframe = X_train
             val_dataframe = X_val
             test_dataframe = X_test
+
+        elif source_data == 'sti10':
+            X_train, X_val, X_test, y_train, y_val, y_test = collect_data(home, source_data)
 
             if source_data == 'pcam':
                 class_mode = 'binary'
