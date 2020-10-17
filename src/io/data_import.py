@@ -225,6 +225,7 @@ def import_STI10(data_dir):
                                                         test_size=ten_percent)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
                                                       test_size=ten_percent)
+    print(X_train.shape)
 
     return X_train, X_val, X_test, y_train, y_val, y_test
 
