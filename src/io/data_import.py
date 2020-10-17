@@ -214,16 +214,14 @@ def import_STI10(data_dir):
 
     # reshape array into (8060, .., .., 3)
     print(images.shape)
-    images_flat = [item for sublist in images for item in sublist]
-    images_flat = np.array(images_flat)
-    print(images_flat.shape)
 
-    new_array_img = np.empty((len(images), 375, 500, 3))
+    import cv2
+    img_4d = []
+    for img in images:
+        if len(img.shape) == 3:
+            img_4d.append(cv2.resize(img, (112, 112, 3)))
 
-    for i in range(len(images)):
-        new_array_img[i] = images[i]
-
-    print(new_array_img.shape)
+    all_img = np.array(img_4d).reshape(len(img_4d), 112, 112, 3)
 
     # convert labels to integers
     encoder = preprocessing.LabelEncoder()
