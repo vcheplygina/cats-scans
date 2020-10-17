@@ -221,6 +221,12 @@ def import_STI10(data_dir):
     images_flat = np.array(images_flat)
     print(images_flat.shape)
 
+    new_array_img = np.empty((len(images), 375, 500, 3))
+
+    for i in range(len(images)):
+        new_array_img[i] = images[i]
+
+    print(new_array_img.shape)
 
     # convert labels to integers
     encoder = preprocessing.LabelEncoder()
