@@ -205,8 +205,8 @@ def import_STI10(data_dir):
     :param data_dir: directory where all data is stored (images and labels)
     :return: images and labels of own subset created from ImageNet
     """
-    images = np.load(f'{data_dir}/all_imgs.npy')
-    labels = np.load(f'{data_dir}/all_labels.npy')
+    images = np.load(f'{data_dir}/all_imgs.npy', allow_pickle=True)
+    labels = np.load(f'{data_dir}/all_labels.npy', allow_pickle=True)
 
     # split data in train-val-test set (train 80% - val 10% - test 10%)
     ten_percent = 0.1 * len(images)  # define 10% of whole dataset, pass on to split function
