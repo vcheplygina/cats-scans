@@ -213,7 +213,7 @@ def import_STI10(data_dir):
     images = np.load(f'{data_dir}/all_imgs.npy', allow_pickle=True)
     labels = np.load(f'{data_dir}/all_labels.npy', allow_pickle=True)
 
-    all_imgs = np.reshape(images,
+    # all_imgs = np.reshape(images,
 
     # convert labels to integers
     encoder = preprocessing.LabelEncoder()
