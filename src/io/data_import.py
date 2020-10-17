@@ -207,11 +207,10 @@ def import_STI10(data_dir):
     :return: images and labels of own subset created from ImageNet
     """
     images = np.load(f'{data_dir}/all_imgs.npy', allow_pickle=True)
-
     labels = np.load(f'{data_dir}/all_labels.npy', allow_pickle=True)
 
     all_imgs = [item for sublist in images for item in sublist]
-    print(images.shape)
+    print(images[0].shape)
 
     # convert labels to integers
     encoder = preprocessing.LabelEncoder()
