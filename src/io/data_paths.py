@@ -38,7 +38,7 @@ def get_path(home, target_data):
 
         return data_dir
 
-    if target_data == 'imagenet_subset':
+    if target_data == 'sti10':
         data_dir = f'{home}/sti10'
 
         return data_dir
