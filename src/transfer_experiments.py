@@ -46,7 +46,7 @@ def cfg():
 
     target = False
     # define src data
-    source_data = "sti10"
+    source_data = "stl10"
     # define target dataset
     target_data = None
     x_col = None
