@@ -3,6 +3,7 @@ import os
 import numpy as np
 from sklearn.model_selection import train_test_split
 from .data_paths import get_path
+from sklearn import preprocessing
 
 
 def import_ISIC(img_dir, label_dir):
@@ -208,15 +209,19 @@ def import_STI10(data_dir):
     images = np.load(f'{data_dir}/all_imgs.npy', allow_pickle=True)
     labels = np.load(f'{data_dir}/all_labels.npy', allow_pickle=True)
 
+    # convert labels to integers
+    labelencoder = preprocessing.LabelEncoder()
+    labelencoder.fit(labels)
+    print(labelencoder.classes_)
+    labelencoder.transform(labels)
+    print(labels)
+
     # split data in train-val-test set (train 80% - val 10% - test 10%)
     ten_percent = round(0.1 * len(images))  # define 10% of whole dataset, pass on to split function
     X_train, X_test, y_train, y_test = train_test_split(images, labels, stratify=labels, shuffle=True, random_state=2,
                                                         test_size=ten_percent)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
                                                       test_size=ten_percent)
-
-    print(X_train)
-    print(y_train)
 
     return X_train, X_val, X_test, y_train, y_val, y_test
 
