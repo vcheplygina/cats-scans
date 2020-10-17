@@ -9,8 +9,8 @@ from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=imagenet_target=isic_test')
-ex = Experiment('Resnet_pretrained=pcam_target=chest')
-# ex = Experiment('Resnet_pretraining=STI10_test')
+# ex = Experiment('Resnet_pretrained=pcam_target=chest')
+ex = Experiment('Resnet_pretraining=STI10_test')
 # ex = Experiment('Resnet_pretraining=isic')
 
 
@@ -24,46 +24,46 @@ def cfg():
     """
     :return: parameter settings used in the experiment. NOTE: this should be updated with every new experiment
     """
-    target = True
-    # define src data
-    source_data = "pcam"
-    # define target dataset
-    target_data = "chest"
-    x_col = "path"
-    y_col = "class"
-    augment = True
-    n_folds = 5
-    img_length = 112
-    img_width = 112
-    learning_rate = 0.000001
-    batch_size = 112
-    epochs = 50
-    color = True
-    dropout = 0.5
-    model_choice = "resnet"
-    scheduler_bool = True
-    home = '/data/ivdbrandt'
-
-    # target = False
+    # target = True
     # # define src data
-    # source_data = "isic"
+    # source_data = "pcam"
     # # define target dataset
-    # target_data = None
-    # x_col = None
-    # y_col = None
+    # target_data = "chest"
+    # x_col = "path"
+    # y_col = "class"
     # augment = True
-    # n_folds = None
+    # n_folds = 5
     # img_length = 112
     # img_width = 112
-    # learning_rate = 0.00001
-    # batch_size = 128
-    # epochs = 70
+    # learning_rate = 0.000001
+    # batch_size = 112
+    # epochs = 50
     # color = True
     # dropout = 0.5
-    # imagenet = False
     # model_choice = "resnet"
-    # scheduler_bool = False
+    # scheduler_bool = True
     # home = '/data/ivdbrandt'
+
+    target = False
+    # define src data
+    source_data = "sti10"
+    # define target dataset
+    target_data = None
+    x_col = None
+    y_col = None
+    augment = True
+    n_folds = None
+    img_length = 112
+    img_width = 112
+    learning_rate = 0.001
+    batch_size = 128
+    epochs = 20
+    color = True
+    dropout = 0.5
+    imagenet = False
+    model_choice = "resnet"
+    scheduler_bool = False
+    home = '/data/ivdbrandt'
 
 
 
@@ -244,5 +244,5 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
 # %%
 import numpy as np
-x = np.array([0.6624, 0.6590, 0.6747, 0.6651, 0.6782])
+x = np.array([0.7816, 0.7833, 0.7820, 0.7816, 0.7797])
 print(np.mean(x), np.std(x))
