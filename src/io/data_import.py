@@ -210,7 +210,7 @@ def import_STI10(data_dir):
     labels = np.load(f'{data_dir}/all_labels.npy', allow_pickle=True)
 
     # convert labels to integers
-    encoder = preprocessing.LabelEncoder
+    encoder = preprocessing.LabelEncoder()
     encoder = encoder.fit(labels)
     print(list(encoder.classes_))
     int_labels = encoder.transform(labels)
