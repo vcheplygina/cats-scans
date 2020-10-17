@@ -33,6 +33,9 @@ def run_model_source(augment, batch_size, source_data, home, target_data, img_le
         y_val = to_categorical(y_val, num_classes=num_classes)
         y_test = to_categorical(y_test, num_classes=num_classes)
 
+        print(X_train)
+        print(y_train)
+
         # initiliaze generators fetching images from arrays
         train_generator = train_datagen.flow(x=X_train,
                                              y=y_train,
