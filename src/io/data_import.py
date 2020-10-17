@@ -214,9 +214,6 @@ def import_STI10(data_dir):
 
     # reshape array into (8060, .., .., 3)
     print(images.shape)
-    print(images[0::].shape)
-    images = list(images)
-    print(images)
     images_flat = [item for sublist in images for item in sublist]
     images_flat = np.array(images_flat)
     print(images_flat.shape)
