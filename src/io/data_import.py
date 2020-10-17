@@ -224,17 +224,14 @@ def import_STI10(data_dir):
     # convert labels to integers
     encoder = preprocessing.LabelEncoder()
     encoder = encoder.fit(labels)
-    print(list(encoder.classes_))
     int_labels = encoder.transform(labels)
-    print(int_labels)
 
     # split data in train-val-test set (train 80% - val 10% - test 10%)
     ten_percent = round(0.1 * len(int_labels))  # define 10% of whole dataset, pass on to split function
-    X_train, X_test, y_train, y_test = train_test_split(all_img, int_labels, stratify=int_labels, shuffle=True, random_state=2,
-                                                        test_size=ten_percent)
+    X_train, X_test, y_train, y_test = train_test_split(all_img, int_labels, stratify=int_labels, shuffle=True,
+                                                        random_state=2, test_size=ten_percent)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
                                                       test_size=ten_percent)
-    print(X_train.shape)
 
     return X_train, X_val, X_test, y_train, y_val, y_test
 
