@@ -211,9 +211,8 @@ def import_STI10(data_dir):
 
     # convert labels to integers
     labelencoder = preprocessing.LabelEncoder()
-    labelencoder.fit(labels)
+    labels = labelencoder.fit_transform(labels)
     print(labelencoder.classes_)
-    labelencoder.transform(labels)
     print(labels)
 
     # split data in train-val-test set (train 80% - val 10% - test 10%)
