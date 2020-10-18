@@ -54,14 +54,14 @@ def cfg():
     n_folds = None
     img_length = 112
     img_width = 112
-    learning_rate = 0.00001
+    learning_rate = 0.0001
     batch_size = 128
-    epochs = 100
+    epochs = 50
     color = True
     dropout = 0.5
     imagenet = False
     model_choice = "resnet"
-    scheduler_bool = False
+    scheduler_bool = True
     home = '/data/ivdbrandt'
 
 
@@ -79,7 +79,7 @@ class MetricsLoggerCallback(tf.keras.callbacks.Callback):
 
 
 def scheduler(epochs, learning_rate):
-    if epochs < 20:
+    if epochs < 30:
         return learning_rate
     else:
         return learning_rate * 0.5
