@@ -34,8 +34,8 @@ def cfg():
     n_folds = 5
     img_length = 96
     img_width = 96
-    learning_rate = 0.00001
-    batch_size = 112
+    learning_rate = 0.000001
+    batch_size = 128
     epochs = 20
     color = True
     dropout = 0.5
@@ -239,8 +239,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
         return test_loss, test_acc
 
-#
-# # %%
-# import numpy as np
-# x = np.array([0.7816, 0.7833, 0.7820, 0.7816, 0.7797])
-# print(np.mean(x), np.std(x))
+
+# %%
+import numpy as np
+x = np.array([0.9014, 0.8988, 0.8998, 0.8904, 0.8906])
+print(np.mean(x), np.std(x))
