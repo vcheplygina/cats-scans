@@ -27,10 +27,10 @@ def feature_extraction(datasets, mfe_path, mfe_subset):
             (train_images, train_labels), (test_images, test_labels) = cifar100.load_data()
         elif dataset == 'ISIC2017':
             train_images = get_train_images(dataset='ISIC2017', converter_path=mfe_path, converter_subset=mfe_subset)
-            train_labels = 2
+            train_labels = 7
         elif dataset == 'ISIC2018':
             train_images = get_train_images(dataset='ISIC2018', converter_path=mfe_path, converter_subset=mfe_subset)
-            train_labels = 2
+            train_labels = 7
         elif dataset == 'chest_xray':
             train_images = get_train_images(dataset='chest_xray', converter_path=mfe_path, converter_subset=mfe_subset)
             train_labels = len(next(os.walk(mfe_path + '/chest_xray/train/'))[1])
@@ -124,6 +124,8 @@ def feature_extraction(datasets, mfe_path, mfe_subset):
         # Combine dataset vectors
 
         data_vectors.append(meta_vector)
+
+        print(dataset + ':', 'image count = ' + str(image_count) + ',', 'image size = ' + str(image_size) + ',', 'label count = ' + str(label_count))
 
     # Similarity matrix calculation
 
