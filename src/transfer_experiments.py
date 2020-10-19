@@ -9,7 +9,7 @@ from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=imagenet_target=isic_test')
-ex = Experiment('Resnet_pretrained=sti10_target=chest')
+ex = Experiment('Resnet_pretrained=sti10_target=pcam')
 
 
 ex.observers.append(NeptuneObserver(
@@ -27,16 +27,16 @@ def cfg():
     # define src data
     source_data = "sti10"
     # define target dataset
-    target_data = "chest"
+    target_data = "pcam"
     x_col = "path"
     y_col = "class"
     augment = True
     n_folds = 5
-    img_length = 112
-    img_width = 112
-    learning_rate = 0.000001
+    img_length = 96
+    img_width = 96
+    learning_rate = 0.00001
     batch_size = 112
-    epochs = 50
+    epochs = 20
     color = True
     dropout = 0.5
     model_choice = "resnet"
