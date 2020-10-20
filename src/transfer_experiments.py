@@ -8,8 +8,8 @@ from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-# ex = Experiment('Resnet_pretrained=imagenet_target=isic_test')
-ex = Experiment('Resnet_pretrained=sti10_target=isic')
+ex = Experiment('Resnet_pretrained=imagenet_target=chest')
+# ex = Experiment('Resnet_pretrained=sti10_target=isic')
 
 
 ex.observers.append(NeptuneObserver(
@@ -25,16 +25,16 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "sti10"
+    source_data = "imagenet"
     # define target dataset
-    target_data = "isic"
+    target_data = "chest"
     x_col = "path"
     y_col = "class"
     augment = True
     n_folds = 5
     img_length = 112
     img_width = 112
-    learning_rate = 0.00001
+    learning_rate = 0.000001
     batch_size = 128
     epochs = 50
     color = True
@@ -242,5 +242,5 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
 # %%
 import numpy as np
-x = np.array([0.9014, 0.8988, 0.8998, 0.8904, 0.8906])
+x = np.array([0.8172, 0.8174, 0.8170, 0.8157, 0.8182])
 print(np.mean(x), np.std(x))

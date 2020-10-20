@@ -272,3 +272,4 @@ def collect_data(home, target_data):
         data_dir = get_path(home, target_data)
         X_train, X_val, X_test, y_train, y_val, y_test = import_STI10(data_dir)
         return X_train, X_val, X_test, y_train, y_val, y_test
+
