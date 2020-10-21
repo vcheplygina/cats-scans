@@ -8,8 +8,8 @@ from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Resnet_pretrained=imagenet_target=chest')
-# ex = Experiment('Resnet_pretrained=sti10_target=isic')
+# ex = Experiment('Resnet_pretrained=imagenet_target=chest')
+ex = Experiment('Resnet_pretrained=sti10_target=chest')
 
 
 ex.observers.append(NeptuneObserver(
@@ -25,7 +25,7 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "imagenet"
+    source_data = "sti10"
     # define target dataset
     target_data = "chest"
     x_col = "path"
