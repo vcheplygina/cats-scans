@@ -177,12 +177,13 @@ def import_textures_dtd(data_dir):
     return X_train, X_val, X_test
 
 
-def import_PCAM(data_dir):
+def import_PCAM(data_dir, target_data):
     """
     The .h5 files provided on https://github.com/basveeling/pcam have first been converted to numpy arrays in
     pcam_converter.py and saved locally as png images. This function loads the png paths and labels in a dataframe.
     This was a workaround since using HDF5Matrix() from keras.utils gave errors when running Sacred.
     :param data_dir: directory where all data is stored (images and labels)
+    :param target_data: dataset used as target dataset
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
     # get image paths by selecting files from directory that end with .jpg
@@ -196,11 +197,16 @@ def import_PCAM(data_dir):
         dataframe_entries.append(data_frame)  # combine entry with other entries for dataframe
 
     dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
-    print(dataframe['class'].value_counts())  # get information on distribution of labels in dataframe
 
     # get subset of dataframe
-    subset = dataframe.sample(n=100000, replace=False, random_state=2)
-    print('subset created', len(subset))
+    if target_data == 'pcam-middle':
+        subset = dataframe.sample(n=100000, replace=False, random_state=2)
+        print('subset created', len(subset))
+        print(subset['class'].value_counts())  # get information on distribution of labels in dataframe
+    elif target_data == 'pcam-small':
+        subset = dataframe.sample(n=10000, replace=False, random_state=22)
+        print('subset created', len(subset))
+        print(subset['class'].value_counts())  # get information on distribution of labels in dataframe
 
     return subset
 
@@ -263,13 +269,12 @@ def collect_data(home, target_data):
         X_train, X_val, X_test = import_textures_dtd(data_dir)
         return X_train, X_val, X_test
 
-    elif target_data == 'pcam':
+    elif (target_data == 'pcam-middle') or (target_data == 'pcam-small'):
         data_dir = get_path(home, target_data)
-        dataframe = import_PCAM(data_dir)
+        dataframe = import_PCAM(data_dir, target_data)
         return dataframe
 
     elif target_data == 'sti10':
         data_dir = get_path(home, target_data)
         X_train, X_val, X_test, y_train, y_val, y_test = import_STI10(data_dir)
         return X_train, X_val, X_test, y_train, y_val, y_test
-

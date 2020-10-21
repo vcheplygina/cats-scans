@@ -9,8 +9,8 @@ from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=imagenet_target=chest')
-ex = Experiment('Resnet_pretrained=sti10_target=chest')
-
+# ex = Experiment('Resnet_pretrained=sti10_target=chest')
+ex = Experiment('Pretrain_isic')
 
 ex.observers.append(NeptuneObserver(
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGl"
@@ -23,46 +23,46 @@ def cfg():
     """
     :return: parameter settings used in the experiment. NOTE: this should be updated with every new experiment
     """
-    target = True
-    # define src data
-    source_data = "sti10"
-    # define target dataset
-    target_data = "chest"
-    x_col = "path"
-    y_col = "class"
-    augment = True
-    n_folds = 5
-    img_length = 112
-    img_width = 112
-    learning_rate = 0.000001
-    batch_size = 128
-    epochs = 50
-    color = True
-    dropout = 0.5
-    model_choice = "resnet"
-    scheduler_bool = True
-    home = '/data/ivdbrandt'
-
-    # target = False
+    # target = True
     # # define src data
     # source_data = "sti10"
     # # define target dataset
-    # target_data = None
-    # x_col = None
-    # y_col = None
+    # target_data = "chest"
+    # x_col = "path"
+    # y_col = "class"
     # augment = True
-    # n_folds = None
+    # n_folds = 5
     # img_length = 112
     # img_width = 112
-    # learning_rate = 0.0001
+    # learning_rate = 0.000001
     # batch_size = 128
-    # epochs = 70
+    # epochs = 50
     # color = True
     # dropout = 0.5
-    # imagenet = False
     # model_choice = "resnet"
     # scheduler_bool = True
     # home = '/data/ivdbrandt'
+
+    target = False
+    # define src data
+    source_data = "sti10"
+    # define target dataset
+    target_data = None
+    x_col = None
+    y_col = None
+    augment = True
+    n_folds = None
+    img_length = 600
+    img_width = 450
+    learning_rate = 0.00001
+    batch_size = 128
+    epochs = 70
+    color = True
+    dropout = 0.5
+    imagenet = False
+    model_choice = "resnet"
+    scheduler_bool = True
+    home = '/data/ivdbrandt'
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
@@ -239,8 +239,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
         return test_loss, test_acc
 
-
-# %%
-import numpy as np
-x = np.array([0.8172, 0.8174, 0.8170, 0.8157, 0.8182])
-print(np.mean(x), np.std(x))
+#
+# # %%
+# import numpy as np
+# x = np.array([0.6698, 0.6725, 0.6790, 0.6787, 0.6783])
+# print(np.mean(x), np.std(x))
