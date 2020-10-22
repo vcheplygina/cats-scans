@@ -33,7 +33,7 @@ def get_path(home, target_data):
 
         return data_dir
 
-    if target_data == 'pcam-small':
+    if (target_data == 'pcam-small') | (target_data == 'pcam-middle'):
         data_dir = f'{home}/PCam/png_images'
 
         return data_dir
