@@ -30,8 +30,7 @@ first_conv = models.Model(inputs=resnet.inputs, outputs=resnet.get_layer('conv1_
 # %%
 # convert image to tensor and normalize
 # X_test_indexreset = X_test.reset_index(drop=True)
-img = cv2.imread(X_train[X_train['path'] == path])
-#%%
+img = cv2.imread(X_train.loc[X_train['path'] == path]['path'][989])
 img_tensor = image.img_to_array(img)
 # reshape image to 300x300x3
 img_tensor = np.resize(img_tensor, (300, 300, 3))
@@ -52,7 +51,54 @@ for _ in range(size1):
         # get first filter activations
         plt.imshow(activation[0, :, :, index - 1])
         index += 1
-# plt.savefig("activations_firstlayer")
+plt.savefig("activations_freckled_0093")
+plt.show()
+
+# %%
+img = Image.fromarray(img, 'RGB')
+img.show()
+
+
+
+#%%
+# get the flecked image 0093.jpg
+path = '/Users/IrmavandenBrandt/Downloads/Internship/dtd/images/crystalline/crystalline_0181.jpg'
+
+for paths in X_val['path']:
+    if paths == path:
+        print('yes')
+
+# %%
+# show the activation maps on the first image of the test set
+# redefine model to output right after the first hidden layer
+first_conv = models.Model(inputs=resnet.inputs, outputs=resnet.get_layer('conv1_conv').output)
+
+# %%
+# convert image to tensor and normalize
+X_val_item = X_val.loc[X_val['path'] == path]['path'].reset_index(drop=True)
+# X_test_indexreset = X_test.reset_index(drop=True)
+img = cv2.imread(X_val_item[0])
+img_tensor = image.img_to_array(img)
+# reshape image to 300x300x3
+img_tensor = np.resize(img_tensor, (300, 300, 3))
+img_tensor = preprocess_input(img_tensor)
+img_tensor_expanded = np.expand_dims(img_tensor, axis=0)
+
+# get feature map for first hidden layer
+activation = first_conv.predict(img_tensor_expanded)
+# we have 64 filters in first conv layer so 64 different activation maps  (8 x 8)
+index = 1
+size1 = 8
+size2 = 8
+for _ in range(size1):
+    for _ in range(size2):
+        ax = plt.subplot(size1, size2, index)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        # get first filter activations
+        plt.imshow(activation[0, :, :, index - 1])
+        index += 1
+plt.savefig("activations_crystalline_0181")
 plt.show()
 
 # %%
