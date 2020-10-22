@@ -78,7 +78,7 @@ class MetricsLoggerCallback(tf.keras.callbacks.Callback):
 
 
 def scheduler(epochs, learning_rate):
-    if epochs < 50:
+    if epochs < 30:
         return learning_rate
     else:
         return learning_rate * 0.5
