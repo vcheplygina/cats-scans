@@ -166,13 +166,14 @@ def import_textures_dtd(data_dir):
     dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
     print(dataframe['class'].value_counts())  # get information on distribution of labels in dataframe
 
-    # split data in train-val-test set (train 1000, val 150 and test 150 per class)
+    # split data in train-val-test set (train 80% - val 10% - test 10%)
+    ten_percent = round(len(dataframe) * 0.1)
     X_train, X_test, y_train, y_test = train_test_split(dataframe, dataframe['class'], stratify=dataframe['class'],
                                                         shuffle=True, random_state=2,
-                                                        test_size=round(len(dataframe) * 0.1))  # take ~10% as test set
+                                                        test_size=ten_percent)  # take ~10% as test set
     X_train, X_val, y_train, y_val = train_test_split(X_train, X_train['class'], stratify=X_train['class'],
                                                       shuffle=True, random_state=2,
-                                                      test_size=round(len(dataframe) * 0.1))  # take ~10% as val set
+                                                      test_size=ten_percent)  # take ~10% as val set
 
     return X_train, X_val, X_test
 
