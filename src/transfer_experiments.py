@@ -56,7 +56,7 @@ def cfg():
     img_width = 450
     learning_rate = 0.00001
     batch_size = 12   # this is changed!!
-    epochs = 70
+    epochs = 30
     color = True
     dropout = 0.5
     imagenet = False
