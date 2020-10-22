@@ -61,7 +61,7 @@ def cfg():
     dropout = 0.5
     imagenet = False
     model_choice = "resnet"
-    scheduler_bool = True
+    scheduler_bool = False
     home = '/data/ivdbrandt'
 
 
