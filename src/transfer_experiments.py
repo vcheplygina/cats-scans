@@ -10,7 +10,7 @@ from tensorflow.keras import callbacks
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=imagenet_target=chest')
 # ex = Experiment('Resnet_pretrained=pcam_target=chest')
-ex = Experiment('Pretrain_isic')
+ex = Experiment('Pretrain_pcam-small')
 
 ex.observers.append(NeptuneObserver(
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGl"
@@ -45,18 +45,18 @@ def cfg():
 
     target = False
     # define src data
-    source_data = "isic"
+    source_data = "pcam-small"
     # define target dataset
     target_data = None
     x_col = None
     y_col = None
     augment = True
     n_folds = None
-    img_length = 600
-    img_width = 450
-    learning_rate = 0.00001
-    batch_size = 12   # this is changed!!
-    epochs = 30
+    img_length = 96
+    img_width = 96
+    learning_rate = 0.000001
+    batch_size = 128
+    epochs = 50
     color = True
     dropout = 0.5
     imagenet = False
@@ -242,5 +242,5 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
 # %%
 import numpy as np
-x = np.array([0.8288, 0.8220, 0.8115, 0.8176, 0.8180])
+x = np.array([0.8084, 0.8111, 0.7935, 0.7972, 0.8115])
 print(np.mean(x), np.std(x))
