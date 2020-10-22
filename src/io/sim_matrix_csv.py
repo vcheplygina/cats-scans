@@ -1,21 +1,20 @@
-import openpyxl
-from src.similarity.similarity_experiment import sim_mat, datasets_list
+#%%
+import xlsxwriter
 
-wb = openpyxl.Workbook()
-ws1 = wb.active
-ws1.title = "Similarity matrix"
+def write_xlsx(xlsx_path, xlsx_name, data_list, sim_mat):
 
-for row in range(len(datasets_list)):
-    for col in range(len(datasets_list)):
-        if row == 1 and col == 1:
-            cell = ws1.cell(column=col+1, row=row+1)
-            cell.value = ''
-        elif row == 1 and col > 1:
-            cell = ws1.cell(column=col+1, row=row+1)
-            cell.value = datasets_list[col]
-        elif col == 1 and row > 1:
-            cell = ws1.cell(column=col+1, row=row+1)
-            cell.value = datasets_list[row]
-        else:
-            cell = ws1.cell(column=col+1, row=row+1)
-            cell.value = sim_mat[row][col]
+    workbook = xlsxwriter.Workbook(xlsx_path + xlsx_name)
+    worksheet = workbook.add_worksheet()
+
+    for row in range(len(data_list)+1):
+        for col in range(len(data_list)+1):
+            if row == 0 and col == 0:
+                worksheet.write(row, col, '')
+            elif row == 0 and col > 0:
+                worksheet.write(row, col, data_list[col-1])
+            elif col == 0 and row > 0:
+                worksheet.write(row, col, data_list[row-1])
+            else:
+                worksheet.write(row, col, sim_mat[row-1][col-1])
+
+    workbook.close()
