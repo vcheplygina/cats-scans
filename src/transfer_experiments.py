@@ -23,46 +23,46 @@ def cfg():
     """
     :return: parameter settings used in the experiment. NOTE: this should be updated with every new experiment
     """
-    target = True
+    # target = True
+    # # define src data
+    # source_data = "chest"
+    # # define target dataset
+    # target_data = "isic"
+    # x_col = "path"
+    # y_col = "class"
+    # augment = True
+    # n_folds = 5
+    # img_length = 112
+    # img_width = 112
+    # learning_rate = 0.00001
+    # batch_size = 128
+    # epochs = 50
+    # color = True
+    # dropout = 0.5
+    # model_choice = "resnet"
+    # scheduler_bool = False
+    # home = '/data/ivdbrandt'
+    #
+    target = False
     # define src data
-    source_data = "pcam-small"
+    source_data = "chest"
     # define target dataset
-    target_data = "chest"
-    x_col = "path"
-    y_col = "class"
+    target_data = None
+    x_col = None
+    y_col = None
     augment = True
-    n_folds = 5
+    n_folds = None
     img_length = 112
     img_width = 112
-    learning_rate = 0.00001
+    learning_rate = 0.0001
     batch_size = 128
     epochs = 50
     color = True
     dropout = 0.5
+    imagenet = False
     model_choice = "resnet"
     scheduler_bool = False
     home = '/data/ivdbrandt'
-    #
-    # target = False
-    # # define src data
-    # source_data = "pcam-small"
-    # # define target dataset
-    # target_data = None
-    # x_col = None
-    # y_col = None
-    # augment = True
-    # n_folds = None
-    # img_length = 96
-    # img_width = 96
-    # learning_rate = 0.000001
-    # batch_size = 128
-    # epochs = 70
-    # color = True
-    # dropout = 0.5
-    # imagenet = False
-    # model_choice = "resnet"
-    # scheduler_bool = False
-    # home = '/data/ivdbrandt'
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
