@@ -9,8 +9,8 @@ from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=imagenet_target=chest')
-ex = Experiment('Resnet_pretrained=pcam-small_target=chest')
-# ex = Experiment('Pretrain_pcam-small')
+# ex = Experiment('Resnet_pretrained=pcam-small_target=chest')
+ex = Experiment('Pretrain_chest')
 
 ex.observers.append(NeptuneObserver(
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGl"
