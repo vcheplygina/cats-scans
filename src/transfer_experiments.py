@@ -25,16 +25,16 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "pcam-middle"
+    source_data = "isic"
     # define target dataset
-    target_data = "isic"
+    target_data = "pcam-middle"
     x_col = "path"
     y_col = "class"
     augment = True
     n_folds = 5
     img_length = 112
     img_width = 112
-    learning_rate = 0.0001
+    learning_rate = 0.0000001
     batch_size = 128
     epochs = 50
     color = True
