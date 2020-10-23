@@ -9,7 +9,7 @@ from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=imagenet_target=chest')
-ex = Experiment('Resnet_pretrained=pcam-small_target=isic')
+ex = Experiment('Resnet_pretrained=pcam-middle_target=isic')
 # ex = Experiment('Pretrain_chest')
 
 ex.observers.append(NeptuneObserver(
@@ -25,7 +25,7 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "pcam-small"
+    source_data = "pcam-middle"
     # define target dataset
     target_data = "isic"
     x_col = "path"
