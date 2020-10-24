@@ -242,5 +242,5 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
 # %%
 import numpy as np
-x = np.array([0.4986, 0.4961, 0.5190, 0.5112, 0.5120])
+x = np.array([0.7278, 0.7035, 0.7235, 0.6971, 0.7377])
 print(np.mean(x), np.std(x))
