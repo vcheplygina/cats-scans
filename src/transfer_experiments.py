@@ -32,8 +32,8 @@ def cfg():
     y_col = "class"
     augment = True
     n_folds = 5
-    img_length = 112
-    img_width = 112
+    img_length = 96
+    img_width = 96
     learning_rate = 0.0000001
     batch_size = 128
     epochs = 50
