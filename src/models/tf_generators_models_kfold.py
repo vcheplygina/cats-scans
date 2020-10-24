@@ -3,7 +3,6 @@ from keras.models import load_model
 from keras import Model
 from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from efficientnet.keras import EfficientNetB3
 from keras.applications.resnet50 import ResNet50, preprocess_input
 import os
 from sklearn.utils import class_weight
@@ -13,12 +12,11 @@ import numpy as np
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 
-def create_generators_dataframes(target_data, augment):
+def create_generators(target_data, augment):
     """
     :param target_data: dataset used as target dataset
     :param augment: boolean specifying whether to use data augmentation or not
-    :return: training and validation generator, training and test dataset, and dictionary containing model_weights for
-    all unique labels in the dataset
+    :return: training and validation generator that preprocesses and augments images
     """
     if target_data == 'pcam':
         preprocessing = lambda x: x / 255.
@@ -27,16 +25,10 @@ def create_generators_dataframes(target_data, augment):
 
     if augment:
         train_datagen = ImageDataGenerator(
-            featurewise_center=False,  # set input mean to 0 over the dataset
-            samplewise_center=False,  # set each sample mean to 0
-            featurewise_std_normalization=False,  # divide inputs by std of the dataset
-            samplewise_std_normalization=False,  # divide each input by its std
-            zca_whitening=False,  # apply ZCA whitening
-            rotation_range=10,  # randomly rotate images in the range (degrees, 0 to 180)
-            width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-            height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+            rotation_range=10,  # randomly rotate images in the range 0 to 180 (degrees)
+            width_shift_range=0.1,  # randomly shift images horizontally, range as fraction of total width
+            height_shift_range=0.1,  # randomly shift images vertically, range as fraction of total height
             horizontal_flip=True,  # randomly flip images
-            vertical_flip=False,
             preprocessing_function=preprocessing)
 
     else:
@@ -48,8 +40,7 @@ def create_generators_dataframes(target_data, augment):
     return train_datagen, valid_datagen
 
 
-def create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data, model_choice,
-                 num_classes):
+def create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data, num_classes):
     """
     :param target_data: dataset used as target dataset
     :param learning_rate: learning rate used by optimizer
@@ -58,7 +49,6 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
     :param color: boolean specifying whether the images are in color or not
     :param dropout: fraction of nodes in layer that are deactivated
     :param source_data: dataset used as src dataset
-    :param model_choice: model architecture to use for convolutional base (i.e. resnet or efficientnet)
     :param num_classes: number of unique classes in dataset
     :return: compiled model (i.e. resnet or efficientnet)
     """
@@ -72,7 +62,7 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
         # collect pretrained efficientnet model on src data
         print(f'loading model and weights from source data {source_data} and for target data {target_data}')
         pretrained = load_model(
-            f'model_weights_{model_choice}_pretrained={source_data}.h5')
+            f'model_weights_resnet_pretrained={source_data}.h5')
         # remove top layer that has been specialized on src dataset output
         if num_classes == 2:
             output_layer = Dense(1, activation='sigmoid')(pretrained.layers[-2].output)
@@ -83,22 +73,13 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
         model = Model(inputs=pretrained.input, outputs=output_layer)
     else:
         model = models.Sequential()  # initialize new model
-        if model_choice == 'efficientnet':
-            if source_data == "imagenet":
-                # collect efficient net and exclude top layers
-                efficient_net = EfficientNetB3(include_top=False, weights="imagenet", input_shape=input_shape)
-            else:
-                # collect efficient net and exclude top layers
-                efficient_net = EfficientNetB3(include_top=False, weights=None, input_shape=input_shape)
-            model.add(efficient_net)  # attach efficient net to new model
-        elif model_choice == "resnet":
-            if source_data == "imagenet":
-                # collect efficient net and exclude top layers
-                resnet = ResNet50(include_top=False, weights="imagenet", input_shape=input_shape)
-            else:
-                # collect efficient net and exclude top layers
-                resnet = ResNet50(include_top=False, weights=None, input_shape=input_shape)
-            model.add(resnet)  # attach efficient net to new model
+        if source_data == "imagenet":
+            # collect resnet and exclude top layers
+            resnet = ResNet50(include_top=False, weights="imagenet", input_shape=input_shape)
+        else:
+            # collect resnet and exclude top layers
+            resnet = ResNet50(include_top=False, weights=None, input_shape=input_shape)
+        model.add(resnet)  # attach resnet to new model
         # add new top layers to enable prediction for target dataset
         model.add(GlobalAveragePooling2D(name='gap'))
         model.add(Dropout(dropout, name='dropout_out'))
@@ -128,3 +109,33 @@ def compute_class_weights(labels):
     class_weights = {i: class_weights[i] for i in range(len(class_weights))}
 
     return class_weights
+
+
+def compute_class_mode(source_data, target_data):
+    """
+    :param source_data: dataset used as source dataset
+    :param target_data: dataset used as target dataset
+    :return: computes class mode depending on which source dataset is used in case of pretraining and using
+    flow_from_dataframe or on which target dataset is used in case of TF
+    """
+    if target_data is None:
+        if (source_data == 'pcam-middle') | (source_data == 'pcam-small') | (source_data == 'chest'):
+            class_mode = 'binary'
+
+            return class_mode
+
+        elif (source_data == 'isic') | (source_data == 'textures'):
+            class_mode = 'categorical'
+
+            return class_mode
+
+    else:
+        if target_data == "isic":
+            class_mode = "categorical"
+
+            return class_mode
+
+        else:
+            class_mode = "binary"   # binary class mode for chest and pcam
+
+            return class_mode

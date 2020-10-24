@@ -204,12 +204,15 @@ def import_PCAM(data_dir, target_data):
         subset = dataframe.sample(n=100000, replace=False, random_state=2)
         print('subset created', len(subset))
         print(subset['class'].value_counts())  # get information on distribution of labels in dataframe
+
+        return subset
+
     elif target_data == 'pcam-small':
         subset = dataframe.sample(n=10000, replace=False, random_state=22)
         print('subset created', len(subset))
         print(subset['class'].value_counts())  # get information on distribution of labels in dataframe
 
-    return subset
+        return subset
 
 
 def import_STI10(data_dir):
