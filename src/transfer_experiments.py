@@ -200,7 +200,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
         return acc_per_fold, loss_per_fold, auc_per_fold
 
     else:
-        num_classes, train_generator, valid_generator, test_generator, class_weights = prepare_model_source(augment,
+        num_classes, train_generator, valid_generator, test_generator = prepare_model_source(augment,
                                                                                                             batch_size,
                                                                                                             source_data,
                                                                                                             home,
