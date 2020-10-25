@@ -131,15 +131,13 @@ def import_STL10(train_img_path, train_label_path, test_img_path, test_label_pat
         labels_new.append(label)
     labels = np.array(labels_new)
 
-    # split data in train-val-test set (train 1000, val 150 and test 150 per class)
-    X_train, X_test, y_train, y_test = train_test_split(images, labels, stratify=labels, shuffle=True, random_state=2,
-                                                        test_size=150 / 1300)  # take ~10% as test set
-    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
-                                                      test_size=150 / 1150)  # take ~10% as test set
+    # # split data in train-val-test set (train 1000, val 150 and test 150 per class)
+    # X_train, X_test, y_train, y_test = train_test_split(images, labels, stratify=labels, shuffle=True, random_state=2,
+    #                                                     test_size=150 / 1300)  # take ~10% as test set
+    # X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
+    #                                                   test_size=150 / 1150)  # take ~10% as test set
 
-    print(X_train.shape)
-
-    return X_train, X_val, X_test, y_train, y_val, y_test
+    return images, labels
 
 
 def import_textures_dtd(data_dir):
@@ -166,24 +164,25 @@ def import_textures_dtd(data_dir):
     dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
     print(dataframe['class'].value_counts())  # get information on distribution of labels in dataframe
 
-    # split data in train-val-test set (train 80% - val 10% - test 10%)
-    ten_percent = round(len(dataframe) * 0.1)
-    X_train, X_test, y_train, y_test = train_test_split(dataframe, dataframe['class'], stratify=dataframe['class'],
-                                                        shuffle=True, random_state=2,
-                                                        test_size=ten_percent)  # take ~10% as test set
-    X_train, X_val, y_train, y_val = train_test_split(X_train, X_train['class'], stratify=X_train['class'],
-                                                      shuffle=True, random_state=2,
-                                                      test_size=ten_percent)  # take ~10% as val set
+    # # split data in train-val-test set (train 80% - val 10% - test 10%)
+    # ten_percent = round(len(dataframe) * 0.1)
+    # X_train, X_test, y_train, y_test = train_test_split(dataframe, dataframe['class'], stratify=dataframe['class'],
+    #                                                     shuffle=True, random_state=2,
+    #                                                     test_size=ten_percent)  # take ~10% as test set
+    # X_train, X_val, y_train, y_val = train_test_split(X_train, X_train['class'], stratify=X_train['class'],
+    #                                                   shuffle=True, random_state=2,
+    #                                                   test_size=ten_percent)  # take ~10% as val set
 
-    return X_train, X_val, X_test
+    return dataframe
 
 
-def import_PCAM(data_dir, target_data):
+def import_PCAM(data_dir, source_data, target_data):
     """
     The .h5 files provided on https://github.com/basveeling/pcam have first been converted to numpy arrays in
     pcam_converter.py and saved locally as png images. This function loads the png paths and labels in a dataframe.
     This was a workaround since using HDF5Matrix() from keras.utils gave errors when running Sacred.
     :param data_dir: directory where all data is stored (images and labels)
+    :param source_data: dataset used as source dataset
     :param target_data: dataset used as target dataset
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
@@ -200,14 +199,14 @@ def import_PCAM(data_dir, target_data):
     dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
 
     # get subset of dataframe
-    if target_data == 'pcam-middle':
+    if (target_data == 'pcam-middle') | (source_data == 'pcam-middle'):
         subset = dataframe.sample(n=100000, replace=False, random_state=2)
         print('subset created', len(subset))
         print(subset['class'].value_counts())  # get information on distribution of labels in dataframe
 
         return subset
 
-    elif target_data == 'pcam-small':
+    elif source_data == 'pcam-small':
         subset = dataframe.sample(n=10000, replace=False, random_state=22)
         print('subset created', len(subset))
         print(subset['class'].value_counts())  # get information on distribution of labels in dataframe
@@ -236,49 +235,77 @@ def import_STI10(data_dir):
     encoder = encoder.fit(labels)
     int_labels = encoder.transform(labels)
 
-    # split data in train-val-test set (train 80% - val 10% - test 10%)
-    ten_percent = round(0.1 * len(int_labels))  # define 10% of whole dataset, pass on to split function
-    X_train, X_test, y_train, y_test = train_test_split(all_img, int_labels, stratify=int_labels, shuffle=True,
-                                                        random_state=2, test_size=ten_percent)
-    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
-                                                      test_size=ten_percent)
-
-    return X_train, X_val, X_test, y_train, y_val, y_test
+    return all_img, int_labels
 
 
-def collect_data(home, target_data):
+def collect_data(home, source_data, target_data):
     """
     :param home: part of path that is specific to user, e.g. /Users/..../
+    :param source_data: dataset used as source dataset
     :param target_data: dataset used as target dataset
-    :return: dataframe containing image paths and labels
+    :return: training, validation and test dataframe in case of pretraining, dataframe with all images and labels in
+    case of TF
     """
-    if target_data == 'isic':
-        img_dir, label_dir = get_path(home, target_data)
-        dataframe = import_ISIC(img_dir, label_dir)
-        return dataframe
+    if target_data is None:
+        if (source_data == 'stl10') | (source_data == 'sti10'):
+            if source_data == 'stl10':
+                train_img_path, train_label_path, test_img_path, test_label_path = get_path(home, source_data)
+                img, labels = import_STL10(train_img_path, train_label_path, test_img_path, test_label_path)
 
-    elif target_data == 'chest':
-        data_dir = get_path(home, target_data)
-        dataframe = import_chest(data_dir)
-        return dataframe
+            elif source_data == 'sti10':
+                data_dir = get_path(home, source_data)
+                img, labels = import_STI10(data_dir)
 
-    elif target_data == 'stl10':
-        train_img_path, train_label_path, test_img_path, test_label_path = get_path(home, target_data)
-        X_train, X_val, X_test, y_train, y_val, y_test = import_STL10(train_img_path, train_label_path, test_img_path,
-                                                                      test_label_path)
-        return X_train, X_val, X_test, y_train, y_val, y_test
+            # split data in train-val-test set (train 80% - val 10% - test 10%)
+            ten_percent = round(len(img) * 0.1)  # define 10% of whole dataset, pass on to split function
+            X_train, X_test, y_train, y_test = train_test_split(img, labels, stratify=labels, shuffle=True,
+                                                                random_state=2, test_size=ten_percent)
+            X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True,
+                                                              random_state=2,
+                                                              test_size=ten_percent)
 
-    elif target_data == 'textures':
-        data_dir = get_path(home, target_data)
-        X_train, X_val, X_test = import_textures_dtd(data_dir)
-        return X_train, X_val, X_test
+            return X_train, X_val, X_test, y_train, y_val, y_test
 
-    elif (target_data == 'pcam-middle') or (target_data == 'pcam-small'):
-        data_dir = get_path(home, target_data)
-        dataframe = import_PCAM(data_dir, target_data)
-        return dataframe
+        else:
+            if source_data == 'textures':
+                data_dir = get_path(home, source_data)
+                dataframe = import_textures_dtd(data_dir)
 
-    elif target_data == 'sti10':
-        data_dir = get_path(home, target_data)
-        X_train, X_val, X_test, y_train, y_val, y_test = import_STI10(data_dir)
-        return X_train, X_val, X_test, y_train, y_val, y_test
+            elif source_data == 'isic':
+                img_dir, label_dir = get_path(home, source_data)
+                dataframe = import_ISIC(img_dir, label_dir)
+
+            elif (source_data == 'pcam-middle') | (source_data == 'pcam-small'):
+                data_dir = get_path(home, source_data)
+                dataframe = import_PCAM(data_dir, source_data, target_data)
+
+            elif source_data == 'chest':
+                data_dir = get_path(home, source_data)
+                dataframe = import_chest(data_dir)
+
+            # split data in train-val-test set (train 80% - val 10% - test 10%)
+            ten_percent = round(len(dataframe) * 0.1)  # define 10% of whole dataset, pass on to split function
+            X_train, X_test, y_train, y_test = train_test_split(dataframe, dataframe['class'],
+                                                                stratify=dataframe['class'],
+                                                                test_size=ten_percent,
+                                                                random_state=2, shuffle=True)
+            X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train,
+                                                              test_size=ten_percent,
+                                                              random_state=2, shuffle=True)
+            return X_train, X_val, X_test
+
+    else:
+        if target_data == 'isic':
+            img_dir, label_dir = get_path(home, target_data)
+            dataframe = import_ISIC(img_dir, label_dir)
+            return dataframe
+
+        elif target_data == 'chest':
+            data_dir = get_path(home, target_data)
+            dataframe = import_chest(data_dir)
+            return dataframe
+
+        elif target_data == 'pcam-middle':
+            data_dir = get_path(home, target_data)
+            dataframe = import_PCAM(data_dir, target_data)
+            return dataframe

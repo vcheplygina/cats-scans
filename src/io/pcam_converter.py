@@ -1,4 +1,3 @@
-# %%
 import numpy as np
 from keras.utils import HDF5Matrix
 import imageio

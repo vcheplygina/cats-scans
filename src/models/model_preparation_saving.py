@@ -1,4 +1,4 @@
-from sklearn.model_selection import StratifiedKFold, train_test_split
+from sklearn.model_selection import StratifiedKFold
 from ..io.requests_osf import upload_zip_to_osf
 from ..io.data_import import collect_data
 from .tf_generators_models_kfold import create_generators, compute_class_mode
@@ -24,7 +24,7 @@ def prepare_model_source(augment, batch_size, source_data, home, target_data, im
 
     # import data into function
     if (source_data == 'stl10') | (source_data == 'sti10'):
-        X_train, X_val, X_test, y_train, y_val, y_test = collect_data(home, source_data)
+        X_train, X_val, X_test, y_train, y_val, y_test = collect_data(home, source_data, target_data)
         num_classes = len(np.unique(y_train))  # compute the number of unique classes in the dataset
 
         # convert labels to one-hot encoded labels after having counted the number of unique classes
@@ -52,30 +52,16 @@ def prepare_model_source(augment, batch_size, source_data, home, target_data, im
                                             seed=2)
 
     else:
-        if source_data == 'textures':
-            train_dataframe, val_dataframe, test_dataframe = collect_data(home, source_data)
-
-        elif (source_data == 'isic') | (source_data == 'pcam-middle') | (source_data == 'pcam-small') \
-                | (source_data == 'chest'):
-            dataframe = collect_data(home, source_data)
-
-            # split data in train, val and test (80-10-10)
-            ten_percent = round(len(dataframe) * 0.1)
-            X_train, test_dataframe, y_train, y_test = train_test_split(dataframe, dataframe['class'],
-                                                                        stratify=dataframe['class'],
-                                                                        test_size=ten_percent,
-                                                                        random_state=2, shuffle=True)
-            train_dataframe, val_dataframe, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train,
-                                                                              test_size=ten_percent,
-                                                                              random_state=2, shuffle=True)
+        # collect training, validation and testing datasets
+        X_train, X_val, X_test = collect_data(home, source_data, target_data)
 
         # get class model depending on the source data used in pretraining
         class_mode = compute_class_mode(source_data, target_data)
 
-        num_classes = len(np.unique(train_dataframe['class']))  # compute the number of unique classes in the dataset
+        num_classes = len(np.unique(X_train['class']))  # compute the number of unique classes in the dataset
 
         # initiliaze generators fetching images from dataframe with image paths and labels
-        train_generator = train_datagen.flow_from_dataframe(dataframe=train_dataframe,
+        train_generator = train_datagen.flow_from_dataframe(dataframe=X_train,
                                                             x_col='path',
                                                             y_col='class',
                                                             target_size=(img_length, img_width),
@@ -84,7 +70,7 @@ def prepare_model_source(augment, batch_size, source_data, home, target_data, im
                                                             class_mode=class_mode,
                                                             seed=2)
 
-        validation_generator = valid_datagen.flow_from_dataframe(dataframe=val_dataframe,
+        validation_generator = valid_datagen.flow_from_dataframe(dataframe=X_val,
                                                                  x_col='path',
                                                                  y_col='class',
                                                                  target_size=(img_length, img_width),
@@ -93,7 +79,7 @@ def prepare_model_source(augment, batch_size, source_data, home, target_data, im
                                                                  class_mode=class_mode,
                                                                  seed=2)
 
-        test_generator = valid_datagen.flow_from_dataframe(dataframe=test_dataframe,
+        test_generator = valid_datagen.flow_from_dataframe(dataframe=X_test,
                                                            x_col='path',
                                                            y_col='class',
                                                            target_size=(img_length, img_width),
@@ -125,7 +111,7 @@ def prepare_model_target(home, target_data, source_data, x_col, y_col, augment, 
     skf = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=2)
 
     # collect the target data using the specified home path and the desired dataset name
-    dataframe = collect_data(home, target_data)
+    dataframe = collect_data(home, source_data, target_data)
 
     # compute number of nodes needed in prediction layer (i.e. number of unique classes)
     num_classes = len(list(dataframe[y_col].unique()))

@@ -4,7 +4,7 @@ from .models.model_preparation_saving import prepare_model_target, prepare_model
 import tensorflow as tf
 from .models.tf_generators_models_kfold import create_model, compute_class_weights
 import numpy as np
-from .evaluation.auc_evaluation import calculate_AUC
+from .evaluation.AUC_evaluation import calculate_AUC
 from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 
@@ -26,18 +26,18 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "chest"
+    source_data = "imagenet"
     # define target dataset
-    target_data = "isic"
+    target_data = "pcam-middle"
     x_col = "path"
     y_col = "class"
     augment = True
     n_folds = 5
-    img_length = 112
-    img_width = 112
+    img_length = 96
+    img_width = 96
     learning_rate = 0.0001
     batch_size = 128
-    epochs = 50
+    epochs = 20
     color = True
     dropout = 0.5
     scheduler_bool = False
@@ -115,12 +115,12 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
     if target:
         num_classes, dataframe, skf, train_datagen, valid_datagen, x_col, y_col, class_mode = prepare_model_target(home,
-                                                                                                            target_data,
-                                                                                                            source_data,
-                                                                                                            x_col,
-                                                                                                            y_col,
-                                                                                                            augment,
-                                                                                                            n_folds)
+                                                                                                                   target_data,
+                                                                                                                   source_data,
+                                                                                                                   x_col,
+                                                                                                                   y_col,
+                                                                                                                   augment,
+                                                                                                                   n_folds)
 
         # initialize empty lists storing accuracy, loss and multi-class auc per fold
         acc_per_fold = []
@@ -201,12 +201,12 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
     else:
         num_classes, train_generator, valid_generator, test_generator = prepare_model_source(augment,
-                                                                                                            batch_size,
-                                                                                                            source_data,
-                                                                                                            home,
-                                                                                                            target_data,
-                                                                                                            img_length,
-                                                                                                            img_width)
+                                                                                             batch_size,
+                                                                                             source_data,
+                                                                                             home,
+                                                                                             target_data,
+                                                                                             img_length,
+                                                                                             img_width)
 
         model = create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data,
                              num_classes)  # create model
@@ -234,5 +234,5 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 # # %%
 # import numpy as np
 #
-# x = np.array([0.7278, 0.7035, 0.7235, 0.6971, 0.7377])
+# x = np.array([0.9107, 0.9138, 0.9074, 0.9048, 0.9126])
 # print(np.mean(x), np.std(x))
