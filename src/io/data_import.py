@@ -307,5 +307,5 @@ def collect_data(home, source_data, target_data):
 
         elif target_data == 'pcam-middle':
             data_dir = get_path(home, target_data)
-            dataframe = import_PCAM(data_dir, target_data)
+            dataframe = import_PCAM(data_dir, source_data, target_data)
             return dataframe
