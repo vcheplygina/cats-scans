@@ -3,7 +3,7 @@ import xlsxwriter
 
 def write_xlsx(xlsx_path, xlsx_name, data_list, sim_mat):
 
-    workbook = xlsxwriter.Workbook(xlsx_path + xlsx_name)
+    workbook = xlsxwriter.Workbook(xlsx_path + xlsx_name, {'nan_inf_to_errors': True})
     worksheet = workbook.add_worksheet()
 
     for row in range(len(data_list)+1):
