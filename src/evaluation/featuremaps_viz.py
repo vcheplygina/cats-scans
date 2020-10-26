@@ -34,6 +34,7 @@ def collect_data_trainedmodel(target, source_data, target_data, home):
 def visualize_featuremaps_firstconv(target, source_data, target_data, home, dataset, img_index, img_width, img_height):
     X_train, X_val, X_test, first_conv = collect_data_trainedmodel(target, source_data, target_data, home)
 
+    print(X_train.loc[18]['path'])
     if (source_data == 'sti10') | (source_data == 'stl10'):
         if dataset == 'train':
             img = X_train[img_index]
@@ -78,7 +79,7 @@ def visualize_featuremaps_firstconv(target, source_data, target_data, home, data
             # get first filter activations
             plt.imshow(activation[0, :, :, index - 1])
             index += 1
-    plt.savefig(f'activations_{dataset}_{img_index}', dpi=1000)
+    plt.savefig(f'activations_{source_data}_{dataset}_{img_index}', dpi=1000)
     plt.show()
 
     # show true image
@@ -87,7 +88,6 @@ def visualize_featuremaps_firstconv(target, source_data, target_data, home, data
     img.show()
 
 
-# %%
-visualize_featuremaps_firstconv(target=False, source_data='stl10', target_data=None,
-                                home='/Users/IrmavandenBrandt/Downloads/Internship', dataset='train', img_index=0,
-                                img_width=96, img_height=96)
+visualize_featuremaps_firstconv(target=False, source_data='textures', target_data=None,
+                                home='/Users/IrmavandenBrandt/Downloads/Internship', dataset='train', img_index=18,
+                                img_width=300, img_height=300)

@@ -1,122 +1,123 @@
-from sklearn.metrics import roc_auc_score
-import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
-from keras.models import load_model
-from ..models.model_preparation_saving import prepare_model_target
-
-
-def calculate_AUC(target_data, valid_generator, predictions):
-    """
-    :param target_data: dataset used as target dataset
-    :param valid_generator: generator feeding validation images and labels to model
-    :param predictions: predictions made on the validation set using the trained model
-    :return: One-Vs-Rest AUC for multiclass case, 'normal' AUC for binary case
-    """
-    # compute OneVsRest multi-class macro AUC on the test set
-    if target_data == "isic":
-        OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, multi_class='ovr', average='macro')
-    else:
-        OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, average='macro')
-    print(f'Validation auc: {OneVsRest_auc}')
-
-    return OneVsRest_auc
-
-
-def collect_AUC_scores(home, source_data, target_data, x_col, y_col, augment, n_folds, img_length, img_width,
-                       batch_size):
-    """
-    :param home:
-    :param source_data:
-    :param target_data:
-    :param x_col:
-    :param y_col:
-    :param augment:
-    :param n_folds:
-    :param img_length:
-    :param img_width:
-    :param batch_size:
-    :return:
-    """
-    num_classes, dataframe, skf, train_datagen, valid_datagen, x_col, y_col, class_mode = prepare_model_target(home,
-                                                                                                               target_data,
-                                                                                                               source_data,
-                                                                                                               x_col,
-                                                                                                               y_col,
-                                                                                                               augment,
-                                                                                                               n_folds)
-    auc_per_fold = []
-    fold_no = 1
-
-    for train_index, val_index in skf.split(np.zeros(len(dataframe)), y=dataframe[['class']]):
-        print(f'Starting fold {fold_no}')
-
-        valid_data = dataframe.iloc[val_index]  # create validation dataframe with indices from fold split
-
-        valid_generator = valid_datagen.flow_from_dataframe(dataframe=valid_data,
-                                                            x_col=x_col,
-                                                            y_col=y_col,
-                                                            target_size=(img_length, img_width),
-                                                            batch_size=batch_size,
-                                                            class_mode=class_mode,
-                                                            validate_filenames=False,
-                                                            shuffle=False)
-
-        try:
-            trained_model = load_model(
-                f'/output/model_weights_resnet_target={target_data}_source={source_data}_fold{i}.h5')
-        except:
-            continue
-
-        predictions = trained_model.predict(valid_generator)  # get predictions
-        OnevsRestAUC = calculate_AUC(target_data, valid_generator, predictions)
-        auc_per_fold.append(OnevsRestAUC)
-
-    mean_auc = np.mean(auc_per_fold)
-
-    return mean_auc
-
-
-def create_AUC_matrix(home, x_col, y_col, augment, n_folds, batch_size):
-    """
-    :param home:
-    :param x_col:
-    :param y_col:
-    :param augment:
-    :param n_folds:
-    :param batch_size:
-    :return:
-    """
-    auc_dict = {}
-
-    source_datasets = ['imagenet', 'stl10', 'sti10', 'textures', 'isic', 'chest', 'pcam-middle', 'pcam-small']
-    target_datasets = ['isic', 'chest', 'pcam-middle']
-
-    for source in source_datasets:
-        aucs_per_source = []
-        for target in target_datasets:
-            if target == 'pcam-middle':
-                img_length = 96
-                img_width = 96
-            else:
-                img_length = 112
-                img_width = 112
-            mean_auc = collect_AUC_scores(home, source, target, x_col, y_col, augment, n_folds, img_length,
-                                          img_width, batch_size)
-            aucs_per_source.append(mean_auc)
-        auc_dict[source] = aucs_per_source
-
-    return auc_dict
-#%%
-auc_scores = np.array([[0.947, 0.985, 0.961], [0.905, 0.965, 0.958], [0.895, 0.954, 0.879], [0.910, 0.981, 0.925],
-                       [0.905, 0.965, 0.958], [0.895, 0.954, 0.879], [0.915, 0.958, np.nan], [np.nan, 0.921, 0.847],
-                       [0.900, np.nan, 0.900], [0.915, 0.958, np.nan], [0.901, 0.949, np.nan]])
-
-np.save('outputs/mean_auc_scores', auc_scores)
-#%%
+# from sklearn.metrics import roc_auc_score
+# import pandas as pd
+# import matplotlib.pyplot as plt
+# import numpy as np
+# from keras.models import load_model
+# from ..models.model_preparation_saving import prepare_model_target
 #
-# auc_dictionary = create_AUC_matrix(home='/Users/IrmavandenBrandt/Downloads/Internship', x_col='path', y_col='class',
-#                                    augment=True, n_folds=5, batch_size=128)
+#
+# def calculate_AUC(target_data, valid_generator, predictions):
+#     """
+#     :param target_data: dataset used as target dataset
+#     :param valid_generator: generator feeding validation images and labels to model
+#     :param predictions: predictions made on the validation set using the trained model
+#     :return: One-Vs-Rest AUC for multiclass case, 'normal' AUC for binary case
+#     """
+#     # compute OneVsRest multi-class macro AUC on the test set
+#     if target_data == "isic":
+#         OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, multi_class='ovr', average='macro')
+#     else:
+#         OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, average='macro')
+#     print(f'Validation auc: {OneVsRest_auc}')
+#
+#     return OneVsRest_auc
+#
+#
+# # def collect_AUC_scores(home, source_data, target_data, x_col, y_col, augment, n_folds, img_length, img_width,
+# #                        batch_size):
+# #     """
+# #     :param home:
+# #     :param source_data:
+# #     :param target_data:
+# #     :param x_col:
+# #     :param y_col:
+# #     :param augment:
+# #     :param n_folds:
+# #     :param img_length:
+# #     :param img_width:
+# #     :param batch_size:
+# #     :return:
+# #     """
+# #     num_classes, dataframe, skf, train_datagen, valid_datagen, x_col, y_col, class_mode = prepare_model_target(home,
+# #                                                                                                                target_data,
+# #                                                                                                                source_data,
+# #                                                                                                                x_col,
+# #                                                                                                                y_col,
+# #                                                                                                                augment,
+# #                                                                                                                n_folds)
+# #     auc_per_fold = []
+# #     fold_no = 1
+# #
+# #     for train_index, val_index in skf.split(np.zeros(len(dataframe)), y=dataframe[['class']]):
+# #         print(f'Starting fold {fold_no}')
+# #
+# #         valid_data = dataframe.iloc[val_index]  # create validation dataframe with indices from fold split
+# #
+# #         valid_generator = valid_datagen.flow_from_dataframe(dataframe=valid_data,
+# #                                                             x_col=x_col,
+# #                                                             y_col=y_col,
+# #                                                             target_size=(img_length, img_width),
+# #                                                             batch_size=batch_size,
+# #                                                             class_mode=class_mode,
+# #                                                             validate_filenames=False,
+# #                                                             shuffle=False)
+# #
+# #         try:
+# #             trained_model = load_model(
+# #                 f'/output/resnet_target={target_data}_source={source_data}/model_weights_resnet_target={target_data}'
+# #                 f'_source={source_data}_fold{i}.h5')
+# #         except:
+# #             continue
+# #
+# #         predictions = trained_model.predict(valid_generator)  # get predictions
+# #         OnevsRestAUC = calculate_AUC(target_data, valid_generator, predictions)
+# #         auc_per_fold.append(OnevsRestAUC)
+# #
+# #     mean_auc = np.mean(auc_per_fold)
+# #
+# #     return mean_auc
+# #
+# #
+# # def create_AUC_matrix(home, x_col, y_col, augment, n_folds, batch_size):
+# #     """
+# #     :param home:
+# #     :param x_col:
+# #     :param y_col:
+# #     :param augment:
+# #     :param n_folds:
+# #     :param batch_size:
+# #     :return:
+# #     """
+# #     auc_dict = {}
+# #
+# #     source_datasets = ['imagenet', 'stl10', 'sti10', 'textures', 'isic', 'chest', 'pcam-middle', 'pcam-small']
+# #     target_datasets = ['isic', 'chest', 'pcam-middle']
+# #
+# #     for source in source_datasets:
+# #         aucs_per_source = []
+# #         for target in target_datasets:
+# #             if target == 'pcam-middle':
+# #                 img_length = 96
+# #                 img_width = 96
+# #             else:
+# #                 img_length = 112
+# #                 img_width = 112
+# #             mean_auc = collect_AUC_scores(home, source, target, x_col, y_col, augment, n_folds, img_length,
+# #                                           img_width, batch_size)
+# #             aucs_per_source.append(mean_auc)
+# #         auc_dict[source] = aucs_per_source
+# #
+# #     return auc_dict
+# # #%%
+# # auc_scores = np.array([[0.947, 0.985, 0.961], [0.905, 0.965, 0.958], [0.895, 0.954, 0.879], [0.910, 0.981, 0.925],
+# #                        [0.905, 0.965, 0.958], [0.895, 0.954, 0.879], [0.915, 0.958, np.nan], [np.nan, 0.921, 0.847],
+# #                        [0.900, np.nan, 0.900], [0.915, 0.958, np.nan], [0.901, 0.949, np.nan]])
+# #
+# # np.save('outputs/mean_auc_scores', auc_scores)
+# #%%
+#
+# # auc_dictionary = create_AUC_matrix(home='/Users/IrmavandenBrandt/Downloads/Internship', x_col='path', y_col='class',
+# #                                    augment=True, n_folds=5, batch_size=128)
 #
 # #
 # #
@@ -133,21 +134,25 @@ np.save('outputs/mean_auc_scores', auc_scores)
 # auc_matrix_nonan = auc_matrix.fillna(0)
 # auc_matrix_sorted = auc_matrix_nonan.apply(np.argsort, axis=0)  # sort column wise
 # auc_matrix_sorted2 = auc_matrix_sorted.apply(np.argsort, axis=0)  # sort column wise again
-# auc_matrix_sorted2[auc_matrix_nonan == 0] = np.nan  # replace the 0 values by nan
+# auc_matrix_sorted2['Overall rank'] = auc_matrix_sorted2.sum(axis=1)
+# auc_matrix_sorted3 = auc_matrix_sorted2.apply(np.argsort, axis=0)  # sort column wise again
+# auc_matrix_sorted4 = auc_matrix_sorted3.apply(np.argsort, axis=0)  # sort column wise again
+#
+# auc_matrix_sorted4[auc_matrix_nonan == 0] = np.nan  # replace the 0 values by nan
 #
 # fig, ax = plt.subplots()
-# im = ax.imshow(auc_matrix_sorted2, interpolation=None, vmin=0, aspect="auto", cmap="RdYlGn")
-# cbar = ax.figure.colorbar(im, )
-# # cbar.ax.set_ylabel(cbarlabel='AUC-score', rotation=-90, va="bottom")
-# cbar.set_ticks([0, 3.5, 7])
-# cbar.set_ticklabels([np.min(np.ma.masked_array(auc_matrix.to_numpy(), np.isnan(auc_matrix.to_numpy()), axis=1)),
-#                      np.nanquantile(auc_matrix.to_numpy(), 0.5),
-#                      np.max(np.ma.masked_array(auc_matrix.to_numpy(), np.isnan(auc_matrix.to_numpy()), axis=1))])
+# im = ax.imshow(auc_matrix_sorted4, interpolation=None, vmin=0, aspect="auto", cmap="RdYlGn")
+# # cbar = ax.figure.colorbar(im, )
+# # # cbar.ax.set_ylabel(cbarlabel='AUC-score', rotation=-90, va="bottom")
+# # cbar.set_ticks([0, 3.5, 7])
+# # cbar.set_ticklabels([np.min(np.ma.masked_array(auc_matrix.to_numpy(), np.isnan(auc_matrix.to_numpy()), axis=1)),
+# #                      np.nanquantile(auc_matrix.to_numpy(), 0.5),
+# #                      np.max(np.ma.masked_array(auc_matrix.to_numpy(), np.isnan(auc_matrix.to_numpy()), axis=1))])
 #
-# ax.set_xticks(np.arange(auc_matrix.shape[1]))
-# ax.set_yticks(np.arange(auc_matrix.shape[0]))
-# ax.set_xticklabels(auc_matrix.axes[1])
-# ax.set_yticklabels(auc_matrix.axes[0])
+# ax.set_xticks(np.arange(auc_matrix_sorted2.shape[1]))
+# ax.set_yticks(np.arange(auc_matrix_sorted2.shape[0]))
+# ax.set_xticklabels(auc_matrix_sorted2.axes[1])
+# ax.set_yticklabels(auc_matrix_sorted2.axes[0])
 # for edge, spine in ax.spines.items():
 #     spine.set_visible(False)
 # ax.set_xticks(np.arange(auc_matrix.shape[1] + 1) - .5, minor=True)
@@ -168,5 +173,41 @@ np.save('outputs/mean_auc_scores', auc_scores)
 # plt.xlabel('Target')
 # plt.ylabel('Source')
 # plt.rcParams["axes.labelsize"] = 12
-# plt.savefig('outputs/heatmap_auc_scores')
+# plt.tight_layout()
+# plt.savefig('outputs/heatmap_auc_scores', dpi=1000)
+# plt.show()
+#
+#
+#
+# #%%
+# import matplotlib.pyplot as plt
+# import numpy as np
+#
+#
+# labels = ['ImageNet', 'STL-10', 'STI-10', 'DTD', 'ISIC2018', 'Chest X-rays', 'PCam-middle', 'PCam-small']
+# isic_scores = [0.947, 0.905, 0.895, 0.910, np.nan, 0.900, 0.915, 0.901]
+# isic_error = [0.003, 0.004, 0.006, 0.004, np.nan, 0.008, 0.006, 0.007]
+# chest_scores = [0.985, 0.965, 0.954, 0.981, 0.921, np.nan, 0.958, 0.949]
+# chest_error = [0.003, 0.001, 0.002, 0.002, 0.016, np.nan, 0.005, 0.012]
+# pcam_scores = [0.961, 0.958, 0.879, 0.925, 0.847, 0.900, np.nan, np.nan]
+# pcam_error = [0.002, 0.001, 0.003, 0.001, 0.002, 0, np.nan, np.nan]
+#
+# x = np.arange(len(labels))  # the label locations
+# width = 0.2  # the width of the bars
+#
+# fig, ax = plt.subplots()
+# rects1 = ax.bar(x - width, isic_scores, width, yerr=isic_error, alpha=0.8, ecolor='black', capsize=2, label='ISIC2018')
+# rects2 = ax.bar(x, chest_scores, width, yerr=chest_error, alpha=0.8, ecolor='black', capsize=2, label='Chest X-rays')
+# rects3 = ax.bar(x + width, pcam_scores, width, yerr=pcam_error, alpha=0.8, ecolor='black', capsize=2, label='PCam-middle')
+#
+# # Add some text for labels, title and custom x-axis tick labels, etc.
+# ax.set_ylabel('AUC-score')
+# ax.set_xlabel('Source Dataset')
+# ax.set_title('AUC-score by Target and Source Dataset')
+# ax.set_xticks(x)
+# ax.set_xticklabels(labels)
+# plt.xticks(rotation=45)
+# plt.ylim(0.8)
+# ax.legend()
+#
 # plt.show()

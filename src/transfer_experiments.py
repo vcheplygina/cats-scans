@@ -26,7 +26,7 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "chest"
+    source_data = "isic"
     # define target dataset
     target_data = "pcam-middle"
     x_col = "path"
@@ -35,7 +35,7 @@ def cfg():
     n_folds = 5
     img_length = 96
     img_width = 96
-    learning_rate = 0.000001
+    learning_rate = 0.00001
     batch_size = 128
     epochs = 20
     color = True
