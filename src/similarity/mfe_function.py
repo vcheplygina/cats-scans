@@ -2,11 +2,12 @@ import keras
 import numpy as np
 import os
 from src.io.converter_numpy import get_train_images
-from src.similarity.meta_features import meta_entropy, meta_skew, meta_kurtosis, meta_std, meta_mean, meta_sparsity
+from src.similarity.meta_features import meta_entropy, meta_skew, meta_kurtosis, meta_mad, meta_mean, meta_variance
+import cv2
 
 #%% Function
 
-def feature_extraction(datasets, mfe_path, mfe_subset):
+def feature_extraction(datasets, mfe_path, mfe_subset, color_channel):
     """Calculates the similarity vector between datasets based on meta-features"""
     # Importing datasets and defining subsets
 
@@ -44,17 +45,23 @@ def feature_extraction(datasets, mfe_path, mfe_subset):
         data_entropy = []
         data_skewness = []
         data_kurtosis = []
-        data_std = []
+        data_mad = []
         data_mean = []
-        data_sparsity = []
+        data_variance = []
 
         for image in data:
+            if color_channel == 'blue':
+                image = cv2.calcHist([image], [0], None, [256], [0, 256])
+            elif color_channel == 'green':
+                image = cv2.calcHist([image], [1], None, [256], [0, 256])
+            elif color_channel == 'red':
+                image = cv2.calcHist([image], [2], None, [256], [0, 256])
             data_entropy.append(meta_entropy(image, base=len(image.shape)))
             data_skewness.append(meta_skew(image))
             data_kurtosis.append(meta_kurtosis(image))
-            data_std.append(meta_std(image))
+            data_mad.append(meta_mad(image))
             data_mean.append(meta_mean(image))
-            data_sparsity.append(meta_sparsity(image))
+            data_variance.append(meta_variance(image))
 
         entropy_mean = np.mean(data_entropy)
         entropy_std = np.std(data_entropy)
@@ -65,18 +72,18 @@ def feature_extraction(datasets, mfe_path, mfe_subset):
         kurtosis_mean = np.mean(data_kurtosis)
         kurtosis_std = np.std(data_kurtosis)
 
-        std_mean = np.mean(data_std)
-        std_std = np.std(data_std)
+        mad_mean = np.mean(data_mad)
+        mad_std = np.std(data_mad)
 
         mean_mean = np.mean(data_mean)
         mean_std = np.std(data_mean)
 
-        sparsity_mean = np.mean(data_sparsity)
-        sparsity_std = np.std(data_sparsity)
+        variance_mean = np.mean(data_variance)
+        variance_std = np.std(data_variance)
 
         # Combine meta-features
         meta_vector = [image_count, label_count, entropy_mean, entropy_std, skewness_mean, skewness_std, kurtosis_mean, kurtosis_std,
-                       std_mean, std_std, mean_mean, mean_std, sparsity_mean, sparsity_std]
+                       mad_mean, mad_std, mean_mean, mean_std, variance_mean, variance_std]
 
         # Zero mean and unit variance
 
@@ -90,7 +97,7 @@ def feature_extraction(datasets, mfe_path, mfe_subset):
 
         data_vectors.append(meta_vector)
 
-        print(dataset + ':', 'image count = ' + str(image_count) + ',', 'label count = ' + str(label_count), str(data.shape))
+        # print(dataset + ':', 'image count = ' + str(image_count) + ',', 'label count = ' + str(label_count), str(data.shape))
 
     # Similarity matrix calculation
 
@@ -100,6 +107,10 @@ def feature_extraction(datasets, mfe_path, mfe_subset):
         for column in range(len(data_vectors)):
             euc_dst = np.linalg.norm(np.asarray(data_vectors[row]) - np.asarray(data_vectors[column]))
             sim_mat[row][column] = np.around(euc_dst, decimals=2)
+
+    # Normalize and invert matrix
+
+    # final_sim_mat = norm_and_invert(sim_mat)
 
     return sim_mat
 
