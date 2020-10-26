@@ -1,41 +1,34 @@
 import numpy as np
-from scipy.stats import kurtosis, skew, entropy as scipy_entropy
-import cv2
+from scipy.stats import kurtosis, skew, entropy, median_absolute_deviation
 
 #%% Meta-features
 
 # Shannon entropy
 def meta_entropy(image, base=2):
-    image = cv2.calcHist(image, [0], None, [256], [0, 256])
-    _, counts = np.unique(image, return_counts=True)
-    return scipy_entropy(counts, base=base)
+    im_entropy = entropy(image)
+    return im_entropy
 
 # Skewness
 def meta_skew(image):
-    image = cv2.calcHist(image, [0], None, [256], [0, 256])
     skewness = skew(image, axis=None)
     return skewness
 
 # Kurtosis
 def meta_kurtosis(image):
-    image = cv2.calcHist(image, [0], None, [256], [0, 256])
     kurt = kurtosis(image, axis=None)
     return kurt
 
-# Standard deviation
-def meta_std(image):
-    image = cv2.calcHist(image, [0], None, [256], [0, 256])
-    std = np.std(image)
-    return std
+# Median absolute deviation
+def meta_mad(image):
+    mad = median_absolute_deviation(image)
+    return mad
 
 # Mean
 def meta_mean(image):
-    image = cv2.calcHist(image, [0], None, [256], [0, 256])
     mean = np.mean(image)
     return mean
 
-# Sparsity
-def meta_sparsity(image):
-    image = cv2.calcHist(image, [0], None, [256], [0, 256])
-    sparsity = np.count_nonzero(image)/np.prod(image.shape)
+# Variance
+def meta_variance(image):
+    sparsity = np.var(image)
     return sparsity
