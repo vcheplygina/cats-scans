@@ -52,9 +52,9 @@ def expert_answers(expert_answer_path):
             mode_list.append(mode(answers_per_question))
         answer_dict[datasets[data_index]] = mode_list
 
-    initial_vector = np.array((0, 0, 0, 0, 0, 0, 0, 0, 0, 0), dtype=float)
-
     sim_mat = np.zeros((len(datasets), len(datasets)), dtype=float)
+
+    initial_vector = np.zeros((1, len(q_numbers)), dtype=float)
 
     for data_index_columns in range(len(datasets)):
         dataset_answers = answer_dict[datasets[data_index_columns]]
@@ -70,7 +70,7 @@ def expert_answers(expert_answer_path):
                         vec_value = 0.5
                     else:
                         vec_value = 1
-                initial_vector[ans_index] = vec_value
+                initial_vector[0][ans_index] = vec_value
             sim_mat[data_index_rows][data_index_columns] = np.around(np.linalg.norm(initial_vector), decimals=2)
 
     return sim_mat
