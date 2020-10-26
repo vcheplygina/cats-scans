@@ -29,7 +29,7 @@ def get_train_images(dataset, converter_path, converter_subset):
 
     for index in range(len(sub_dirs)):
         if converter_subset == 'None':
-            converter_subset = 25000        # to avoid memory error
+            converter_subset = 15000        # to avoid memory error
         else:
             converter_subset = converter_subset
 
@@ -44,7 +44,7 @@ def get_train_images(dataset, converter_path, converter_subset):
             dataset_filenames = [f for f in listdir(begin_path + path_to_dataset + sub_dirs[index]) if
                                  isfile(join(begin_path + path_to_dataset + sub_dirs[index], f))][:(round(converter_subset/len(sub_dirs)))]
         for image_name in dataset_filenames:
-            image = cv2.imread(begin_path + path_to_dataset + sub_dirs[index] + '/' + image_name, cv2.IMREAD_GRAYSCALE)
+            image = cv2.imread(begin_path + path_to_dataset + sub_dirs[index] + '/' + image_name)
             image = cv2.resize(image, (300, 300), interpolation=cv2.INTER_CUBIC)
             train_images.append(image)
 
