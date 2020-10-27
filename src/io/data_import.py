@@ -238,6 +238,26 @@ def import_STI10(data_dir):
     return all_img, int_labels
 
 
+def import_KimiaPath(data_dir):
+    """
+    :param data_dir: directory where all data is stored (images and labels)
+    :return: dataframe with image paths in column "path" and image labels in column "class"
+    """
+    # get image paths by selecting files from directory that end with .tif
+    images = [os.path.join(data_dir, f) for f in os.listdir(data_dir) if f.endswith('.tif')]
+
+    dataframe_entries = []  # initiliaze empty list that will store entries for dataframe
+
+    for e, img_path in enumerate(images):
+        data_frame = pd.DataFrame([img_path], columns=['path'])  # add img path to dataframe
+        data_frame['class'] = img_path[-7:-6]  # add label in dataframe in column 'class'
+        dataframe_entries.append(data_frame)  # combine entry with other entries for dataframe
+
+    dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
+
+    return dataframe
+
+
 def collect_data(home, source_data, target_data):
     """
     :param home: part of path that is specific to user, e.g. /Users/..../
@@ -283,6 +303,10 @@ def collect_data(home, source_data, target_data):
                 data_dir = get_path(home, source_data)
                 dataframe = import_chest(data_dir)
 
+            elif source_data == 'kimia':
+                data_dir = get_path(home, source_data)
+                dataframe = import_KimiaPath(data_dir)
+
             # split data in train-val-test set (train 80% - val 10% - test 10%)
             ten_percent = round(len(dataframe) * 0.1)  # define 10% of whole dataset, pass on to split function
             X_train, X_test, y_train, y_test = train_test_split(dataframe, dataframe['class'],
@@ -309,3 +333,4 @@ def collect_data(home, source_data, target_data):
             data_dir = get_path(home, target_data)
             dataframe = import_PCAM(data_dir, source_data, target_data)
             return dataframe
+

@@ -1,7 +1,7 @@
 def get_path(home, target_data):
     """
     :param home: part of path that is specific to user, e.g. /Users/..../
-    :param target_data: dataset used as target dataset
+    :param target_data: dataset name that needs to be collected. Note that this can either be a target or source dataset
     :return: complete path to storage location of target dataset
     """
 
@@ -40,5 +40,10 @@ def get_path(home, target_data):
 
     if target_data == 'sti10':
         data_dir = f'{home}/sti10'
+
+        return data_dir
+
+    if target_data == 'kimia':
+        data_dir = f'{home}/kimia_path_960'
 
         return data_dir
