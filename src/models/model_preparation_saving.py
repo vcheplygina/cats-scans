@@ -54,14 +54,11 @@ def prepare_model_source(augment, batch_size, source_data, home, target_data, im
     else:
         # collect training, validation and testing datasets
         X_train, X_val, X_test = collect_data(home, source_data, target_data)
-        print(X_train.head())
 
         # get class model depending on the source data used in pretraining
         class_mode = compute_class_mode(source_data, target_data)
-        print(class_mode)
 
         num_classes = len(np.unique(X_train['class']))  # compute the number of unique classes in the dataset
-        print(num_classes)
 
         # initiliaze generators fetching images from dataframe with image paths and labels
         train_generator = train_datagen.flow_from_dataframe(dataframe=X_train,
