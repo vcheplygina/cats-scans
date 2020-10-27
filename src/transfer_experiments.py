@@ -53,7 +53,7 @@ def cfg():
     n_folds = None
     img_length = 308
     img_width = 168
-    learning_rate = 0.0001
+    learning_rate = 0.00001
     batch_size = 12
     epochs = 50
     color = True
