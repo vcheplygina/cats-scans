@@ -21,7 +21,7 @@ def calculate_AUC(target_data, valid_generator, predictions):
     print(f'Validation auc: {OneVsRest_auc}')
 
     return OneVsRest_auc
-
+#
 #
 # # def collect_AUC_scores(home, source_data, target_data, x_col, y_col, augment, n_folds, img_length, img_width,
 # #                        batch_size):
@@ -142,6 +142,10 @@ def calculate_AUC(target_data, valid_generator, predictions):
 #
 # fig, ax = plt.subplots()
 # im = ax.imshow(auc_matrix_sorted4, interpolation=None, vmin=0, aspect="auto", cmap="RdYlGn")
+# cbar = ax.figure.colorbar(im)
+# # cbar.ax.set_ylabel(cbarlabel='Rank', rotation=-90, va="bottom")
+# # cbar.set_ticks(np.arange(auc_matrix_sorted2.shape[0]))
+# # cbar.set_ticklabels([i + 1 for i in range(auc_matrix_sorted2.shape[0])])
 # ax.set_xticks(np.arange(auc_matrix_sorted2.shape[1]))
 # ax.set_yticks(np.arange(auc_matrix_sorted2.shape[0]))
 # ax.set_xticklabels(auc_matrix_sorted2.axes[1])
@@ -154,7 +158,6 @@ def calculate_AUC(target_data, valid_generator, predictions):
 # ax.tick_params(which="minor", bottom=False, left=False)
 #
 # j = 0
-# ranks = auc_matrix_sorted4['Overall rank']
 # for index, rows in auc_matrix_nonan.iterrows():
 #     i = 0
 #     for i in range(auc_matrix_nonan.shape[1]):
@@ -164,17 +167,12 @@ def calculate_AUC(target_data, valid_generator, predictions):
 #         i += 1
 #     j += 1
 #
-# ranks_words = ['1st', '2nd', '3rd', '4rd', '5th', '6th', '7th', '8th']
-# for j in range(len(ranks)):
-#     if ranks[j] == 7:
-#         text = ax.text(3, j, ranks[j], ha="center", va="center")
-#     j += 1
 #
 # plt.xlabel('Target')
 # plt.ylabel('Source')
 # plt.rcParams["axes.labelsize"] = 12
 # plt.tight_layout()
-# plt.savefig('outputs/heatmap_auc_scores', dpi=1000)
+# # plt.savefig('outputs/heatmap_auc_scores', dpi=1000)
 # plt.show()
 #
 #
@@ -254,12 +252,3 @@ def calculate_AUC(target_data, valid_generator, predictions):
 # plt.savefig('outputs/barplot_auc_scores', dpi=1000)
 #
 # plt.show()
-#
-#
-# #%%
-# import matplotlib
-#
-# cmap = matplotlib.cm.get_cmap('Set2')
-#
-# rgba = cmap(0.9)
-# print(rgba)

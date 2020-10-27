@@ -250,7 +250,6 @@ def import_KimiaPath(data_dir):
 
     for e, img_path in enumerate(images):
         data_frame = pd.DataFrame([img_path], columns=['path'])  # add img path to dataframe
-        print(len(img_path))
         if len(img_path) == 37:  # todo: change this bc it is dependent on my name
             data_frame['class'] = img_path[-6:-5]
         elif len(img_path) == 38:  # TODO: change this bc it is dependent on my name
