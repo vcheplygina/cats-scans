@@ -124,7 +124,7 @@ def compute_class_mode(source_data, target_data):
 
             return class_mode
 
-        elif (source_data == 'isic') | (source_data == 'textures'):
+        elif (source_data == 'isic') | (source_data == 'textures') | (source_data == 'kimia'):
             class_mode = 'categorical'
 
             return class_mode
