@@ -1,27 +1,27 @@
-# from sklearn.metrics import roc_auc_score
-# import pandas as pd
-# import matplotlib.pyplot as plt
-# import numpy as np
-# from keras.models import load_model
-# from ..models.model_preparation_saving import prepare_model_target
-#
-#
-# def calculate_AUC(target_data, valid_generator, predictions):
-#     """
-#     :param target_data: dataset used as target dataset
-#     :param valid_generator: generator feeding validation images and labels to model
-#     :param predictions: predictions made on the validation set using the trained model
-#     :return: One-Vs-Rest AUC for multiclass case, 'normal' AUC for binary case
-#     """
-#     # compute OneVsRest multi-class macro AUC on the test set
-#     if target_data == "isic":
-#         OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, multi_class='ovr', average='macro')
-#     else:
-#         OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, average='macro')
-#     print(f'Validation auc: {OneVsRest_auc}')
-#
-#     return OneVsRest_auc
-#
+from sklearn.metrics import roc_auc_score
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from keras.models import load_model
+from ..models.model_preparation_saving import prepare_model_target
+
+
+def calculate_AUC(target_data, valid_generator, predictions):
+    """
+    :param target_data: dataset used as target dataset
+    :param valid_generator: generator feeding validation images and labels to model
+    :param predictions: predictions made on the validation set using the trained model
+    :return: One-Vs-Rest AUC for multiclass case, 'normal' AUC for binary case
+    """
+    # compute OneVsRest multi-class macro AUC on the test set
+    if target_data == "isic":
+        OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, multi_class='ovr', average='macro')
+    else:
+        OneVsRest_auc = roc_auc_score(valid_generator.classes, predictions, average='macro')
+    print(f'Validation auc: {OneVsRest_auc}')
+
+    return OneVsRest_auc
+
 #
 # # def collect_AUC_scores(home, source_data, target_data, x_col, y_col, augment, n_folds, img_length, img_width,
 # #                        batch_size):
