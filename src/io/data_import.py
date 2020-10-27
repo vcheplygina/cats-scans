@@ -250,7 +250,10 @@ def import_KimiaPath(data_dir):
 
     for e, img_path in enumerate(images):
         data_frame = pd.DataFrame([img_path], columns=['path'])  # add img path to dataframe
-        data_frame['class'] = img_path[-7:-6]  # add label in dataframe in column 'class'
+        if len(img_path) == 66:
+            data_frame['class'] = img_path[-6:-5]
+        elif len(img_path) == 67:
+            data_frame['class'] = img_path[-7:-6]  # add label in dataframe in column 'class'
         dataframe_entries.append(data_frame)  # combine entry with other entries for dataframe
 
     dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
