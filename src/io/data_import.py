@@ -250,9 +250,10 @@ def import_KimiaPath(data_dir):
 
     for e, img_path in enumerate(images):
         data_frame = pd.DataFrame([img_path], columns=['path'])  # add img path to dataframe
-        if len(img_path) == 66:
+        print(len(img_path))
+        if len(img_path) == 37:
             data_frame['class'] = img_path[-6:-5]
-        elif len(img_path) == 67:
+        elif len(img_path) == 38:
             data_frame['class'] = img_path[-7:-6]  # add label in dataframe in column 'class'
         dataframe_entries.append(data_frame)  # combine entry with other entries for dataframe
 
@@ -338,3 +339,6 @@ def collect_data(home, source_data, target_data):
             dataframe = import_PCAM(data_dir, source_data, target_data)
             return dataframe
 
+# #%%
+# path = '/data/ivdbrandt/kimia_path_960/G4.tif'
+# print(len(path))
