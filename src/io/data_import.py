@@ -254,6 +254,7 @@ def import_KimiaPath(data_dir):
         dataframe_entries.append(data_frame)  # combine entry with other entries for dataframe
 
     dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
+    print(dataframe['class'].value_counts())  # get information on distribution of labels in dataframe
 
     return dataframe
 
