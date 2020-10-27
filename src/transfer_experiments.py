@@ -10,7 +10,7 @@ from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
 # ex = Experiment('Resnet_pretrained=stl10_target=pcam-middle')
-ex = Experiment('Pretrain_kimia_test')
+ex = Experiment('Pretrain_kimia')
 
 ex.observers.append(NeptuneObserver(
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGl"
@@ -55,7 +55,7 @@ def cfg():
     img_width = 168
     learning_rate = 0.00001
     batch_size = 12
-    epochs = 90
+    epochs = 100
     color = True
     dropout = 0.5
     imagenet = False

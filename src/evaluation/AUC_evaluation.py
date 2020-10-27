@@ -21,108 +21,108 @@ def calculate_AUC(target_data, valid_generator, predictions):
     print(f'Validation auc: {OneVsRest_auc}')
 
     return OneVsRest_auc
+
+
+# def collect_AUC_scores(home, source_data, target_data, x_col, y_col, augment, n_folds, img_length, img_width,
+#                        batch_size):
+#     """
+#     :param home:
+#     :param source_data:
+#     :param target_data:
+#     :param x_col:
+#     :param y_col:
+#     :param augment:
+#     :param n_folds:
+#     :param img_length:
+#     :param img_width:
+#     :param batch_size:
+#     :return:
+#     """
+#     num_classes, dataframe, skf, train_datagen, valid_datagen, x_col, y_col, class_mode = prepare_model_target(home,
+#                                                                                                                target_data,
+#                                                                                                                source_data,
+#                                                                                                                x_col,
+#                                                                                                                y_col,
+#                                                                                                                augment,
+#                                                                                                                n_folds)
+#     auc_per_fold = []
+#     fold_no = 1
+#
+#     for train_index, val_index in skf.split(np.zeros(len(dataframe)), y=dataframe[['class']]):
+#         print(f'Starting fold {fold_no}')
+#
+#         valid_data = dataframe.iloc[val_index]  # create validation dataframe with indices from fold split
+#
+#         valid_generator = valid_datagen.flow_from_dataframe(dataframe=valid_data,
+#                                                             x_col=x_col,
+#                                                             y_col=y_col,
+#                                                             target_size=(img_length, img_width),
+#                                                             batch_size=batch_size,
+#                                                             class_mode=class_mode,
+#                                                             validate_filenames=False,
+#                                                             shuffle=False)
+#
+#         try:
+#             trained_model = load_model(
+#                 f'/output/resnet_target={target_data}_source={source_data}/model_weights_resnet_target={target_data}'
+#                 f'_source={source_data}_fold{i}.h5')
+#         except:
+#             continue
+#
+#         predictions = trained_model.predict(valid_generator)  # get predictions
+#         OnevsRestAUC = calculate_AUC(target_data, valid_generator, predictions)
+#         auc_per_fold.append(OnevsRestAUC)
+#
+#     mean_auc = np.mean(auc_per_fold)
+#
+#     return mean_auc
 #
 #
-# # def collect_AUC_scores(home, source_data, target_data, x_col, y_col, augment, n_folds, img_length, img_width,
-# #                        batch_size):
-# #     """
-# #     :param home:
-# #     :param source_data:
-# #     :param target_data:
-# #     :param x_col:
-# #     :param y_col:
-# #     :param augment:
-# #     :param n_folds:
-# #     :param img_length:
-# #     :param img_width:
-# #     :param batch_size:
-# #     :return:
-# #     """
-# #     num_classes, dataframe, skf, train_datagen, valid_datagen, x_col, y_col, class_mode = prepare_model_target(home,
-# #                                                                                                                target_data,
-# #                                                                                                                source_data,
-# #                                                                                                                x_col,
-# #                                                                                                                y_col,
-# #                                                                                                                augment,
-# #                                                                                                                n_folds)
-# #     auc_per_fold = []
-# #     fold_no = 1
-# #
-# #     for train_index, val_index in skf.split(np.zeros(len(dataframe)), y=dataframe[['class']]):
-# #         print(f'Starting fold {fold_no}')
-# #
-# #         valid_data = dataframe.iloc[val_index]  # create validation dataframe with indices from fold split
-# #
-# #         valid_generator = valid_datagen.flow_from_dataframe(dataframe=valid_data,
-# #                                                             x_col=x_col,
-# #                                                             y_col=y_col,
-# #                                                             target_size=(img_length, img_width),
-# #                                                             batch_size=batch_size,
-# #                                                             class_mode=class_mode,
-# #                                                             validate_filenames=False,
-# #                                                             shuffle=False)
-# #
-# #         try:
-# #             trained_model = load_model(
-# #                 f'/output/resnet_target={target_data}_source={source_data}/model_weights_resnet_target={target_data}'
-# #                 f'_source={source_data}_fold{i}.h5')
-# #         except:
-# #             continue
-# #
-# #         predictions = trained_model.predict(valid_generator)  # get predictions
-# #         OnevsRestAUC = calculate_AUC(target_data, valid_generator, predictions)
-# #         auc_per_fold.append(OnevsRestAUC)
-# #
-# #     mean_auc = np.mean(auc_per_fold)
-# #
-# #     return mean_auc
-# #
-# #
-# # def create_AUC_matrix(home, x_col, y_col, augment, n_folds, batch_size):
-# #     """
-# #     :param home:
-# #     :param x_col:
-# #     :param y_col:
-# #     :param augment:
-# #     :param n_folds:
-# #     :param batch_size:
-# #     :return:
-# #     """
-# #     auc_dict = {}
-# #
-# #     source_datasets = ['imagenet', 'stl10', 'sti10', 'textures', 'isic', 'chest', 'pcam-middle', 'pcam-small']
-# #     target_datasets = ['isic', 'chest', 'pcam-middle']
-# #
-# #     for source in source_datasets:
-# #         aucs_per_source = []
-# #         for target in target_datasets:
-# #             if target == 'pcam-middle':
-# #                 img_length = 96
-# #                 img_width = 96
-# #             else:
-# #                 img_length = 112
-# #                 img_width = 112
-# #             mean_auc = collect_AUC_scores(home, source, target, x_col, y_col, augment, n_folds, img_length,
-# #                                           img_width, batch_size)
-# #             aucs_per_source.append(mean_auc)
-# #         auc_dict[source] = aucs_per_source
-# #
-# #     return auc_dict
-# # #%%
-# # auc_scores = np.array([[0.947, 0.985, 0.961], [0.905, 0.965, 0.958], [0.895, 0.954, 0.879], [0.910, 0.981, 0.925],
-# #                        [0.905, 0.965, 0.958], [0.895, 0.954, 0.879], [0.915, 0.958, np.nan], [np.nan, 0.921, 0.847],
-# #                        [0.900, np.nan, 0.900], [0.915, 0.958, np.nan], [0.901, 0.949, np.nan]])
-# #
-# # np.save('outputs/mean_auc_scores', auc_scores)
+# def create_AUC_matrix(home, x_col, y_col, augment, n_folds, batch_size):
+#     """
+#     :param home:
+#     :param x_col:
+#     :param y_col:
+#     :param augment:
+#     :param n_folds:
+#     :param batch_size:
+#     :return:
+#     """
+#     auc_dict = {}
+#
+#     source_datasets = ['imagenet', 'stl10', 'sti10', 'textures', 'isic', 'chest', 'pcam-middle', 'pcam-small']
+#     target_datasets = ['isic', 'chest', 'pcam-middle']
+#
+#     for source in source_datasets:
+#         aucs_per_source = []
+#         for target in target_datasets:
+#             if target == 'pcam-middle':
+#                 img_length = 96
+#                 img_width = 96
+#             else:
+#                 img_length = 112
+#                 img_width = 112
+#             mean_auc = collect_AUC_scores(home, source, target, x_col, y_col, augment, n_folds, img_length,
+#                                           img_width, batch_size)
+#             aucs_per_source.append(mean_auc)
+#         auc_dict[source] = aucs_per_source
+#
+#     return auc_dict
 # #%%
+# auc_scores = np.array([[0.947, 0.985, 0.961], [0.905, 0.965, 0.958], [0.895, 0.954, 0.879], [0.910, 0.981, 0.925],
+#                        [0.905, 0.965, 0.958], [0.895, 0.954, 0.879], [0.915, 0.958, np.nan], [np.nan, 0.921, 0.847],
+#                        [0.900, np.nan, 0.900], [0.915, 0.958, np.nan], [0.901, 0.949, np.nan]])
 #
-# # auc_dictionary = create_AUC_matrix(home='/Users/IrmavandenBrandt/Downloads/Internship', x_col='path', y_col='class',
-# #                                    augment=True, n_folds=5, batch_size=128)
+# np.save('outputs/mean_auc_scores', auc_scores)
+#%%
+
+# auc_dictionary = create_AUC_matrix(home='/Users/IrmavandenBrandt/Downloads/Internship', x_col='path', y_col='class',
+#                                    augment=True, n_folds=5, batch_size=128)
+
 #
-# #
-# #
-# # # def viz_AUC_heatmap(source_data, target_data, ):
-# #
+#
+# # def viz_AUC_heatmap(source_data, target_data, ):
+#
 # #
 # #
 # # %%
@@ -143,12 +143,12 @@ def calculate_AUC(target_data, valid_generator, predictions):
 # fig, ax = plt.subplots()
 # im = ax.imshow(auc_matrix_sorted4, interpolation=None, vmin=0, aspect="auto", cmap="RdYlGn")
 # cbar = ax.figure.colorbar(im)
-# # cbar.ax.set_ylabel(cbarlabel='Rank', rotation=-90, va="bottom")
-# # cbar.set_ticks(np.arange(auc_matrix_sorted2.shape[0]))
-# # cbar.set_ticklabels([i + 1 for i in range(auc_matrix_sorted2.shape[0])])
+# cbar.ax.set_ylabel('Rank', rotation=-90, va="bottom")
+# cbar.set_ticks(np.arange(auc_matrix_sorted2.shape[0]))
+# cbar.set_ticklabels([i + 1 for i in range(auc_matrix_sorted2.shape[0])])
 # ax.set_xticks(np.arange(auc_matrix_sorted2.shape[1]))
 # ax.set_yticks(np.arange(auc_matrix_sorted2.shape[0]))
-# ax.set_xticklabels(auc_matrix_sorted2.axes[1])
+# ax.set_xticklabels(auc_matrix_sorted2.axes[1], rotation=45)
 # ax.set_yticklabels(auc_matrix_sorted2.axes[0])
 # for edge, spine in ax.spines.items():
 #     spine.set_visible(False)
@@ -167,12 +167,11 @@ def calculate_AUC(target_data, valid_generator, predictions):
 #         i += 1
 #     j += 1
 #
-#
 # plt.xlabel('Target')
 # plt.ylabel('Source')
 # plt.rcParams["axes.labelsize"] = 12
 # plt.tight_layout()
-# # plt.savefig('outputs/heatmap_auc_scores', dpi=1000)
+# plt.savefig('outputs/heatmap_auc_scores', dpi=1000)
 # plt.show()
 #
 #
