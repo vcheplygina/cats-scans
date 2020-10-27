@@ -9,7 +9,7 @@ from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Resnet_pretrained=kimia_target=pcam-middle')
+ex = Experiment('Resnet_pretrained=imagenet_target=isic')
 # ex = Experiment('Pretrain_kimia')
 
 ex.observers.append(NeptuneObserver(
@@ -25,18 +25,18 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "kimia"
+    source_data = "imagenet"
     # define target dataset
-    target_data = "pcam-middle"
+    target_data = "isic"
     x_col = "path"
     y_col = "class"
     augment = True
     n_folds = 5
-    img_length = 96
-    img_width = 96
+    img_length = 112
+    img_width = 112
     learning_rate = 0.000001
     batch_size = 128
-    epochs = 20
+    epochs = 50
     color = True
     dropout = 0.5
     scheduler_bool = False
