@@ -154,6 +154,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                                                                 batch_size=batch_size,
                                                                 class_mode=class_mode,
                                                                 validate_filenames=False,
+                                                                seed=2,
                                                                 shuffle=False)
 
             model = create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data,
