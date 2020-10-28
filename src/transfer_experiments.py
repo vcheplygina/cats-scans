@@ -9,7 +9,7 @@ from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Resnet_pretrained=textures_target=pcam-middle')
+ex = Experiment('Resnet_pretrained=sti10_target=pcam-middle')
 # ex = Experiment('Pretrain_kimia')
 
 ex.observers.append(NeptuneObserver(
@@ -25,7 +25,7 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "textures"
+    source_data = "sti10"
     # define target dataset
     target_data = "pcam-middle"
     x_col = "path"
