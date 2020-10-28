@@ -7,10 +7,12 @@ import numpy as np
 from .evaluation.AUC_evaluation import calculate_AUC
 from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
+from numpy.random import seed
+import tensorflow as tf
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Resnet_pretrained=sti10_target=pcam-middle')
-# ex = Experiment('Pretrain_kimia')
+# ex = Experiment('Resnet_pretrained=imagenet_target=isic')
+ex = Experiment('Pretrain_pcamsmall-test')
 
 ex.observers.append(NeptuneObserver(
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGl"
@@ -18,49 +20,52 @@ ex.observers.append(NeptuneObserver(
     project_name='irmavdbrandt/cats-scans'))
 
 
+seed(1)
+tf.random.set_seed(2)
+
 @ex.config
 def cfg():
     """
     :return: parameter settings used in the experiment. NOTE: this should be updated with every new experiment
     """
-    target = True
-    # define src data
-    source_data = "sti10"
-    # define target dataset
-    target_data = "pcam-middle"
-    x_col = "path"
-    y_col = "class"
-    augment = True
-    n_folds = 5
-    img_length = 96
-    img_width = 96
-    learning_rate = 0.000001
-    batch_size = 128
-    epochs = 20
-    color = True
-    dropout = 0.5
-    scheduler_bool = False
-    home = '/data/ivdbrandt'
-
-    # target = False
+    # target = True
     # # define src data
-    # source_data = "kimia"
+    # source_data = "imagenet"
     # # define target dataset
-    # target_data = None
-    # x_col = None
-    # y_col = None
+    # target_data = "isic"
+    # x_col = "path"
+    # y_col = "class"
     # augment = True
-    # n_folds = None
-    # img_length = 308
-    # img_width = 168
-    # learning_rate = 0.00001
-    # batch_size = 12
-    # epochs = 100
+    # n_folds = 5
+    # img_length = 96
+    # img_width = 96
+    # learning_rate = 0.000001
+    # batch_size = 128
+    # epochs = 20
     # color = True
     # dropout = 0.5
-    # imagenet = False
-    # scheduler_bool = False
+    # scheduler_bool = True
     # home = '/data/ivdbrandt'
+
+    target = False
+    # define src data
+    source_data = "pcam-small"
+    # define target dataset
+    target_data = None
+    x_col = None
+    y_col = None
+    augment = True
+    n_folds = None
+    img_length = 96
+    img_width = 96
+    learning_rate = 0.00001
+    batch_size = 128
+    epochs = 50
+    color = True
+    dropout = 0.5
+    imagenet = False
+    scheduler_bool = False
+    home = '/data/ivdbrandt'
 
 
 class MetricsLoggerCallback(tf.keras.callbacks.Callback):
@@ -76,7 +81,7 @@ class MetricsLoggerCallback(tf.keras.callbacks.Callback):
 
 
 def scheduler(epochs, learning_rate):
-    if epochs < 30:
+    if epochs < 20:
         return learning_rate
     else:
         return learning_rate * 0.5
@@ -140,6 +145,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                                                                 target_size=(img_length, img_width),
                                                                 batch_size=batch_size,
                                                                 class_mode=class_mode,
+                                                                seed=2,
                                                                 validate_filenames=False)
 
             valid_generator = valid_datagen.flow_from_dataframe(dataframe=valid_data,

@@ -5,6 +5,11 @@ from sklearn.model_selection import train_test_split
 from .data_paths import get_path
 from sklearn import preprocessing
 import cv2
+from numpy.random import seed
+import tensorflow as tf
+
+seed(1)
+tf.random.set_seed(2)
 
 
 def import_ISIC(img_dir, label_dir):
