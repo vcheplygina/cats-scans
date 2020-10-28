@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from keras.models import load_model
-# from src.models.model_preparation_saving import prepare_model_target
+from src.models.model_preparation_saving import prepare_model_target
 
 
 def calculate_AUC(target_data, valid_generator, predictions):
@@ -22,7 +22,7 @@ def calculate_AUC(target_data, valid_generator, predictions):
 
     return OneVsRest_auc
 
-
+#
 # def collect_AUC_scores(home, source_data, target_data, x_col, y_col, augment, n_folds, img_length, img_width,
 #                        batch_size):
 #     """
@@ -72,8 +72,8 @@ def calculate_AUC(target_data, valid_generator, predictions):
 #             continue
 #
 #         predictions = trained_model.predict(valid_generator)  # get predictions
+#         print(predictions)
 #         OnevsRestAUC = calculate_AUC(target_data, valid_generator, predictions)
-#         print(OnevsRestAUC)
 #         auc_per_fold.append(OnevsRestAUC)
 #
 #         fold_no += 1
@@ -83,6 +83,14 @@ def calculate_AUC(target_data, valid_generator, predictions):
 #
 #     return mean_auc, std_auc
 #
+# #%%
+# mean_auc, std_auc = collect_AUC_scores(home='/Users/IrmavandenBrandt/Downloads/Internship',
+#                                        source_data='sti10', target_data='pcam-middle',
+#                                        x_col='path', y_col='class',
+#                                         augment=True, n_folds=5,
+#                                        img_length=96, img_width=96,
+#                                        batch_size=112)
+# #%%
 #
 # def create_AUC_matrix(home, x_col, y_col, augment, n_folds, batch_size):
 #     """
