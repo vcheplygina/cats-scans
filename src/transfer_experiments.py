@@ -29,9 +29,9 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "imagenet"
+    source_data = "textures"
     # define target dataset
-    target_data = "textures"
+    target_data = "pcam-middle"
     x_col = "path"
     y_col = "class"
     augment = True
