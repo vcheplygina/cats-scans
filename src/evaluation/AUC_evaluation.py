@@ -4,6 +4,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from keras.models import load_model
 from src.models.model_preparation_saving import prepare_model_target
+from numpy.random import seed
+import tensorflow as tf
+
+seed(1)
+tf.random.set_seed(2)
 
 
 def calculate_AUC(target_data, valid_generator, predictions):
@@ -61,23 +66,17 @@ def calculate_AUC(target_data, valid_generator, predictions):
 #                                                             batch_size=batch_size,
 #                                                             class_mode=class_mode,
 #                                                             validate_filenames=False,
+#                                                             seed=2,
 #                                                             shuffle=False)
 #
 #         try:
 #             trained_model = load_model(
-#                 f'{home}/resnet_target={target_data}_source={source_data}/model_weights_resnet_target={target_data}'
+#                 f'{home}/output/resnet_target={target_data}_source={source_data}/model_weights_resnet_target={target_data}'
 #                 f'_source={source_data}_fold{fold_no}.h5')
 #             print('found model')
 #         except OSError:
 #             print('OSError')
 #             continue
-#
-#         # class_weights = compute_class_weights(valid_generator.classes)
-#         # sample_weights = []
-#         # for label in valid_generator.classes:
-#         #     for key, value in class_weights.items():
-#         #         if label == key:
-#         #             sample_weights.append(value)
 #
 #         predictions = trained_model.predict(valid_generator)  # get predictions
 #         OnevsRestAUC = calculate_AUC(target_data, valid_generator, predictions)
@@ -91,12 +90,12 @@ def calculate_AUC(target_data, valid_generator, predictions):
 #     return mean_auc, std_auc
 #
 #
-# mean_auc, std_auc = collect_AUC_scores(home='/Users/IrmavandenBrandt/Downloads/Internship',
-#                                        source_data='textures', target_data='pcam-middle',
-#                                        x_col='path', y_col='class',
-#                                        augment=True, n_folds=5,
-#                                        img_length=112, img_width=112,
-#                                        batch_size=128)
+# # mean_auc, std_auc = collect_AUC_scores(home='/Users/IrmavandenBrandt/Downloads/Internship',
+# #                                        source_data='textures', target_data='pcam-middle',
+# #                                        x_col='path', y_col='class',
+# #                                        augment=True, n_folds=5,
+# #                                        img_length=112, img_width=112,
+# #                                        batch_size=128)
 # #%%
 # def create_AUC_matrix(home, x_col, y_col, augment, n_folds, batch_size):
 #     """
@@ -134,7 +133,7 @@ def calculate_AUC(target_data, valid_generator, predictions):
 #         std_auc_dict[source] = std_aucs_per_source
 #
 #     return mean_auc_dict, std_auc_dict
-
+#
 #
 # # %%
 # mean_auc_dict, std_auc_dict = create_AUC_matrix(home='/Users/IrmavandenBrandt/Downloads/Internship', x_col='path',
@@ -147,6 +146,7 @@ def calculate_AUC(target_data, valid_generator, predictions):
 #     """
 #     """
 #     auc_matrix = pd.DataFrame.from_dict(mean_auc_dict, orient='index', columns=['ISIC2018', 'Chest X-rays', 'PCam-middle'])
+#     auc_matrix = auc_matrix.round(3)
 #     auc_matrix_nonan = auc_matrix.fillna(0)  # fill the nan-values with 0 to avoid weird ranking
 #     auc_matrix_sorted = auc_matrix_nonan.apply(np.argsort, axis=0)  # sort column wise
 #     auc_matrix_sorted2 = auc_matrix_sorted.apply(np.argsort, axis=0)  # sort column wise again to get correct ranking
