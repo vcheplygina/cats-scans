@@ -10,7 +10,7 @@ from numpy.random import seed
 import tensorflow as tf
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Resnet_pretrained=kimia_target=pcam-middle')
+ex = Experiment('Resnet_pretrained=isic_target=pcam-middle')
 # ex = Experiment('Pretrain_pcamsmall-test')
 
 ex.observers.append(NeptuneObserver(
@@ -29,7 +29,7 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "kimia"
+    source_data = "isic"
     # define target dataset
     target_data = "pcam-middle"
     x_col = "path"
@@ -38,7 +38,7 @@ def cfg():
     n_folds = 5
     img_length = 96
     img_width = 96
-    learning_rate = 0.00001
+    learning_rate = 0.000001
     batch_size = 128
     epochs = 20
     color = True
