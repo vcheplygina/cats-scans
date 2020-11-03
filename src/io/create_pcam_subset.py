@@ -1,8 +1,12 @@
-#%%
+# Import packages
 import pandas as pd
 from shutil import copyfile
 
+# Reads the file containing all the names of the images that are in the subset
+
 csv_file = pd.read_csv('C:/Users/20169385/PycharmProjects/cats-scans/local_data/datasets/pcam/PCAM_subset.csv')
+
+# Copy all these images to two name folders according to their label
 
 for row in range(len(csv_file.index)):
     last_index = csv_file.values[row][1].rfind('/')

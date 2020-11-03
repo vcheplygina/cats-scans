@@ -1,9 +1,14 @@
-#%%
+# Import packages
 from statistics import mode
 import numpy as np
 import xlrd
 
 def expert_answers(expert_answer_path):
+    """Loads in all the answers from the experts from the excel file.
+    Takes the mode of every question and compares these answers between the datasets to make a vector containing 0, 0.5 and 1.
+    Subsequently calculates the length of each vectors and stores it in the similarity matrix."""
+
+    # Load in answers
 
     workbook = xlrd.open_workbook(expert_answer_path+'/expert_answers.xlsx')
 
@@ -29,19 +34,20 @@ def expert_answers(expert_answer_path):
 
     q_numbers = [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10]
 
-    # Dictionary
+    # Create dictionary for later use
 
     answer_dict = {}
 
-    # Create dictionary
+    # Get dataset names into dictionary
+
     for index in range(len(datasets)):
         answer_dict[datasets[index]] = []
 
-    # Add modes of answers to dictionary
+    # Define space between tables in excel
 
     data_gap = num_experts + table_space + 1
 
-    # for data_index in range(len(datasets)):
+    # Add the mode of each of the 10 answers to the right dataset in the dictionary
 
     for data_index in range(len(datasets)):
         mode_list = []
@@ -52,16 +58,16 @@ def expert_answers(expert_answer_path):
             mode_list.append(mode(answers_per_question))
         answer_dict[datasets[data_index]] = mode_list
 
+    # Make similarity vector based on the differences in answers and calculate its length to then store it in the similarity matrix
+
     sim_mat = np.zeros((len(datasets), len(datasets)), dtype=float)
 
     initial_vector = np.zeros((1, len(q_numbers)), dtype=float)
 
     for data_index_columns in range(len(datasets)):
         dataset_answers = answer_dict[datasets[data_index_columns]]
-        # print('dataset = '+ datasets[data_index_columns])
         for data_index_rows in range(len(datasets)):
             comparison_answers = answer_dict[datasets[data_index_rows]]
-            # print('comparison dataset = '+ datasets[data_index_rows])
             for ans_index in range(len(dataset_answers)):
                 if dataset_answers[ans_index] == comparison_answers[ans_index]:
                     vec_value = 0

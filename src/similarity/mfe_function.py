@@ -1,14 +1,14 @@
-import keras
+# Import packages
 import numpy as np
 import os
 from src.io.converter_numpy import get_train_images
 from src.similarity.meta_features import meta_entropy, meta_skew, meta_kurtosis, meta_mad, meta_mean, meta_variance
 import cv2
 
-#%% Function
-
 def feature_extraction(datasets, mfe_path, mfe_subset, color_channel):
-    """Calculates the similarity vector between datasets based on meta-features"""
+    """Calculates the similarity between datasets based on statistical meta-features.
+    Takes five possible datasets as input arguments and returns a matrix with the corresponding similarity measures."""
+
     # Importing datasets and defining subsets
 
     data_vectors = []
@@ -40,7 +40,7 @@ def feature_extraction(datasets, mfe_path, mfe_subset, color_channel):
         image_count = data.shape[0]
         label_count = num_train_labels
 
-        # Statistical meta-features
+        # Make empty lists for statistical meta-features
 
         data_entropy = []
         data_skewness = []
@@ -48,6 +48,8 @@ def feature_extraction(datasets, mfe_path, mfe_subset, color_channel):
         data_mad = []
         data_mean = []
         data_variance = []
+
+        # Convert to color channel histograms
 
         for image in data:
             if color_channel == 'blue':
@@ -62,6 +64,8 @@ def feature_extraction(datasets, mfe_path, mfe_subset, color_channel):
             data_mad.append(meta_mad(image))
             data_mean.append(meta_mean(image))
             data_variance.append(meta_variance(image))
+
+        # Take the mean and std of all the statistical values within each dataset
 
         entropy_mean = np.mean(data_entropy)
         entropy_std = np.std(data_entropy)
@@ -81,11 +85,12 @@ def feature_extraction(datasets, mfe_path, mfe_subset, color_channel):
         variance_mean = np.mean(data_variance)
         variance_std = np.std(data_variance)
 
-        # Combine meta-features
+        # Combine statistical meta-features into one vector
+
         meta_vector = [image_count, label_count, entropy_mean, entropy_std, skewness_mean, skewness_std, kurtosis_mean, kurtosis_std,
                        mad_mean, mad_std, mean_mean, mean_std, variance_mean, variance_std]
 
-        # Zero mean and unit variance
+        # Convert vectors to zero mean and unit variance
 
         meta_vector_mean = np.mean(meta_vector)
         meta_vector_std = np.std(meta_vector)
@@ -93,13 +98,11 @@ def feature_extraction(datasets, mfe_path, mfe_subset, color_channel):
         for meta_feature in range(len(meta_vector)):
             meta_vector[meta_feature] = ((meta_vector[meta_feature] - meta_vector_mean) / meta_vector_std)
 
-        # Combine dataset vectors
+        # Combine all dataset vectors
 
         data_vectors.append(meta_vector)
 
-        # print(dataset + ':', 'image count = ' + str(image_count) + ',', 'label count = ' + str(label_count), str(data.shape))
-
-    # Similarity matrix calculation
+    # Calculate the euclidean distances between the vectors and store them in the similarity matrix
 
     sim_mat = np.zeros((len(data_vectors), len(data_vectors)))
 
@@ -108,9 +111,4 @@ def feature_extraction(datasets, mfe_path, mfe_subset, color_channel):
             euc_dst = np.linalg.norm(np.asarray(data_vectors[row]) - np.asarray(data_vectors[column]))
             sim_mat[row][column] = np.around(euc_dst, decimals=2)
 
-    # Normalize and invert matrix
-
-    # final_sim_mat = norm_and_invert(sim_mat)
-
     return sim_mat
-

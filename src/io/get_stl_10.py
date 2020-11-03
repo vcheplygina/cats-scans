@@ -1,3 +1,4 @@
+# Import packages
 from __future__ import print_function
 
 import sys
@@ -6,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 if sys.version_info >= (3, 0, 0):
-    import urllib.request as urllib  # ugly but works
+    import urllib.request as urllib
 else:
     import urllib
 
@@ -15,7 +16,7 @@ try:
 except:
     from scipy.misc import imsave
 
-print(sys.version_info)
+# Download tar files and retrieve images from STL-10 dataset to the local computer
 
 # image shape
 HEIGHT = 96
@@ -165,5 +166,3 @@ if __name__ == "__main__":
 
     # save images to disk
     save_images(images, labels)
-
-#%% Read image

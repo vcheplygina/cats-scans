@@ -1,15 +1,19 @@
+# Import packages
 import numpy as np
 import os
 from os import listdir
 from os.path import isfile, join
 import cv2
 
-#%% Get local images and convert them to numpy arrays
-
 def get_train_images(dataset, converter_path, converter_subset):
-    """Retrieve files from local depository and convert them to numpy arrays"""
+    """Retrieves files from a local depository and converts them to numpy array.
+     The converter_subset argument is defined in the similarity_experiment file and
+     indicates the size of the subset and thus the amount of images to be retrieved from the directory."""
 
     begin_path = converter_path
+
+    # The dataset images are stored in different folders. Below the right folder path is specified according to the dataset input argument
+
     if dataset == 'ISIC2018':
         path_to_dataset = '/ISIC2018/'
     elif dataset == 'chest_xray':
@@ -23,13 +27,17 @@ def get_train_images(dataset, converter_path, converter_subset):
     else:
         return None
 
+    # Loop over every subdirectory to get all the images and make empty lists
+
     sub_dirs = next(os.walk(begin_path + path_to_dataset))[1]
     train_images = []
     names_count = []
 
+    # Retrieve all images and resize them to 300 by 300
+
     for index in range(len(sub_dirs)):
         if converter_subset == 'None':
-            converter_subset = 15000        # to avoid memory error
+            converter_subset = 15000                # If size of subset is defined as None, a maximum of 15000 is taken to avoid memory error
         else:
             converter_subset = converter_subset
 
@@ -51,4 +59,3 @@ def get_train_images(dataset, converter_path, converter_subset):
     train_images = np.array(train_images)
 
     return train_images
-
