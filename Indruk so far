@@ -13,7 +13,7 @@ te optimaliseren maar om de effecten van de feature re-use te onderzoeken.
 
 In een notendop waren de resultaten dat: 1. Van alle source datasets ImageNet de beste resultaten boekte, met meer classes, granularity => betere performance op de 
 target dataset. 2. Datasets met textural images die leken op de target dataset deden het in sommige gevallen goed. 3. Het gebruik van medische source datasets was niet 
-perse beter dan niet medische source datasets. en 4. Grotere source datasets lijden tot betere transfer performance.
+perse beter dan niet medische source datasets. en 4. Grotere source datasets leiden tot betere transfer performance.
 
 Niet alle modellen waren geoptimaliseerd voor elk individueel experiment, ResNet50 is bijvoorbeeld niet ideaal voor kleine datasets met weinig classes. De ImageNet 
 weights van keras daarintegen waren bijvoorbeeld wel geoptimaliseerd. Echter was dit ook een keuze om geen bias te hebben naar een bepaald model. Een suggestie voor 
