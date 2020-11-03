@@ -1,14 +1,30 @@
 Zover ik het nu begrijp:
-Het project onderzoekt transfer learning met als target medical image classification. Dit wordt gedaan door properties van source datasets te vergelijken en modellen te pretrainen op verschillende source datasets en te kijken naar de transfer learning performance.
+Het project onderzoekt transfer learning met als target medical image classification. Dit wordt gedaan door properties van source datasets te vergelijken en modellen te pretrainen
+op verschillende source datasets en te kijken naar de transfer learning performance.
+
 Irma's verslag heb ik kunnen lezen op overleaf. Ik heb hieronder een korte beschrijving gemaakt van hoe ik het begrijp.
+
 Irma onderzoekt de volgende dataset properties: size, nr of classes, origin en granularity.
-6 data sources worden opgedeeld in 3 medical target datasets en 6 source datasets. Licht aangepaste ResNet50 modellen worden gepretrained op de 6 source datasets en vervolgens wordt de performance op de target set vergeleken. In beide pretraining en transfer learning worden hyperparameters gevarieerd afhankelijk van de datasets.
-Voor de evaluatie van pretraining werd gekeken naar accuracy scores en voor transfer learning werd gekeken naar gemiddelde AUC scores. Het doel was niet om deze scores te optimaliseren maar om de effecten van de feature re-use te onderzoeken.
-In een notendop waren de resultaten dat: 1. Van alle source datasets ImageNet de beste resultaten boekte, met meer classes, granularity => betere performance op de target dataset. 2. Datasets met textural images die leken op de target dataset deden het in sommige gevallen goed. 3. Het gebruik van medische source datasets was niet perse beter dan niet medische source datasets. en 4. Grotere source datasets lijden tot betere transfer performance.
-Niet alle modellen waren geoptimaliseerd voor elk individueel experiment, ResNet50 is bijvoorbeeld niet ideaal voor kleine datasets met weinig classes. De ImageNet weights van keras daarintegen waren bijvoorbeeld wel geoptimaliseerd. Echter was dit ook een keuze om geen bias te hebben naar een bepaald model. Een suggestie voor verder onderzoek zou zijn om modellen te gebruiken die beter geoptimaliseerd zijn voor hun taak.
-Ik heb de code niet lijn voor lijn bekeken maar op het eerste oog ziet alles er begrijpelijk uit en staat er bij vrijwel elke functie en stap een beschrijving bij van wat de code doet. Ik denk dat ik er wel uit ga komen.
+
+6 data sources worden opgedeeld in 3 medical target datasets en 6 source datasets. Licht aangepaste ResNet50 modellen worden gepretrained op de 6 source datasets en vervolgens 
+wordt de performance op de target set vergeleken. In beide pretraining en transfer learning worden hyperparameters gevarieerd afhankelijk van de datasets.
+Voor de evaluatie van pretraining werd gekeken naar accuracy scores en voor transfer learning werd gekeken naar gemiddelde AUC scores. Het doel was niet om deze scores te 
+optimaliseren maar om de effecten van de feature re-use te onderzoeken.
+
+In een notendop waren de resultaten dat: 1. Van alle source datasets ImageNet de beste resultaten boekte, met meer classes, granularity => betere performance op de target dataset.
+2. Datasets met textural images die leken op de target dataset deden het in sommige gevallen goed. 3. Het gebruik van medische source datasets was niet perse beter dan niet 
+medische source datasets. en 4. Grotere source datasets lijden tot betere transfer performance.
+
+Niet alle modellen waren geoptimaliseerd voor elk individueel experiment, ResNet50 is bijvoorbeeld niet ideaal voor kleine datasets met weinig classes. De ImageNet weights van 
+keras daarintegen waren bijvoorbeeld wel geoptimaliseerd. Echter was dit ook een keuze om geen bias te hebben naar een bepaald model. Een suggestie voor verder onderzoek zou zijn
+om modellen te gebruiken die beter geoptimaliseerd zijn voor hun taak.
+
+Ik heb de code niet lijn voor lijn bekeken maar op het eerste oog ziet alles er begrijpelijk uit en staat er bij vrijwel elke functie en stap een beschrijving bij van wat de code 
+doet. Ik denk dat ik er wel uit ga komen.
+
 
 Bas zijn verslag heb ik nog niet kunnen doorlezen. Zijn code lijkt wel overal goed gedocumenteerd te zijn.
 Uit de code maak ik op dat zijn onderzoek specifieker over similarity measures gaat. Waarbij hij onder andere vragenlijsten naar experts heeft gestuurd.
-Ook heeft hij gekeken naar 'meta features', deze analyseren volgensmij de pixelwaarden op een meer statistische manier. De meta features worden berekend per colour channel. Deze features worden opgeslagen in een vector en dmv euclidian distance tussen vectoren van datasets worden deze vergeleken.
+Ook heeft hij gekeken naar 'meta features', deze analyseren volgensmij de pixelwaarden op een meer statistische manier. De meta features worden berekend per colour channel. 
+Deze features worden opgeslagen in een vector en dmv euclidian distance tussen vectoren van datasets worden deze vergeleken.
 Verder zitten ook in bas zijn code transfer learning experiments.
