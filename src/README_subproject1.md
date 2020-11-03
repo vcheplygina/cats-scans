@@ -1,5 +1,4 @@
 ## Subproject 1 - Dataset properties 
-  <p align="center">
   Transfer learning approaches are often used in medical image classification applications to help overcome data 
   shortages. Although several large databases have proven to be successful, the questions still remains which dataset
   properties are necessary for optimal transfer learning for medical image analysis models. This project explores 
@@ -81,7 +80,7 @@ training/validation/testing can be created using the stability_plot.py file.
 
 
 
-<img src="Flowchart_CatScans_subproject1.png" alt="flowchart" width="80" height="80">
+<img src="Flowchart_CatScans_subproject1.png" alt="flowchart">
 
 ### Prerequisites
 
