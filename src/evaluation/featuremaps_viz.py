@@ -1,3 +1,4 @@
+#%%
 from tensorflow.keras.preprocessing import image
 from src.io.data_import import collect_data
 from keras.models import load_model
@@ -22,7 +23,7 @@ def collect_data_trainedmodel(target, source_data, target_data, home):
 
         # collect trained model and get resnet50 part
         trained_model = load_model(
-            f'/Users/IrmavandenBrandt/Downloads/model_weights_resnet_pretrained={source_data}.h5')
+            f'{home}/pretrain_models/model_weights_resnet_pretrained={source_data}.h5')
         resnet = trained_model.get_layer('resnet50')
 
         # redefine model to output right after the first hidden layer
@@ -34,7 +35,6 @@ def collect_data_trainedmodel(target, source_data, target_data, home):
 def visualize_featuremaps_firstconv(target, source_data, target_data, home, dataset, img_index, img_width, img_height):
     X_train, X_val, X_test, first_conv = collect_data_trainedmodel(target, source_data, target_data, home)
 
-    print(X_train.loc[18]['path'])
     if (source_data == 'sti10') | (source_data == 'stl10'):
         if dataset == 'train':
             img = X_train[img_index]
@@ -88,6 +88,6 @@ def visualize_featuremaps_firstconv(target, source_data, target_data, home, data
     img.show()
 
 
-visualize_featuremaps_firstconv(target=False, source_data='textures', target_data=None,
-                                home='/Users/IrmavandenBrandt/Downloads/Internship', dataset='train', img_index=18,
-                                img_width=300, img_height=300)
+visualize_featuremaps_firstconv(target=False, source_data='stl10', target_data=None,
+                                home='/Users/IrmavandenBrandt/Downloads/Internship', dataset='val', img_index=200,
+                                img_width=96, img_height=96)

@@ -8,6 +8,7 @@ import cv2
 from numpy.random import seed
 import tensorflow as tf
 
+# set seeds for reproducibility
 seed(1)
 tf.random.set_seed(2)
 
@@ -28,7 +29,7 @@ def import_ISIC(img_dir, label_dir):
     tables = []  # initiliaze empty list that will store entries for dataframe
 
     for e, img_path in enumerate(images):
-        data_frame = pd.DataFrame([img_path], columns=['path'])  # add img path to dataframe
+        entry = pd.DataFrame([img_path], columns=['path'])  # add img path to dataframe
         img_id = img_path[-16:-4]  # get image id from image path
         extracted_label = labels.loc[img_id]  # extract label from label csv
         if extracted_label[0] == 1:
@@ -45,9 +46,9 @@ def import_ISIC(img_dir, label_dir):
             extracted_label = 'DF'
         elif extracted_label[6] == 1:
             extracted_label = 'VASC'
-        data_frame['class'] = extracted_label
+        entry['class'] = extracted_label  # add label in dataframe in column 'class'
 
-        tables.append(data_frame)  # combine entry with other entries for dataframe
+        tables.append(entry)  # combine entry with other entries for dataframe
 
     train_labels = pd.concat(tables, ignore_index=True)  # create dataframe from list of tables and reset index
     print(train_labels['class'].value_counts())  # get information on distribution of labels in dataframe
@@ -64,7 +65,7 @@ def import_chest(data_dir):
     train_images = os.path.join(data_dir, "train")
     val_images = os.path.join(data_dir, "val")
     test_images = os.path.join(data_dir, "test")
-    types = list(os.listdir(train_images))  # get label (pneunomia or not)
+    types = list(os.listdir(train_images))  # get unique labels (i.e. folders)
 
     # initiliaze empty lists that will store entries for train and test dataframes
     dataframe_entries = []
@@ -75,6 +76,7 @@ def import_chest(data_dir):
         else:
             for image_dir in [train_images, val_images, test_images]:
                 sub_folder = os.path.join(image_dir, type_set)  # set path to images
+                # get all files in folder ending with .jpg
                 image = [os.path.join(sub_folder, f) for f in os.listdir(sub_folder) if f.endswith('.jpeg')]
                 entry = pd.DataFrame(image, columns=['path'])  # add image in dataframe column 'path'
                 entry['class'] = type_set  # add label in dataframe in column 'class'
@@ -86,20 +88,22 @@ def import_chest(data_dir):
     return dataframe
 
 
-def import_STL10(train_img_path, train_label_path, test_img_path, test_label_path):
+def import_STL10(data_dir):
     """
     import file retrieved from: https://github.com/mttk/STL10/blob/master/stl10_input.py as suggested by STL-10 owners
     at Stanford on site https://cs.stanford.edu/~acoates/stl10/
-    :param train_img_path: directory where training images are stored
-    :param train_label_path: directory where training labels are stored
-    :param test_img_path: directory where test images are stored
-    :param test_label_path: directory where test labels are stored
+    :param data_dir: directory where all data is stored (images and labels)
     :return: images and labels of STL-10 training dataset
     """
+    # set paths to training or test images or labels
+    train_img_path = os.path.join(data_dir, 'train_X.bin')
+    train_label_path = os.path.join(data_dir, 'train_y.bin')
+    test_img_path = os.path.join(data_dir, 'test_X.bin')
+    test_label_path = os.path.join(data_dir, 'test_y.bin')
+
     with open(train_img_path, 'rb') as f:
         # read whole file in uint8 chunks
         all_train = np.fromfile(f, dtype=np.uint8)
-        print(all_train.shape)
 
         # We force the data into 3x96x96 chunks, since the images are stored in "column-major order", meaning
         # that "the first 96*96 values are the red channel, the next 96*96 are green, and the last are blue."
@@ -136,12 +140,6 @@ def import_STL10(train_img_path, train_label_path, test_img_path, test_label_pat
         labels_new.append(label)
     labels = np.array(labels_new)
 
-    # # split data in train-val-test set (train 1000, val 150 and test 150 per class)
-    # X_train, X_test, y_train, y_test = train_test_split(images, labels, stratify=labels, shuffle=True, random_state=2,
-    #                                                     test_size=150 / 1300)  # take ~10% as test set
-    # X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, shuffle=True, random_state=2,
-    #                                                   test_size=150 / 1150)  # take ~10% as test set
-
     return images, labels
 
 
@@ -161,6 +159,7 @@ def import_textures_dtd(data_dir):
             continue
         else:
             sub_folder = os.path.join(data_dir, type_set)  # set path to images
+            # get all files in folder ending with .jpg
             image = [os.path.join(sub_folder, f) for f in os.listdir(sub_folder) if f.endswith('.jpg')]
             entry = pd.DataFrame(image, columns=['path'])  # add image in dataframe column 'path'
             entry['class'] = type_set  # add label in dataframe in column 'class'
@@ -169,51 +168,43 @@ def import_textures_dtd(data_dir):
     dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
     print(dataframe['class'].value_counts())  # get information on distribution of labels in dataframe
 
-    # # split data in train-val-test set (train 80% - val 10% - test 10%)
-    # ten_percent = round(len(dataframe) * 0.1)
-    # X_train, X_test, y_train, y_test = train_test_split(dataframe, dataframe['class'], stratify=dataframe['class'],
-    #                                                     shuffle=True, random_state=2,
-    #                                                     test_size=ten_percent)  # take ~10% as test set
-    # X_train, X_val, y_train, y_val = train_test_split(X_train, X_train['class'], stratify=X_train['class'],
-    #                                                   shuffle=True, random_state=2,
-    #                                                   test_size=ten_percent)  # take ~10% as val set
-
     return dataframe
 
 
 def import_PCAM(data_dir, source_data, target_data):
     """
     The .h5 files provided on https://github.com/basveeling/pcam have first been converted to numpy arrays in
-    pcam_converter.py and saved locally as png images. This function loads the png paths and labels in a dataframe.
+    pcam_converter.py and saved locally as PNG-images. This function loads the png paths and labels in a dataframe.
     This was a workaround since using HDF5Matrix() from keras.utils gave errors when running Sacred.
     :param data_dir: directory where all data is stored (images and labels)
     :param source_data: dataset used as source dataset
     :param target_data: dataset used as target dataset
     :return: dataframe with image paths in column "path" and image labels in column "class"
     """
-    # get image paths by selecting files from directory that end with .jpg
+    # get image paths by selecting files from directory that end with .png
     images = [os.path.join(data_dir, f) for f in os.listdir(data_dir) if f.endswith('.png')]
 
     dataframe_entries = []  # initiliaze empty list that will store entries for dataframe
 
     for e, img_path in enumerate(images):
-        data_frame = pd.DataFrame([img_path], columns=['path'])  # add img path to dataframe
-        data_frame['class'] = img_path[-5:-4]  # add label in dataframe in column 'class'
-        dataframe_entries.append(data_frame)  # combine entry with other entries for dataframe
+        entry = pd.DataFrame([img_path], columns=['path'])  # add img path to dataframe
+        entry['class'] = img_path[-5:-4]  # add label in dataframe in column 'class'
+        dataframe_entries.append(entry)  # combine entry with other entries for dataframe
 
     dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
 
-    # get subset of dataframe
+    # get pcam-middle subset
     if (target_data == 'pcam-middle') | (source_data == 'pcam-middle'):
         subset = dataframe.sample(n=100000, replace=False, random_state=2)
-        print('subset created', len(subset))
+        print('Subset PCam-middle created', len(subset))
         print(subset['class'].value_counts())  # get information on distribution of labels in dataframe
 
         return subset
 
+    # get pcam-small subset
     elif source_data == 'pcam-small':
         subset = dataframe.sample(n=10000, replace=False, random_state=22)
-        print('subset created', len(subset))
+        print('Subset PCam-small created', len(subset))
         print(subset['class'].value_counts())  # get information on distribution of labels in dataframe
 
         return subset
@@ -222,23 +213,22 @@ def import_PCAM(data_dir, source_data, target_data):
 def import_STI10(data_dir):
     """
     :param data_dir: directory where all data is stored (images and labels)
-    :return: images and labels of own subset created from ImageNet
+    :return: images and labels of own subset created from ImageNet in arrays
     """
-    images = np.load(f'{data_dir}/all_imgs.npy', allow_pickle=True)
-    labels = np.load(f'{data_dir}/all_labels.npy', allow_pickle=True)
+    images = np.load(f'{data_dir}/all_imgs.npy', allow_pickle=True)  # import image array
+    labels = np.load(f'{data_dir}/all_labels.npy', allow_pickle=True)  # import label array
 
-    # reshape array into (8060, 112, 112, 3)
+    # reshape array into (len(images), 112, 112, 3)
     img_4d = []
     for img in images:
-        img = cv2.resize(img, (112, 112))
+        img = cv2.resize(img, (112, 112))  # resize all images to 112x112
         img_4d.append(img)
-    img_4d_arr = np.array(img_4d)
+    img_4d_arr = np.array(img_4d)  # convert images to array
     all_img = np.reshape(img_4d_arr, (len(img_4d_arr), 112, 112, 3))
 
-    # convert labels to integers
-    encoder = preprocessing.LabelEncoder()
-    encoder = encoder.fit(labels)
-    int_labels = encoder.transform(labels)
+    encoder = preprocessing.LabelEncoder()  # initiate encoder
+    encoder = encoder.fit(labels)  # fit the encoder to the labels
+    int_labels = encoder.transform(labels)  # transform the labels to integers
 
     return all_img, int_labels
 
@@ -254,13 +244,17 @@ def import_KimiaPath(data_dir):
     dataframe_entries = []  # initiliaze empty list that will store entries for dataframe
 
     for e, img_path in enumerate(images):
-        data_frame = pd.DataFrame([img_path], columns=['path'])  # add img path to dataframe
-        if len(img_path) == 37:  # todo: change this bc it is dependent on my name
-            data_frame['class'] = img_path[-6:-5]
-        elif len(img_path) == 38:  # TODO: change this bc it is dependent on my name
-            data_frame['class'] = img_path[-7:-6]  # add label in dataframe in column 'class'
-        dataframe_entries.append(data_frame)  # combine entry with other entries for dataframe
-
+        entry = pd.DataFrame([img_path], columns=['path'])  # add img path to dataframe
+        # get label from image path, labels are of form LetterInteger (example A2 or A22)
+        label = img_path[-7:-5]
+        # some labels include double integer so need some preprocessing of the label: either remove / from label or
+        # remove integer (i.e. last character of extracted label)
+        if '/' in label:
+            label = label.replace('/', '')
+        else:
+            label = label[:-1]
+        entry['class'] = label  # append label to dataframe
+        dataframe_entries.append(entry)  # combine entry with other entries for dataframe
     dataframe = pd.concat(dataframe_entries, ignore_index=True)  # create dataframe from list of tables and reset index
     print(dataframe['class'].value_counts())  # get information on distribution of labels in dataframe
 
@@ -273,18 +267,29 @@ def collect_data(home, source_data, target_data):
     :param source_data: dataset used as source dataset
     :param target_data: dataset used as target dataset
     :return: training, validation and test dataframe in case of pretraining, dataframe with all images and labels in
-    case of TF
+    case of transfer learning
     """
     if target_data is None:
-        if (source_data == 'stl10') | (source_data == 'sti10'):
+        if source_data == 'isic':
+            img_dir, label_dir = get_path(home, source_data)
+            dataframe = import_ISIC(img_dir, label_dir)
+        else:
+            data_dir = get_path(home, source_data)
+
             if source_data == 'stl10':
-                train_img_path, train_label_path, test_img_path, test_label_path = get_path(home, source_data)
-                img, labels = import_STL10(train_img_path, train_label_path, test_img_path, test_label_path)
-
+                img, labels = import_STL10(data_dir)
             elif source_data == 'sti10':
-                data_dir = get_path(home, source_data)
                 img, labels = import_STI10(data_dir)
+            elif source_data == 'textures':
+                dataframe = import_textures_dtd(data_dir)
+            elif (source_data == 'pcam-middle') | (source_data == 'pcam-small'):
+                dataframe = import_PCAM(data_dir, source_data, target_data)
+            elif source_data == 'chest':
+                dataframe = import_chest(data_dir)
+            elif source_data == 'kimia':
+                dataframe = import_KimiaPath(data_dir)
 
+        if (source_data == 'stl10') | (source_data == 'sti10'):
             # split data in train-val-test set (train 80% - val 10% - test 10%)
             ten_percent = round(len(img) * 0.1)  # define 10% of whole dataset, pass on to split function
             X_train, X_test, y_train, y_test = train_test_split(img, labels, stratify=labels, shuffle=True,
@@ -296,26 +301,6 @@ def collect_data(home, source_data, target_data):
             return X_train, X_val, X_test, y_train, y_val, y_test
 
         else:
-            if source_data == 'textures':
-                data_dir = get_path(home, source_data)
-                dataframe = import_textures_dtd(data_dir)
-
-            elif source_data == 'isic':
-                img_dir, label_dir = get_path(home, source_data)
-                dataframe = import_ISIC(img_dir, label_dir)
-
-            elif (source_data == 'pcam-middle') | (source_data == 'pcam-small'):
-                data_dir = get_path(home, source_data)
-                dataframe = import_PCAM(data_dir, source_data, target_data)
-
-            elif source_data == 'chest':
-                data_dir = get_path(home, source_data)
-                dataframe = import_chest(data_dir)
-
-            elif source_data == 'kimia':
-                data_dir = get_path(home, source_data)
-                dataframe = import_KimiaPath(data_dir)
-
             # split data in train-val-test set (train 80% - val 10% - test 10%)
             ten_percent = round(len(dataframe) * 0.1)  # define 10% of whole dataset, pass on to split function
             X_train, X_test, y_train, y_test = train_test_split(dataframe, dataframe['class'],
@@ -333,12 +318,13 @@ def collect_data(home, source_data, target_data):
             dataframe = import_ISIC(img_dir, label_dir)
             return dataframe
 
-        elif target_data == 'chest':
+        else:
             data_dir = get_path(home, target_data)
-            dataframe = import_chest(data_dir)
-            return dataframe
 
-        elif target_data == 'pcam-middle':
-            data_dir = get_path(home, target_data)
-            dataframe = import_PCAM(data_dir, source_data, target_data)
-            return dataframe
+            if target_data == 'chest':
+                dataframe = import_chest(data_dir)
+                return dataframe
+
+            elif target_data == 'pcam-middle':
+                dataframe = import_PCAM(data_dir, source_data, target_data)
+                return dataframe

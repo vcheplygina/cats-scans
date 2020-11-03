@@ -35,7 +35,7 @@ def cfg():
     x_col = "path"
     y_col = "class"
     augment = True
-    n_folds = 5
+    k = 5
     img_length = 96
     img_width = 96
     learning_rate = 0.000001
@@ -87,7 +87,7 @@ def scheduler(epochs, learning_rate):
 
 
 @ex.automain
-def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, img_length, img_width, learning_rate,
+def run(_run, target, target_data, source_data, x_col, y_col, augment, k, img_length, img_width, learning_rate,
         batch_size, epochs, color, dropout, scheduler_bool, home):
     """
     :param _run:
@@ -97,7 +97,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
     :param x_col: column in dataframe containing the image paths
     :param y_col: column in dataframe containing the target labels
     :param augment: boolean specifying whether to use data augmentation or not
-    :param n_folds: amount of folds used in the n-fold cross validation
+    :param k: amount of folds used in the k-fold cross validation
     :param img_length: target length of image in pixels
     :param img_width: target width of image in pixels
     :param learning_rate: learning rate used by optimizer
@@ -118,12 +118,12 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
 
     if target:
         num_classes, dataframe, skf, train_datagen, valid_datagen, x_col, y_col, class_mode = prepare_model_target(home,
-                                                                                                                   target_data,
                                                                                                                    source_data,
+                                                                                                                   target_data,
                                                                                                                    x_col,
                                                                                                                    y_col,
                                                                                                                    augment,
-                                                                                                                   n_folds)
+                                                                                                                   k)
 
         # initialize empty lists storing accuracy, loss and multi-class auc per fold
         acc_per_fold = []
@@ -157,8 +157,8 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
                                                                 seed=2,
                                                                 shuffle=False)
 
-            model = create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data,
-                                 num_classes)  # create model
+            model = create_model(source_data, target_data, num_classes,  learning_rate, img_length, img_width, color,
+                                 dropout)  # create model
 
             class_weights = compute_class_weights(
                 train_generator.classes)  # get class model_weights to balance classes
@@ -190,7 +190,7 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
             fold_no += 1
 
         # create zip file with predictions and models_base and upload to OSF
-        create_upload_zip(n_folds, source_data, target_data)
+        create_upload_zip(k, source_data, target_data)
 
         # compute average scores for accuracy, loss and auc
         print('Accuracy, loss and AUC per fold')
@@ -207,14 +207,14 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
     else:
         num_classes, train_generator, valid_generator, test_generator = prepare_model_source(augment,
                                                                                              batch_size,
-                                                                                             source_data,
                                                                                              home,
+                                                                                             source_data,
                                                                                              target_data,
                                                                                              img_length,
                                                                                              img_width)
 
-        model = create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data,
-                             num_classes)  # create model
+        model = create_model(source_data,  target_data, num_classes, learning_rate, img_length, img_width, color,
+                             dropout)  # create model
 
         class_weights = compute_class_weights(train_generator.classes)  # get class model_weights to balance classes
 
@@ -231,13 +231,6 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, n_folds, 
         # save model model_weights
         model.save(f'model_weights_resnet_pretrained={source_data}.h5')
 
-        create_upload_zip(n_folds, source_data, target_data)
+        create_upload_zip(k, source_data, target_data)
 
         return test_loss, test_acc
-
-
-# %%
-import numpy as np
-
-x = np.array([0.8920, 0.8917, 0.8898, 0.8909, 0.8913])
-print(np.mean(x), np.std(x))

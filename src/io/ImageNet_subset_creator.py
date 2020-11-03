@@ -4,8 +4,8 @@ import requests
 import cv2
 import urllib
 
-
-# inspired by popular synsets found on: http://image-net.org/explore_popular.php?page=1
+# create dictionary containing class label and corresponding synset id (http://image-net.org/explore_popular.php?page=1)
+# for sti10 textural pattern are chosen
 synset_ids = {'stone wall': 'n04326547',
               'brick': 'n02897820',
               'honeycomb': 'n03530642',
@@ -35,7 +35,7 @@ def collect_urls(synset_id):
     return split_urls
 
 
-# for the 10 classes (i.e. synsets) defined in synset_ids, collect all urls of the images belonging to the classes
+# for the 10 classes defined in synset_ids, collect all urls of the images belonging to the classes
 all_classes = []
 for synset_id in synset_ids.values():
     urls = collect_urls(synset_id)
@@ -56,6 +56,7 @@ def url_to_image(img_url):
 
         # return the image
         return image
+    # create exceptions in case of non-existing URLs or something related
     except urllib.error.HTTPError:
         print('does not exist any more')
         pass
@@ -72,6 +73,7 @@ def url_to_image(img_url):
         print('timeout err')
         pass
 
+
 # convert all urls of images collected to numpy arrays and store in lists
 img_arrays = []
 class_nr = 1
@@ -86,26 +88,28 @@ for class_list in all_classes:
     img_arrays.append(class_arrays)
     class_nr += 1
 
-
 # remove None values from lists in img_arrays
 improved_img_arrays = []
-for list in img_arrays:
-    no_none = [url for url in list if url is not None]
+for img_list in img_arrays:
+    no_none = [url for url in img_list if url is not None]
     improved_img_arrays.append(no_none)
 
-# smallest class contains 645 images, largest class contains 1100 images
-# try training with this distribution since class weights are computed and given to model
-# stores images in array and and store locally, data_import.py will contain function that splits data
+
 all_imgs = [item for sublist in improved_img_arrays for item in sublist]  # flatten list of lists of images
 
 # create list with labels corresponding to the number of images per class
 all_labels_lists = []
-for list, label in zip(improved_img_arrays, synset_ids.keys()):
-    num_img = len(list)
+for img_list, label in zip(improved_img_arrays, synset_ids.keys()):
+    num_img = len(img_list)
     all_labels_lists.append(num_img * [str(label)])
 all_labels = [item for sublist in all_labels_lists for item in sublist]  # flatten list of lists of labels
 
 
-# numpy arrays locally
-np.save('/Users/IrmavandenBrandt/Downloads/Internship/imagenet_textures/all_imgs', all_imgs)
-np.save('/Users/IrmavandenBrandt/Downloads/Internship/imagenet_textures/all_labels', all_labels)
+def save_img(home):
+    """
+    :param home: part of path that is specific to user, e.g. /Users/..../
+    :return : saved numpy arrays in designated location
+    """
+    # numpy arrays locally
+    np.save(f'{home}/sti10/all_imgs', all_imgs)
+    np.save(f'{home}/sti10/all_labels', all_labels)

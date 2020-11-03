@@ -21,28 +21,29 @@ y_test = np.asarray(HDF5Matrix(test_label_path, 'y').data)
 
 def unzip_labels(y):
     """
-    :param y: array with labels in lists
-    :return: array with labels in one list
+    :param y: array with every individual label in one list
+    :return: array with all labels in one list
     """
-    tmp = []
+    temp = []  # initialize list temp that will store all labels
     y = np.array(y)
     for i in range(0, len(y)):
-        tmp.append(int(y[i]))
-    y = np.array(tmp)
+        temp.append(int(y[i]))  # get label, transform into integer and append to temp
+    y = np.array(temp)  # convert list temp to array
 
     return y
 
 
-# remove the unnecessary lists around the labels
+# remove the unnecessary lists around the labels with the unzip_labels() function
 y_train = unzip_labels(y_train)
 y_val = unzip_labels(y_val)
 y_test = unzip_labels(y_test)
 
-# combine all data to prepare for nfolds-cross-validation
+# concat all data to prepare for nfolds-cross-validation
 x_all = np.concatenate((x_train, x_val, x_test), axis=0)
 y_all = np.concatenate((y_train, y_val, y_test), axis=0)
 
 # save images as png locally
+home = ''   # set home path that is as data storage location
 for index in range(len(y_all)):
-    imageio.imwrite(f'/Users/IrmavandenBrandt/Downloads/Internship/PCam/png_images/{index}_label={y_all[index]}.png',
+    imageio.imwrite(f'{home}/PCam/png_images/{index}_label={y_all[index]}.png',
                     x_all[index])

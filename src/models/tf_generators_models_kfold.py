@@ -12,14 +12,14 @@ import numpy as np
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 
-def create_generators(target_data, augment):
+def create_generators(dataset, augment):
     """
-    :param target_data: dataset used as target dataset
+    :param dataset: dataset that is fed to generator
     :param augment: boolean specifying whether to use data augmentation or not
     :return: training and validation generator that preprocesses and augments images
     """
-    if target_data == 'pcam':
-        preprocessing = lambda x: x / 255.
+    if (dataset == 'pcam-middle') | (dataset == 'pcam-small'):
+        preprocessing = lambda x: x / 255.      # recommended preprocessing: https://github.com/basveeling/pcam
     else:
         preprocessing = preprocess_input
 
@@ -40,17 +40,17 @@ def create_generators(target_data, augment):
     return train_datagen, valid_datagen
 
 
-def create_model(target_data, learning_rate, img_length, img_width, color, dropout, source_data, num_classes):
+def create_model(source_data, target_data, num_classes, learning_rate, img_length, img_width, color, dropout):
     """
+    :param source_data: dataset used as source dataset
     :param target_data: dataset used as target dataset
+    :param num_classes: number of unique classes in dataset
     :param learning_rate: learning rate used by optimizer
     :param img_length: target length of image in pixels
     :param img_width: target width of image in pixels
     :param color: boolean specifying whether the images are in color or not
     :param dropout: fraction of nodes in layer that are deactivated
-    :param source_data: dataset used as src dataset
-    :param num_classes: number of unique classes in dataset
-    :return: compiled model (i.e. resnet or efficientnet)
+    :return: compiled model
     """
     # set input shape for model
     if color:
@@ -59,8 +59,8 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
         input_shape = (img_length, img_width, 1)  # add 1 channels in case of gray image
 
     if (source_data != "imagenet") & (target_data is not None):
-        # collect pretrained efficientnet model on src data
-        print(f'loading model and weights from source data {source_data} and for target data {target_data}')
+        # collect pretrained model on source data
+        print(f'Loading model and weights from source data {source_data}')
         pretrained = load_model(
             f'model_weights_resnet_pretrained={source_data}.h5')
         # remove top layer that has been specialized on src dataset output
@@ -70,13 +70,16 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
         else:
             output_layer = Dense(num_classes, activation='softmax')(pretrained.layers[-2].output)
             loss = losses.categorical_crossentropy
+        print(f'Prepared model for target dataset {target_data} with {source_data} weights')
         model = Model(inputs=pretrained.input, outputs=output_layer)
     else:
         model = models.Sequential()  # initialize new model
         if source_data == "imagenet":
             # collect resnet and exclude top layers
             resnet = ResNet50(include_top=False, weights="imagenet", input_shape=input_shape)
+            print(f'Prepared model for target dataset {target_data} with {source_data} weights')
         else:
+            print(f'Initializing model for source dataset {source_data}')
             # collect resnet and exclude top layers
             resnet = ResNet50(include_top=False, weights=None, input_shape=input_shape)
         model.add(resnet)  # attach resnet to new model
@@ -92,6 +95,7 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
 
     model.trainable = True  # set all layers in model to be trainable
 
+    # compile model with accuracy as scoring metric
     model.compile(loss=loss,
                   optimizer=optimizers.Adam(lr=learning_rate),
                   metrics=['accuracy'])
@@ -101,8 +105,8 @@ def create_model(target_data, learning_rate, img_length, img_width, color, dropo
 
 def compute_class_weights(labels):
     """
-    :param labels: dataset containing labels
-    :return: dictionary containing model_weights for all classes to balance them
+    :param labels: array or column with labels
+    :return: dictionary containing weights for all classes to balance them
     """
     # create balancing model_weights corresponding to the frequency of items in every class
     class_weights = class_weight.compute_class_weight('balanced', np.unique(labels), labels)
@@ -116,26 +120,22 @@ def compute_class_mode(source_data, target_data):
     :param source_data: dataset used as source dataset
     :param target_data: dataset used as target dataset
     :return: computes class mode depending on which source dataset is used in case of pretraining and using
-    flow_from_dataframe or on which target dataset is used in case of TF
+    flow_from_dataframe or which target dataset is used in case of TF
     """
     if target_data is None:
         if (source_data == 'pcam-middle') | (source_data == 'pcam-small') | (source_data == 'chest'):
             class_mode = 'binary'
-
             return class_mode
 
         elif (source_data == 'isic') | (source_data == 'textures') | (source_data == 'kimia'):
             class_mode = 'categorical'
-
             return class_mode
 
     else:
         if target_data == "isic":
             class_mode = "categorical"
-
             return class_mode
 
         else:
-            class_mode = "binary"   # binary class mode for chest and pcam
-
+            class_mode = "binary"  # binary class mode for chest and pcam
             return class_mode

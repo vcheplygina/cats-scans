@@ -8,16 +8,16 @@ from zipfile import ZipFile
 import os
 
 
-def prepare_model_source(augment, batch_size, source_data, home, target_data, img_length, img_width):
+def prepare_model_source(augment, batch_size, home, source_data, target_data, img_length, img_width):
     """
     :param augment: boolean specifying whether to use data augmentation or not
     :param batch_size: amount of images processed per batch
-    :param source_data: dataset used as source dataset
     :param home: part of path that is specific to user, e.g. /Users/..../
+    :param source_data: dataset used as source dataset
     :param target_data: dataset used as target dataset
     :param img_length: target length of image in pixels
     :param img_width: target width of image in pixels
-    :return: number of classes generators needed to create and compile the model
+    :return: number of classes in dataset and train, validation and test data-generators
     """
     # get generators
     train_datagen, valid_datagen = create_generators(target_data, augment)
@@ -55,7 +55,7 @@ def prepare_model_source(augment, batch_size, source_data, home, target_data, im
         # collect training, validation and testing datasets
         X_train, X_val, X_test = collect_data(home, source_data, target_data)
 
-        # get class model depending on the source data used in pretraining
+        # get class model depending on dataset used in pretraining, flow_from_dataframe needs classmode specification
         class_mode = compute_class_mode(source_data, target_data)
 
         num_classes = len(np.unique(X_train['class']))  # compute the number of unique classes in the dataset
@@ -91,24 +91,24 @@ def prepare_model_source(augment, batch_size, source_data, home, target_data, im
     return num_classes, train_generator, validation_generator, test_generator
 
 
-def prepare_model_target(home, target_data, source_data, x_col, y_col, augment, n_folds):
+def prepare_model_target(home, source_data, target_data, x_col, y_col, augment, k):
     """
     :param home: part of path that is specific to user, e.g. /Users/..../
-    :param target_data: dataset used as target dataset
     :param source_data: dataset used as source dataset
+    :param target_data: dataset used as target dataset
     :param x_col: column in dataframe containing the image paths
     :param y_col: column in dataframe containing the target labels
     :param augment: boolean specifying whether to use data augmentation or not
-    :param n_folds: amount of folds used in the n-fold cross validation
-    :return: dataframe, number of classes in dataframe and column specifiers for generators, generators and
-    stratified folds
+    :param k: amount of folds used in the k-fold cross validation
+    :return: dataframe with images and labels, number of classes in dataframe and column specifiers for data-generators,
+    train and validation data-generators itself and stratified k-folds object
     """
 
     # get generators
     train_datagen, valid_datagen = create_generators(target_data, augment)
 
     # create k-folds validator object with k=n_folds
-    skf = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=2)
+    skf = StratifiedKFold(n_splits=k, shuffle=True, random_state=2)
 
     # collect the target data using the specified home path and the desired dataset name
     dataframe = collect_data(home, source_data, target_data)
@@ -116,10 +116,10 @@ def prepare_model_target(home, target_data, source_data, x_col, y_col, augment, 
     # compute number of nodes needed in prediction layer (i.e. number of unique classes)
     num_classes = len(list(dataframe[y_col].unique()))
 
-    # compute class mode depending on target dataset
+    # compute class mode depending on classification task associated with target dataset
     class_mode = compute_class_mode(source_data, target_data)
 
-    return num_classes, dataframe, skf, train_datagen, valid_datagen, x_col, y_col, class_mode
+    return dataframe, num_classes, x_col, y_col, class_mode, skf, train_datagen, valid_datagen,
 
 
 def save_pred_model(source_data, target_data, fold_no, model, predictions):
@@ -129,40 +129,42 @@ def save_pred_model(source_data, target_data, fold_no, model, predictions):
     :param fold_no: fold number that is currently used in the run
     :param model: compiled model
     :param predictions: class predictions obtained from the model on the target test set
-    :return: saved predictions and model with weights
+    :return: predictions and model with weights saved in local memory
     """
-    # save predictions first locally and then in osf
+    # save predictions as csv file with predictions rounded to 3 numbers after decimal
     np.savetxt(f'predictions_resnet_target={target_data}_source={source_data}_fold{fold_no}.csv',
                predictions, fmt='%1.3f', delimiter=",")
-    # save model model_weights
+    # save model and weights as .h5 file
     model.save(f'model_weights_resnet_target={target_data}_source={source_data}_fold{fold_no}.h5')
     print(f'Saved model and model_weights in zip and finished fold {fold_no}')
 
 
-def create_upload_zip(n_folds, source_data, target_data):
+def create_upload_zip(k, source_data, target_data):
     """
-    :param n_folds: amount of folds used in the n-fold cross validation
+    :param k: amount of folds used in the n-fold cross validation
     :param source_data: dataset used as src dataset
     :param target_data: dataset used as target dataset
     :return: zip-file uploaded on OSF containing predictions in case of target dataset and model with weights for both
     src and target
     """
+    # in case of pretraining only the trained model and weights need to be stored, not the predictions
     if target_data is None:
+        # write zipfile that contains model architecture and weights of pretrained model
         with ZipFile(f'resnet_target={target_data}_source={source_data}.zip', 'w') as zip_object:
             zip_object.write(f'model_weights_resnet_pretrained={source_data}.h5')
 
     else:
+        # write zipfile including model architecture, trained weights and predictions for every fold
         with ZipFile(f'resnet_target={target_data}_source={source_data}.zip', 'w') as zip_object:
-            for i in range(1, n_folds + 1):
-                # Add multiple files to the zip
+            for i in range(1, k + 1):
                 zip_object.write(f'predictions_resnet_target={target_data}_source={source_data}_fold{i}.csv')
                 zip_object.write(f'model_weights_resnet_target={target_data}_source={source_data}_fold{i}.h5')
 
-                # delete .csv and .h5 files from local memory
+                # delete .csv and .h5 files from local memory to save memory
                 os.remove(f'predictions_resnet_target={target_data}_source={source_data}_fold{i}.csv')
                 os.remove(f'model_weights_resnet_target={target_data}_source={source_data}_fold{i}.h5')
 
-    # upload zip to OSF
+    # upload zipfile to OSF
     upload_zip_to_osf(
         f'https://files.osf.io/v1/resources/x2fpg/providers/osfstorage/?kind=file&name=resnet_target={target_data}_'
         f'source={source_data}.zip',

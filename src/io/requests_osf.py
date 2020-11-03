@@ -3,9 +3,9 @@ import requests
 
 def upload_zip_to_osf(url, file_name, name):
     """
-    :param url: URL with location where files need to be stored
+    :param url: URL with location where zip needs to be uploaded
     :param file_name: name of file that needs to be uploaded
-    :param name: name of the file to use on OSF
+    :param name: desired filename to be used on OSF
     :return: PUT request that uploads the zip file to the location provided in the URL
     """
     values = {'name': name}
