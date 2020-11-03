@@ -1,4 +1,3 @@
-#%%
 from tensorflow.keras.preprocessing import image
 from src.io.data_import import collect_data
 from keras.models import load_model
@@ -10,30 +9,43 @@ import cv2
 from PIL import Image
 
 
-def collect_data_trainedmodel(target, source_data, target_data, home):
-    if not target:
-        # collect datasets
-        if (source_data == 'isic') | (source_data == 'chest') | (source_data == 'pcam-middle') | \
-                (source_data == 'pcam-small') | (source_data == 'textures'):
-            X_train, X_val, X_test = collect_data(home, source_data, target_data)
+def collect_data_pretrainedmodel(home, source_data, target_data):
+    """
+    :param home: part of path that is specific to user, e.g. /Users/..../
+    :param source_data: dataset used as source dataset
+    :param target_data: dataset used as target dataset
+    :return : datasets, trained model and first convolutional layer of model
+    """
+    # collect datasets
+    if (source_data == 'isic') | (source_data == 'chest') | (source_data == 'pcam-middle') | \
+            (source_data == 'pcam-small') | (source_data == 'textures'):
+        X_train, X_val, X_test = collect_data(home, source_data, target_data)
 
-        elif (source_data == 'stl10') | (source_data == 'sti10'):
+    elif (source_data == 'stl10') | (source_data == 'sti10'):
+        X_train, X_val, X_test, y_train, y_val, y_test = collect_data(home, source_data, target_data)
 
-            X_train, X_val, X_test, y_train, y_val, y_test = collect_data(home, source_data, target_data)
+    # collect trained model and get resnet50 part
+    trained_model = load_model(f'{home}/pretrain_models/model_weights_resnet_pretrained={source_data}.h5')
+    resnet = trained_model.get_layer('resnet50')
 
-        # collect trained model and get resnet50 part
-        trained_model = load_model(
-            f'{home}/pretrain_models/model_weights_resnet_pretrained={source_data}.h5')
-        resnet = trained_model.get_layer('resnet50')
+    # redefine model to output right after the first hidden layer
+    first_conv = models.Model(inputs=resnet.inputs, outputs=resnet.get_layer('conv1_conv').output)
 
-        # redefine model to output right after the first hidden layer
-        first_conv = models.Model(inputs=resnet.inputs, outputs=resnet.get_layer('conv1_conv').output)
-
-        return X_train, X_val, X_test, first_conv
+    return X_train, X_val, X_test, first_conv
 
 
-def visualize_featuremaps_firstconv(target, source_data, target_data, home, dataset, img_index, img_width, img_height):
-    X_train, X_val, X_test, first_conv = collect_data_trainedmodel(target, source_data, target_data, home)
+def visualize_featuremaps_firstconv(home, source_data, target_data, dataset, img_index, img_length, img_width):
+    """
+    :param home: part of path that is specific to user, e.g. /Users/..../
+    :param source_data: dataset used as source dataset
+    :param target_data: dataset used as target dataset
+    :param dataset: specification on whether training, validation of test set is to be used in visualization
+    :param img_index: specification of which image is to be used from the dataset
+    :param img_length: target length of image in pixels
+    :param img_width: target width of image in pixels
+    :return : activation maps of the first convolutional layer on the desired image
+    """
+    X_train, X_val, X_test, first_conv = collect_data_pretrainedmodel(source_data, target_data, home)
 
     if (source_data == 'sti10') | (source_data == 'stl10'):
         if dataset == 'train':
@@ -61,7 +73,7 @@ def visualize_featuremaps_firstconv(target, source_data, target_data, home, data
 
     # reshape image to 300x300x3
     img_tensor = image.img_to_array(img)
-    img_tensor = np.resize(img_tensor, (img_width, img_height, 3))
+    img_tensor = np.resize(img_tensor, (img_length, img_width, 3))
     img_tensor = preprocess_input(img_tensor)
     img_tensor_expanded = np.expand_dims(img_tensor, axis=0)
 
@@ -88,6 +100,5 @@ def visualize_featuremaps_firstconv(target, source_data, target_data, home, data
     img.show()
 
 
-visualize_featuremaps_firstconv(target=False, source_data='stl10', target_data=None,
-                                home='/Users/IrmavandenBrandt/Downloads/Internship', dataset='val', img_index=200,
-                                img_width=96, img_height=96)
+visualize_featuremaps_firstconv(source_data='stl10', target_data=None, home='/Users/IrmavandenBrandt/Downloads/'
+                                'Internship', dataset='val', img_index=200, img_length=96, img_width=96)

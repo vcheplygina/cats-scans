@@ -11,16 +11,15 @@ import tensorflow as tf
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
 ex = Experiment('Resnet_pretrained=isic_target=pcam-middle')
-# ex = Experiment('Pretrain_pcamsmall-test')
 
 ex.observers.append(NeptuneObserver(
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGl"
               "fa2V5IjoiMjc4MGU5ZDUtMzk3Yy00YjE3LTliY2QtMThkMDJkZTMxNGMzIn0=",
     project_name='irmavdbrandt/cats-scans'))
 
-
 seed(1)
 tf.random.set_seed(2)
+
 
 @ex.config
 def cfg():
@@ -87,13 +86,14 @@ def scheduler(epochs, learning_rate):
 
 
 @ex.automain
-def run(_run, target, target_data, source_data, x_col, y_col, augment, k, img_length, img_width, learning_rate,
-        batch_size, epochs, color, dropout, scheduler_bool, home):
+def run(_run, target, home, source_data, target_data, x_col, y_col, augment, k, img_length, img_width, learning_rate,
+        batch_size, epochs, color, dropout, scheduler_bool):
     """
     :param _run:
     :param target: boolean specifying whether the run is for target data or src data
+    :param home: part of path that is specific to user, e.g. /Users/..../
+    :param source_data: dataset used as source dataset
     :param target_data: dataset used as target dataset
-    :param source_data: dataset used as src dataset
     :param x_col: column in dataframe containing the image paths
     :param y_col: column in dataframe containing the target labels
     :param augment: boolean specifying whether to use data augmentation or not
@@ -106,24 +106,24 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, k, img_le
     :param color: boolean specifying whether the images are in color or not
     :param dropout: fraction of nodes in layer that are deactivated
     :param scheduler_bool: boolean specifying whether learning rate scheduler is used
-    :param home: part of path that is specific to user, e.g. /Users/..../
     :return: experiment
     """
-
     if scheduler_bool:
+        # add learning rate scheduler in callbacks of model
         callbacks_settings = [MetricsLoggerCallback(_run),
                               callbacks.LearningRateScheduler(scheduler)]
     else:
         callbacks_settings = [MetricsLoggerCallback(_run)]
 
     if target:
-        num_classes, dataframe, skf, train_datagen, valid_datagen, x_col, y_col, class_mode = prepare_model_target(home,
-                                                                                                                   source_data,
-                                                                                                                   target_data,
-                                                                                                                   x_col,
-                                                                                                                   y_col,
-                                                                                                                   augment,
-                                                                                                                   k)
+        # collect all objects needed to prepare model for transfer learning
+        dataframe, num_classes, x_col, y_col, class_mode, skf, train_gen, valid_gen = prepare_model_target(home,
+                                                                                                           source_data,
+                                                                                                           target_data,
+                                                                                                           x_col,
+                                                                                                           y_col,
+                                                                                                           augment,
+                                                                                                           k)
 
         # initialize empty lists storing accuracy, loss and multi-class auc per fold
         acc_per_fold = []
@@ -138,27 +138,27 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, k, img_le
             train_data = dataframe.iloc[train_index]  # create training dataframe with indices from fold split
             valid_data = dataframe.iloc[val_index]  # create validation dataframe with indices from fold split
 
-            train_generator = train_datagen.flow_from_dataframe(dataframe=train_data,
-                                                                x_col=x_col,
-                                                                y_col=y_col,
-                                                                target_size=(img_length, img_width),
-                                                                batch_size=batch_size,
-                                                                class_mode=class_mode,
-                                                                seed=2,
-                                                                validate_filenames=False)
+            train_generator = train_gen.flow_from_dataframe(dataframe=train_data,
+                                                            x_col=x_col,
+                                                            y_col=y_col,
+                                                            target_size=(img_length, img_width),
+                                                            batch_size=batch_size,
+                                                            class_mode=class_mode,
+                                                            seed=2,
+                                                            validate_filenames=False)
 
-            valid_generator = valid_datagen.flow_from_dataframe(dataframe=valid_data,
-                                                                x_col=x_col,
-                                                                y_col=y_col,
-                                                                target_size=(img_length, img_width),
-                                                                batch_size=batch_size,
-                                                                class_mode=class_mode,
-                                                                validate_filenames=False,
-                                                                seed=2,
-                                                                shuffle=False)
+            valid_generator = valid_gen.flow_from_dataframe(dataframe=valid_data,
+                                                            x_col=x_col,
+                                                            y_col=y_col,
+                                                            target_size=(img_length, img_width),
+                                                            batch_size=batch_size,
+                                                            class_mode=class_mode,
+                                                            validate_filenames=False,
+                                                            seed=2,
+                                                            shuffle=False)
 
-            model = create_model(source_data, target_data, num_classes,  learning_rate, img_length, img_width, color,
-                                 dropout)  # create model
+            model = create_model(source_data, target_data, num_classes, learning_rate, img_length, img_width, color,
+                                 dropout)  # create model using the compilation settings and image information
 
             class_weights = compute_class_weights(
                 train_generator.classes)  # get class model_weights to balance classes
@@ -180,9 +180,9 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, k, img_le
 
             predictions = model.predict(valid_generator)  # get predictions
 
-            # calculate auc-score using the y_true and the predictions
-            OneVsRest_auc = calculate_AUC(target_data, valid_generator, predictions)
-            auc_per_fold.append(OneVsRest_auc)
+            # calculate auc-score using y_true and predictions
+            auc = calculate_AUC(target_data, valid_generator, predictions)
+            auc_per_fold.append(auc)
 
             # save predictions and models_base in local memory
             save_pred_model(source_data, target_data, fold_no, model, predictions)
@@ -205,16 +205,17 @@ def run(_run, target, target_data, source_data, x_col, y_col, augment, k, img_le
         return acc_per_fold, loss_per_fold, auc_per_fold
 
     else:
-        num_classes, train_generator, valid_generator, test_generator = prepare_model_source(augment,
-                                                                                             batch_size,
-                                                                                             home,
+        # collect all objects needed to prepare model for pretraining
+        num_classes, train_generator, valid_generator, test_generator = prepare_model_source(home,
                                                                                              source_data,
                                                                                              target_data,
+                                                                                             augment,
+                                                                                             batch_size,
                                                                                              img_length,
                                                                                              img_width)
 
-        model = create_model(source_data,  target_data, num_classes, learning_rate, img_length, img_width, color,
-                             dropout)  # create model
+        model = create_model(source_data, target_data, num_classes, learning_rate, img_length, img_width, color,
+                             dropout)  # create model using the compilation settings and image information
 
         class_weights = compute_class_weights(train_generator.classes)  # get class model_weights to balance classes
 

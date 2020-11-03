@@ -105,11 +105,7 @@ for img_list, label in zip(improved_img_arrays, synset_ids.keys()):
 all_labels = [item for sublist in all_labels_lists for item in sublist]  # flatten list of lists of labels
 
 
-def save_img(home):
-    """
-    :param home: part of path that is specific to user, e.g. /Users/..../
-    :return : saved numpy arrays in designated location
-    """
-    # numpy arrays locally
-    np.save(f'{home}/sti10/all_imgs', all_imgs)
-    np.save(f'{home}/sti10/all_labels', all_labels)
+# save numpy arrays in home directory
+home = ''
+np.save(f'{home}/sti10/all_imgs', all_imgs)
+np.save(f'{home}/sti10/all_labels', all_labels)

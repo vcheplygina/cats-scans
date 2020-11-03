@@ -8,13 +8,13 @@ from zipfile import ZipFile
 import os
 
 
-def prepare_model_source(augment, batch_size, home, source_data, target_data, img_length, img_width):
+def prepare_model_source(home, source_data, target_data, augment, batch_size,  img_length, img_width):
     """
-    :param augment: boolean specifying whether to use data augmentation or not
-    :param batch_size: amount of images processed per batch
     :param home: part of path that is specific to user, e.g. /Users/..../
     :param source_data: dataset used as source dataset
     :param target_data: dataset used as target dataset
+    :param augment: boolean specifying whether to use data augmentation or not
+    :param batch_size: amount of images processed per batch
     :param img_length: target length of image in pixels
     :param img_width: target width of image in pixels
     :return: number of classes in dataset and train, validation and test data-generators
@@ -105,7 +105,7 @@ def prepare_model_target(home, source_data, target_data, x_col, y_col, augment, 
     """
 
     # get generators
-    train_datagen, valid_datagen = create_generators(target_data, augment)
+    train_gen, valid_gen = create_generators(target_data, augment)
 
     # create k-folds validator object with k=n_folds
     skf = StratifiedKFold(n_splits=k, shuffle=True, random_state=2)
@@ -119,7 +119,7 @@ def prepare_model_target(home, source_data, target_data, x_col, y_col, augment, 
     # compute class mode depending on classification task associated with target dataset
     class_mode = compute_class_mode(source_data, target_data)
 
-    return dataframe, num_classes, x_col, y_col, class_mode, skf, train_datagen, valid_datagen,
+    return dataframe, num_classes, x_col, y_col, class_mode, skf, train_gen, valid_gen
 
 
 def save_pred_model(source_data, target_data, fold_no, model, predictions):
