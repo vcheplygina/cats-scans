@@ -1,6 +1,7 @@
-## Subproject 1 - Dataset similarities
+## Subproject 2 - Dataset similarities
+
 ### Project abstract
-The aim of this paper is to investigate the relation between the performance of a transfer learned model and the similarity of the source- and target datasets. In order to study this, medical as well as non-medical datasets were analyzed by means of different types of meta-features, experts- and statistical meta-features respectively. Combining experts’ input and statistical measures has, as known so far, not  been done yet and has the goal of getting a broader knowledge of the relation between dataset characteristics and model performance. It could also expose the potential of human judgement in (source) dataset selection as opposed to statistical measures. The experts meta-features are based on answers to a questionnaire about the datasets filled in by experts, whereas the latter are based on statistical measures of the image histograms. From these results, the Euclidean distance is determined for different combinations of source- and target datasets. These distances, which are a measure of the similarity between two datasets, are then compared to the AUC score of the model. The results show no correlation between similarity, based on either one of the two types of meta-features, and the performance of the model.
+The aim of this project is to investigate the relation between the performance of a transfer learned model and the similarity of the source- and target datasets. In order to do this, medical as well as non-medical datasets were analyzed by means of different types of meta-features, experts- and statistical meta-features respectively. Combining experts’ input and statistical measures has, as known so far, not  been done yet and has the goal of getting a broader knowledge of the relation between dataset characteristics and model performance. It could also expose the potential of human judgement in (source) dataset selection as opposed to statistical measures. The experts meta-features are based on answers to a questionnaire about the datasets filled in by experts, whereas the latter are based on statistical measures of the image histograms. From these results, the Euclidean distance is determined for different combinations of source- and target datasets. These distances, which are a measure of the similarity between two datasets, are then compared to the AUC score of the model. The results show no correlation between similarity, based on either one of the two types of meta-features, and the performance of the model.
 
 
 <!-- TABLE OF CONTENTS -->
@@ -18,20 +19,14 @@ The aim of this paper is to investigate the relation between the performance of 
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-The project includes nine different datasets created from six databases. These are the following:
-1. [ImageNet](http://image-net.org)
+5 datasets were used for the experiments. These are the following:
+1. [Chest X-rays](https://www.kaggle.com/paultimothymooney/chest-xray-pneumonia)
 2. [Describable Textures Dataset (DTD)](https://www.robots.ox.ac.uk/~vgg/data/dtd/)
 3. [ISIC2018 - Task 3 - the training set](https://challenge2018.isic-archive.com/task3/training/)
-4. [Chest X-rays](https://www.kaggle.com/paultimothymooney/chest-xray-pneumonia)
+4. [STL-10](https://cs.stanford.edu/~acoates/stl10/)
 5. [PatchCamelyon (PCam)](http://basveeling.nl/posts/pcam/)
-6. [KimiaPath960](https://www.kaggle.com/ambarish/kimia-path-960)
 
-Two ImageNet subsets, STL-10 and self-made subset STI-10, are used. To speed up training PCam is decreased in size to 
-100.000 and 10.000 for subsets PCam-middle and PCam-small.
-
-The nine different datasets are all used as source dataset, the medical datasets ISIC2018, Chest X-rays and PCam-middle 
-are used as target dataset.
-
+Considering the initial size of the PCAM dataset (327.680 images), a subset of 100.000 images was used to speed up training and calculation times.
 
 ### Built With
 
@@ -77,7 +72,7 @@ training/validation/testing can be created using the stability_plot.py file.
 
 
 
-<img src="Flowchart_CatScans_subproject1.png" alt="flowchart">
+<img src="Flowchart_CatScans_subproject2.png" alt="flowchart">
 
 ### Prerequisites
 
