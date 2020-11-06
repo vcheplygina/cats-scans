@@ -28,49 +28,17 @@ The aim of this project is to investigate the relation between the performance o
 
 Considering the initial size of the PCAM dataset (327.680 images), a subset of 100.000 images was used to speed up training and calculation times.
 
-### Built With
-
-* Keras
-* Sacred
-* Neptune 
-* OSF
-
-The experiments are logged used Sacred with a Neptune observer. The results, code version and model settings of all
-experiments can be found on https://ui.neptune.ai/irmavdbrandt/cats-scans/experiments?viewId=standard-view. For access
-please e-mail to irma.vdbrandt@gmail.com. The trained models and predictions are stored on Open Science Framework: 
-https://osf.io/x2fpg/. 
-
-
 ### Project Structure
 The project is structured as shown in the flowchart. 
 
-* Dataset collection/creation:
-The different datasets are collected (and created) using the data_import.py and 
-ImageNet_subset_creator.py files in the io-folder. Specific paths to the different datasets are to be set in the
-data_paths.py file. The PCam-dataset is first converted to PNG-files and stored in the home directory using the
-pcam_converter.py file. The PNG-images are collected using the data_import.py file. 
+* Dataset import (collection/creation) subsets/folder etc.:
+..
 
-* Pretraining:
-In the transfer_experiments.py file the pretraining experiment is created and connected with Sacred. In the models 
-folder the model_preparation_saving.py and tf_generators_models_kfold.py files include functions that create the 
-necessary model, generators, etc. After pretraining the trained model is stored on OSF using the requests_OSF.py file. 
-The experiment results are logged into Neptune using Sacred. 
+* Experts similarity matrix:
+..
 
-* Transfer learning and evaluation:
-The pretrained models are used in the transfer learning experiments, created in the transfer_experiments.py file. 
-Similarly to pretraining, models, generators etc. are created using the model_preparation_saving.py and 
-tf_generators_models_kfold.py files. The transfer performance is evaluated using the AUC_evaluation.py file in the
-evaluation folder. The resulting models, weights and predictions are stored on OSF with the 
-requests_OSF.py file. The experiment results are logged into Neptune using Sacred. 
-Figures included in the paper are created using the visualization functions in the AUC_evaluation.py file. Note that 
-for this the trained models need to be in the home directory.
-
-Extra: 
-Feature maps of the models can be created using the featuremaps_viz.py file, plots showing the stability during 
-training/validation/testing can be created using the stability_plot.py file. 
-
-
-
+* Satistical similarity matrix:
+..
 
 <img src="Flowchart_CatScans_subproject2.png" alt="flowchart">
 
@@ -78,40 +46,25 @@ training/validation/testing can be created using the stability_plot.py file.
 
 The packages needed to run the project are listed in the requirements.txt file.
 
-The databases used in the project need to be downloaded and stored in the home directory of the project. Download links
-can be found on the reference website of the dataset.
+All the datasets used in this project are located in the local_data folder which can be downloaded via this link: LINK
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-In the top section of the transfer_experiments.py file an experiment can be defined. An example:
+All the experiments can be executed from the similarity_experiment.py file. An example:
 
-First give the experiment a meaningful name.
+First specify the absolute path to where the downloaded local_data folder is located.
 ```shell script
-ex = Experiment('Resnet_pretrained=isic_target=pcam-middle')
+absolute_path_local_data = 'C:/example_path/local_data'
 ```
 Define arguments for the experiment such as parameter settings, which datasets to use, etc.
 ```shell script
-target = True
-source_data = "isic"
-target_data = "pcam-middle"
-x_col = "path"
-y_col = "class"
-augment = True
-k = 5
-img_length = 96
-img_width = 96
-learning_rate = 0.000001
-batch_size = 128
-epochs = 20
-color = True
-dropout = 0.5
-scheduler_bool = False
-home = '/data/'
+datasets_list = ['chest_xray', 'dtd', 'ISIC2018', 'stl-10', 'pcam']
+defined_subset = 'None'
 ```
-Run the experiment by running the python file. Include server specifications if necessary.
+Run the experiment by running the appropriate section. Include server specifications if necessary.
 ```shell script
-python src.transfer_experiments.py 
+expert_mfe = norm_and_invert(expert_answers(expert_answer_path=absolute_path_local_data))
 ```
 
 
