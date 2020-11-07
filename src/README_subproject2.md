@@ -8,7 +8,6 @@ The aim of this project is to investigate the relation between the performance o
 ## Table of Contents
 
 * [About the Project](#about-the-project)
-  * [Built With](#built-with)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
@@ -28,26 +27,41 @@ The aim of this project is to investigate the relation between the performance o
 
 Considering the initial size of the PCAM dataset (327.680 images), a subset of 100.000 images was used to speed up training and calculation times.
 
-### Project Structure
-The project is structured as shown in the flowchart. 
-
-* Dataset import (collection/creation) subsets/folder etc.:
-..
-see file [here](../src/similarity/meta_features.py)
-
-* Experts similarity matrix:
-..
-
-* Satistical similarity matrix:
-..
-
-<img src="Flowchart_CatScans_subproject2.png" alt="flowchart">
+The aforementioned dataset were all downloaded from the internet and stored in the local_data folder according to the depository structure depicted in the figure below.
 
 ### Prerequisites
 
 The packages needed to run the project are listed in the requirements.txt file.
 
-All the datasets used in this project are located in the local_data folder which can be downloaded via this link: LINK
+The aforementioned dataset were all downloaded from the internet and stored in the local_data folder according to the depository structure depicted in the figure below. This folder also contains an excel file containing the answers from the experts. The local_data folder can be downloaded with the link below the figure.
+
+depository figure
+
+This folder can be downloaded via the following link: LINK
+If problems arise, please email to b.m.h.m.mulders@student.tue.nl
+
+### Project Structure
+
+* Importing data etc.:
+All datasets were downloaded from the internet and stored in locally in the local_data folder along with the expert_answers excel file. For STL-10, a code had to be used to extract the .tar files in order to get the images, this code is located [here](../src/io/get_stl_10.py). As mentioned, for PCAM a subset of 100.000 images was created. This subset was predefined by Irma van den Brandt to train the model. The names of the images in the subset were specified in the PCAM_subset.csv file (located in the local_data/datasets/pcam folder) and transfered to a new subset folder with this [code](../src/io/create_pcam_subset.py). The local_data folder that can be downloaded with the link above contains all the images of STL-10 and subset of PCAM, hence the steps mentioned above do not have to be executed if the local_data folder is downloaded. 
+
+see file [here](../src/similarity/meta_features.py)
+
+* Calculating statistical similarity matrix:
+First, all the local images are loaded in and converted to numpy arrays with the [converter_numpy.py](../src/io/converter_numpy.py) file. Subsequently 6 statistical measures are calculated for each images, these statistical measures are functions located in the [meta_features.py](../src/similarity/meta_features.py) file. Then, storing all the values and calcuting the distances between the vectors is done in [mfe_function.py](../src/similarity/mfe_function).
+
+* Calculating experts similarity matrix:
+Loading in the answers from the experts and calculating the similarity matrix was done in [expert_answer_import.py](../src/io/expert_answer_import.py).
+
+* Matrix post-processing
+Normalizing and inverting the values of the matrices was done with the aim of making the results easier to interpret. This was done in this [code](../src/io/matrix_processing.py).
+
+* Results output
+The heatmaps, as seen in the paper, are constructed in this [code](HERE). The bar charts were made [here](HERE).
+
+The complete structure of all the conducted experiments is shown in the figure below. (purple highlighted area is done for another project, by Irma van den Brandt)
+
+<img src="Flowchart_CatScans_subproject2.png" alt="flowchart">
 
 <!-- USAGE EXAMPLES -->
 ## Usage
