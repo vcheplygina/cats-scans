@@ -67,7 +67,7 @@ Loading in the answers from the experts and calculating the similarity matrix wa
 Normalizing and inverting the values of the matrices was done with the aim of making the results easier to interpret. This was done in this [code](../src/io/matrix_processing.py).
 
 * Results output:\
-The heatmaps, as seen in the paper, are constructed in this [code](HERE). The bar charts were made [here](HERE).
+The heatmaps, as seen in the paper, are constructed in this [code](../src/evaluation/numpy_to_heatmap.py). The bar charts were made [here](../src/evaluation/make_bar_chart.py). All the output figures can be found in [this](../outputs) folder.
 
 The complete structure of all the conducted experiments is shown in the figure below. (purple highlighted area is done for another project, by Irma van den Brandt)
 
@@ -76,22 +76,67 @@ The complete structure of all the conducted experiments is shown in the figure b
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-All the experiments can be executed from the similarity_experiment.py file. An example:
+All the experiments can be executed from the [similarity_experiment.py](../src/similarity_experiment.py) file and are divided in different sections:
 
-First specify the absolute path to where the downloaded local_data folder is located.
+Define all the arguments for the experiments in the first section.
 ```shell script
-absolute_path_local_data = 'C:/example_path/local_data'
+# Below the absolute path to the local_data folder (which should be downloaded) should be specified
+
+absolute_path_local_data = 'C:/Users/20169385/PycharmProjects/cats-scans/local_data'
+
+# Specify a list containing all the names of the datasets you want to compare (case sensitive)
+
+datasets_list = ['chest_xray', 'dtd', 'ISIC2018', 'stl-10', 'pcam']     # Possible dataset names: 'chest_xray', 'dtd', 'ISIC2018', 'stl-10' and 'pcam'
+
+# Specify size of subset. Should be above 50 to avoid errors with regard to number of labels.
+
+defined_subset = 'None'     # Besides numerical values, 'None' is also an option. In this case a maximum of 15.000 images of every dataset is taken to avoid a memory error
+
+# Specify location were figure will be saved
+
+save_path = 'C:/Users/20169385/PycharmProjects/cats-scans/outputs'
 ```
-Define arguments for the experiment such as parameter settings, which datasets to use, etc.
+The following sections contain the experiments. Please run the appropriate section depending on what experiment you want to do, as explained below.
+
+For calculating the statistical similarity matrix, pleasure run the following section. A heatmap will be outputted in the specified location, the name of the figure can be specified in this section.
 ```shell script
-datasets_list = ['chest_xray', 'dtd', 'ISIC2018', 'stl-10', 'pcam']
-defined_subset = 'None'
-```
-Run the experiment by running the appropriate section. Include server specifications if necessary.
-```shell script
-expert_mfe = norm_and_invert(expert_answers(expert_answer_path=absolute_path_local_data))
+save_name = 'stat_heatmap'  # Define the name of the output figure
+
+stat_sim = norm_and_invert((((feature_extraction(datasets=datasets_list, mfe_path = absolute_path_local_data+'/datasets', mfe_subset=defined_subset, color_channel='blue'))
+                                   + (feature_extraction(datasets=datasets_list, mfe_path = absolute_path_local_data+'/datasets', mfe_subset=defined_subset, color_channel='green'))
+                                   + (feature_extraction(datasets=datasets_list, mfe_path = absolute_path_local_data+'/datasets', mfe_subset=defined_subset, color_channel='red')))/3))
+
+stat_heatmap = make_heatmap(stat_sim, data_list = datasets_list, name = save_name, output_path = save_path)
 ```
 
+For calculating the statistical similarity matrix, pleasure run the following section. A heatmap will be outputted in the specified location, the name of the figure can be specified in this section.
+
+```shell script
+save_name = 'exp_heatmap'   # Define the name of the output figure
+
+expert_sim = norm_and_invert(expert_answers(expert_answer_path=absolute_path_local_data))
+
+make_heatmap(expert_sim, data_list = datasets_list, name = save_name, output_path = save_path)
+```
+
+If you want to create the heatmap of the AUC scores, run the following section.
+
+```shell script
+save_name = 'auc_heatmap'   # Define the name of the output figure
+
+auc_scores = np.load(absolute_path_local_data + '/target_auc.npy')
+
+auc_heatmap = make_heatmap(auc_scores, data_list = datasets_list, name = save_name, output_path = save_path, auc='yes')
+```
+
+The bar charts can be made by running the section as seen below. The target dataset should be specified in this section.
+
+```shell script
+target_data = 'chest_xray'    # Choose target dataset (options: 'chest_xray', 'ISIC2018', 'pcam')
+
+make_bars(datalist = datasets_list, target_dataset = target_data,
+          auc_mat = auc_scores, stat_mat = stat_sim, exp_mat = expert_sim, name = target_data + '_bars', output_path = save_path)
+```
 
 <!-- ROADMAP -->
 ## Roadmap
