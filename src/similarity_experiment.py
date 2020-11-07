@@ -1,8 +1,10 @@
 # Import packages
+import numpy as np
 from src.similarity.mfe_function import feature_extraction
 from src.io.expert_answer_import import expert_answers
 from src.io.matrix_processing import norm_and_invert
-from src.io.sim_matrix_excel import write_xlsx
+from src.evaluation.numpy_to_heatmap import make_heatmap
+from src.evaluation.make_bar_chart import make_bars
 
 # Below the absolute path to the local_data folder (which should be downloaded) should be specified
 
@@ -16,34 +18,39 @@ datasets_list = ['chest_xray', 'dtd', 'ISIC2018', 'stl-10', 'pcam']     # Possib
 
 defined_subset = 'None'     # Besides numerical values, 'None' is also an option. In this case a maximum of 15.000 images of every dataset is taken to avoid a memory error
 
-#%% Calculate statistical similarity matrix for one single color channel defined below
+# Specify location were figure will be saved
 
-define_color_channel = 'blue'       # Possible arguments: 'blue', 'green' and 'red'
-
-stat_mfe = norm_and_invert(feature_extraction(datasets=datasets_list, mfe_path = absolute_path_local_data+'/datasets', mfe_subset=defined_subset, color_channel=define_color_channel))
-
-print(stat_mfe)
+save_path = 'C:/Users/20169385/PycharmProjects/cats-scans/outputs'
 
 #%% Calculate statistical similarity matrix for all color channels combined
 
-combined_stat_mfe = norm_and_invert((((feature_extraction(datasets=datasets_list, mfe_path = absolute_path_local_data+'/datasets', mfe_subset=defined_subset, color_channel='blue'))
+save_name = 'stat_heatmap'  # Define the name of the output figure
+
+stat_sim = norm_and_invert((((feature_extraction(datasets=datasets_list, mfe_path = absolute_path_local_data+'/datasets', mfe_subset=defined_subset, color_channel='blue'))
                                    + (feature_extraction(datasets=datasets_list, mfe_path = absolute_path_local_data+'/datasets', mfe_subset=defined_subset, color_channel='green'))
                                    + (feature_extraction(datasets=datasets_list, mfe_path = absolute_path_local_data+'/datasets', mfe_subset=defined_subset, color_channel='red')))/3))
 
-print(combined_stat_mfe)
+stat_heatmap = make_heatmap(stat_sim, data_list = datasets_list, name = save_name, output_path = save_path)
 
 #%% Calculate experts similarity matrix
 
-expert_mfe = norm_and_invert(expert_answers(expert_answer_path=absolute_path_local_data))
+save_name = 'exp_heatmap'   # Define the name of the output figure
 
-print(expert_mfe)
+expert_sim = norm_and_invert(expert_answers(expert_answer_path=absolute_path_local_data))
 
-#%% If one prefers the matrices to be saved to an excel file please specify variables below and run this section
+make_heatmap(expert_sim, data_list = datasets_list, name = save_name, output_path = save_path)
 
-excel_file_path = 'C:/Users/20169385/Desktop/Universiteit/Courses/Year 4/Q1/BEP/'       # Path were the excel file will be located
+#%% Load in AUC scores
 
-meta_feature_type = combined_stat_mfe     # Change variable depending on which matrix you want to save. Possible answers: stat_mfe, combined_stat_mfe and expert_mfe
+save_name = 'auc_heatmap'   # Define the name of the output figure
 
-excel_file_name = 'stats_inv_mfe'       # Specify name of excel file
+auc_scores = np.load(absolute_path_local_data + '/target_auc.npy')
 
-write_xlsx(xlsx_path=excel_file_path, xlsx_name=excel_file_name+'.xlsx', data_list=datasets_list, sim_mat=meta_feature_type)
+auc_heatmap = make_heatmap(auc_scores, data_list = datasets_list, name = save_name, output_path = save_path, auc='yes')
+
+#%% Make bar charts (every section has to have been executed before this section can run)
+
+target_data = 'chest_xray'    # Choose target dataset (options: 'chest_xray', 'ISIC2018', 'pcam')
+
+make_bars(datalist = datasets_list, target_dataset = target_data,
+          auc_mat = auc_scores, stat_mat = stat_sim, exp_mat = expert_sim, name = target_data + '_bars', output_path = save_path)
