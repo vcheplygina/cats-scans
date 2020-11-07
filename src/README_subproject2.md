@@ -50,7 +50,7 @@ C:.\
 
 This folder can be downloaded via the following link: LINK
 
-If problems arise, please email to b.m.h.m.mulders@student.tue.nl
+If problems arise, please send an email to b.m.h.m.mulders@student.tue.nl
 
 ### Project Structure
 
