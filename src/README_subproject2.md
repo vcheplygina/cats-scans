@@ -45,8 +45,8 @@ C:.\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam_full\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam_subset\
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---PCAM_subset.csv\
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---stl_10
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\---PCAM_subset.csv\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\---stl_10
 
 This folder can be downloaded via the following link: LINK
 
