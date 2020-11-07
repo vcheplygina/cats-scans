@@ -35,17 +35,17 @@ The packages needed to run the project are listed in the requirements.txt file.
 
 The aforementioned dataset were all downloaded from the internet and stored in the local_data folder according to the depository structure depicted below. For the sake of overview, the label folder and images have been left out of the structure. The local_data folder also contains an excel file containing the answers from the experts. The local_data folder can be downloaded with the link below the depository structure.
 
-C:.
+C:.\
 \---expert_answers.csv\
 \---datasets\
-    +---chest_xray\
-    +---dtd\
-    +---ISIC2018\
-    +---pcam\
-    |   +---pcam_full\
-    |   \---pcam_subset\
-    |   \---PCAM_subset.csv\
-    \---stl_10\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---chest_xray\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---dtd\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---ISIC2018\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   +---pcam_full\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   \---pcam_subset\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   \---PCAM_subset.csv\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\---stl_10\
 
 This folder can be downloaded via the following link: LINK
 If problems arise, please email to b.m.h.m.mulders@student.tue.nl
