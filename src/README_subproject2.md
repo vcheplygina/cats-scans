@@ -10,7 +10,7 @@ The aim of this project is to investigate the relation between the performance o
 * [About the Project](#about-the-project)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
+  * [Project structure](#project-structure)
 * [Usage](#usage)
 * [Roadmap](#roadmap)
 
