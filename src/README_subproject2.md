@@ -33,7 +33,7 @@ The project is structured as shown in the flowchart.
 
 * Dataset import (collection/creation) subsets/folder etc.:
 ..
-see file [here](src/similarity/meta_features.py)
+see file [here](../src/similarity/meta_features.py)
 
 * Experts similarity matrix:
 ..
