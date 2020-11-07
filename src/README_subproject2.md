@@ -48,14 +48,13 @@ C:.\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---stl_10
 
 This folder can be downloaded via the following link: LINK
+
 If problems arise, please email to b.m.h.m.mulders@student.tue.nl
 
 ### Project Structure
 
 * Importing data etc.:
 All datasets were downloaded from the internet and stored in locally in the local_data folder along with the expert_answers excel file. For STL-10, a code had to be used to extract the .tar files in order to get the images, this code is located [here](../src/io/get_stl_10.py). As mentioned, for PCAM a subset of 100.000 images was created. This subset was predefined by Irma van den Brandt to train the model. The names of the images in the subset were specified in the PCAM_subset.csv file (located in the local_data/datasets/pcam folder) and transfered to a new subset folder with this [code](../src/io/create_pcam_subset.py). The local_data folder that can be downloaded with the link above contains all the images of STL-10 and subset of PCAM, hence the steps mentioned above do not have to be executed if the local_data folder is downloaded. 
-
-see file [here](../src/similarity/meta_features.py)
 
 * Calculating statistical similarity matrix:
 First, all the local images are loaded in and converted to numpy arrays with the [converter_numpy.py](../src/io/converter_numpy.py) file. Subsequently 6 statistical measures are calculated for each images, these statistical measures are functions located in the [meta_features.py](../src/similarity/meta_features.py) file. Then, storing all the values and calcuting the distances between the vectors is done in [mfe_function.py](../src/similarity/mfe_function).
