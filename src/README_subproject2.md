@@ -43,9 +43,9 @@ C:.\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---ISIC2018\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam_full\
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\---pcam_subset\
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\---PCAM_subset.csv\
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\---stl_10\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam_subset\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---PCAM_subset.csv\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---stl_10
 
 This folder can be downloaded via the following link: LINK
 If problems arise, please email to b.m.h.m.mulders@student.tue.nl
