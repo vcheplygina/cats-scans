@@ -36,6 +36,7 @@ The packages needed to run the project are listed in the requirements.txt file.
 The aforementioned dataset were all downloaded from the internet and stored in the local_data folder according to the depository structure depicted below. For the sake of overview, the label folder and images have been left out of the structure. The local_data folder also contains an excel file containing the answers from the experts. The local_data folder can be downloaded with the link below the depository structure.
 
 C:.\
+\---mean_auc_scores.npy\
 \---expert_answers.csv\
 \---datasets\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---chest_xray\
