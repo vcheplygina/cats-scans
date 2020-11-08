@@ -1,3 +1,5 @@
+# This code does not have to be executed if you downloaded the local_data folder!
+
 # Import packages
 import pandas as pd
 from shutil import copyfile

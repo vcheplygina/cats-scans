@@ -1,5 +1,6 @@
-# Import packages
+# This code does not have to be executed if you downloaded the local_data folder!
 
+# Import packages
 import os, sys, tarfile, errno
 import numpy as np
 import matplotlib.pyplot as plt
