@@ -43,7 +43,7 @@ C:.\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---dtd\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---ISIC2018\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam\
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam_full\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam_full (This folder was left empty to reduce download times)\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam_subset\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\---PCAM_subset.csv\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\---stl_10
