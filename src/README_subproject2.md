@@ -33,7 +33,7 @@ The aforementioned dataset were all downloaded from the internet and stored in t
 
 The packages needed to run the project are listed in the requirements.txt file.
 
-The aforementioned dataset were all downloaded from the internet and stored in the local_data folder according to the depository structure depicted below. For the sake of overview, the label folder and images have been left out of the structure. The local_data folder also contains an excel file containing the answers from the experts. The local_data folder can be downloaded with the link below the depository structure.
+The aforementioned dataset were all downloaded from the internet and stored in the local_data folder according to the depository structure depicted below. For the sake of overview, the label folders and images have been left out of the structure. The local_data folder also contains an excel file containing the answers from the experts. The 'pcam_full' folder was left empty to reduce download times. As mentioned, only the subset folder was used anyway. The local_data folder can be downloaded with the link below the depository structure.
 
 C:.\
 \\---target_auc.npy\
@@ -43,12 +43,12 @@ C:.\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---dtd\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---ISIC2018\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam\
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam_full (This folder was left empty to reduce download times)\
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam_full \
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+---pcam_subset\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\---PCAM_subset.csv\
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\---stl_10
 
-This folder can be downloaded via the following link: LINK
+This folder can be downloaded [here](https://tuenl-my.sharepoint.com/:f:/r/personal/b_m_h_m_mulders_student_tue_nl/Documents/local_data?csf=1&web=1&e=WFGuG3). Please request access, it will be granted as soon as possible.
 
 If problems arise, please send an email to b.m.h.m.mulders@student.tue.nl
 
