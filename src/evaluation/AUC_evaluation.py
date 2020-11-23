@@ -85,7 +85,7 @@ def collect_TF_AUC(home, source_data, target_data, x_col, y_col, augment, k, bat
     :param img_width: target width of image in pixels
     :return: mean and standard deviation of AUC score for k-fold cross validation transfer learning experiment
     """
-    num_classes, dataframe, skf, train_gen, valid_gen, x_col, y_col, class_mode = prepare_model_target(home,
+    dataframe, num_classes, x_col, y_col, class_mode, skf, train_gen, valid_gen = prepare_model_target(home,
                                                                                                        source_data,
                                                                                                        target_data,
                                                                                                        x_col,
