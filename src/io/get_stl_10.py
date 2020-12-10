@@ -1,12 +1,12 @@
-from __future__ import print_function
+# This code does not have to be executed if you downloaded the local_data folder!
 
-import sys
+# Import packages
 import os, sys, tarfile, errno
 import numpy as np
 import matplotlib.pyplot as plt
 
 if sys.version_info >= (3, 0, 0):
-    import urllib.request as urllib  # ugly but works
+    import urllib.request as urllib
 else:
     import urllib
 
@@ -15,7 +15,7 @@ try:
 except:
     from scipy.misc import imsave
 
-print(sys.version_info)
+# Download tar files and retrieve images from STL-10 dataset to the local computer
 
 # image shape
 HEIGHT = 96
@@ -32,10 +32,10 @@ DATA_DIR = '../data'
 DATA_URL = 'http://ai.stanford.edu/~acoates/stl10/stl10_binary.tar.gz'
 
 # path to the binary train file with image data
-DATA_PATH = './data/stl10_binary/train_X.bin'
+DATA_PATH = 'C:/Users/20169385/PycharmProjects/data/stl10_binary/train_X.bin'
 
 # path to the binary train file with labels
-LABEL_PATH = './data/stl10_binary/train_y.bin'
+LABEL_PATH = 'C:/Users/20169385/PycharmProjects/data/stl10_binary/train_y.bin'
 
 
 def read_labels(path_to_labels):
@@ -149,7 +149,7 @@ def save_images(images, labels):
 
 if __name__ == "__main__":
     # download data if needed
-    download_and_extract()
+    # download_and_extract()
 
     # test to check if the image is read correctly
     with open(DATA_PATH) as f:
@@ -165,5 +165,3 @@ if __name__ == "__main__":
 
     # save images to disk
     save_images(images, labels)
-
-#%% Read image
