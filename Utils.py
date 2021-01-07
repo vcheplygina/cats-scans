@@ -1,15 +1,16 @@
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-import random
-import numpy as np
-from PIL import Image
-from skimage import io, color
-from skimage.filters import gabor, median
-from skimage.feature import greycomatrix, greycoprops
-import cv2
-import os
 import glob
 import math
+import os
+import random
+
+import cv2
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
+import numpy as np
+from PIL import Image
+from skimage import color, io
+from skimage.feature import greycomatrix, greycoprops
+from skimage.filters import gabor, median
 
 def batchgenerator(n, upper, lower):
     """
@@ -22,163 +23,12 @@ def batchgenerator(n, upper, lower):
     
     return img_nums
 
-def isic2018toarray(nums):
-    img_array = []
-    for x in nums:
-        image = mpimg.imread(r"D:\BEP\ISIC2018\ISIC2018_Task3_Training_Input\ISIC_00{}.jpg".format(x))
-        image_data = np.array(image, dtype='uint8')
-        img_resized = cv2.resize(image_data, (112, 112))
-        img_array.append(img_resized)
-
-    img_arr = np.array(img_array)
-        
-    return img_arr
-
-def stl10toarray(path_to_data, nums, x=96, y=96):
-    """
-    param path_to_data: the file containing the binary images from the STL-10 dataset
-    x,y = amount of pixels in x and y directions
-    return: an array containing all the images
-
-    Used to extract images from Stl-10 dataset
-    """
-
-    with open(path_to_data, 'rb') as f:
-        # read whole file in uint8 chunks
-        everything = np.fromfile(f, dtype=np.uint8)
-
-        # We force the data into 3x96x96 chunks, since the
-        # images are stored in "column-major order", meaning
-        # that "the first 96*96 values are the red channel,
-        # the next 96*96 are green, and the last are blue."
-        # The -1 is since the size of the pictures depends
-        # on the input file, and this way numpy determines
-        # the size on its own.
-
-        images = np.reshape(everything, (-1, 3, x, y))
-
-        # Now transpose the images into a standard image format
-        # readable by, for example, matplotlib.imshow
-        # You might want to comment this line or reverse the shuffle
-        # if you will use a learning algorithm like CNN, since they like
-        # their channels separated.
-        images = np.transpose(images, (0, 3, 2, 1))
-
-        img_list=[]
-
-        for img in images[nums]:
-            img_list.append(img)
-        img_array = np.array(img_list)
-
-        return img_array
-
-def sti10toarray(data ,nums, x=112, y=112):
-    """
-    Converts npy file to numpy array with of images
-    n = amount of images added to array
-    x,y = amount of pixels in x and y directions
-    returns the array
-
-    Used to extract images from Sti-10 dataset
-    """
-    pics = np.load('all_imgs_{}.npy'.format(data), allow_pickle=True)
-
-    img_list = []
-    for img in pics[nums]:
-        #Choose to resize image if preferred
-        img = cv2.resize(img, (x,y))
-        img_list.append(img)
-    img_array = np.array(img_list)
-
-    return img_array
-
-def imagenettoarray(nums):
-    pics = np.load(r'D:\BEP\test\all_imgs.npy', allow_pickle=True)
-
-    img_list = []
-    for img in pics[nums]:
-        #Choose to resize image if preferred
-        img = cv2.resize(img, (112,112))
-        img_list.append(img)
-    img_array = np.array(img_list)
-
-    return img_array
-
-def dtdtoarray(nums):
-    img_array = []
-    path = glob.glob(r"D:\BEP\dtd\moddedimages\*.jpg")
-    for img in path:
-        image = cv2.imread(img)
-        image = cv2.resize(image, (112,112))
-        img_array.append(image)
-    final_array = np.array(img_array)
-
-    final_array_nums = []
-    for x in nums:
-        final_array_nums.append(final_array[x])
-
-    final_array_nums = np.array(final_array_nums)
-
-    return final_array_nums
-
-def kimiatoarray(nums):
-    img_array = []
-    #path = glob.glob(r"C:\Users\s166646\Downloads\BEP\kimia_path_960\*.tif")
-    path = glob.glob(r"D:\BEP\kimia_path_960\*.tif")
-    for img in path:
-        image = cv2.imread(img)
-        image = cv2.resize(image, (112,112))
-        img_array.append(image)
-    final_array = np.array(img_array)
-
-    final_array_nums = []
-    for x in nums:
-        final_array_nums.append(final_array[x])
-
-    final_array_nums = np.array(final_array_nums)
-
-    return final_array_nums
-
-def pcamtoarray(nums):
-    img_array = []
-    path = glob.glob(r"D:\BEP\PCam\png_images\*.png")
-    for x in nums:
-        image = cv2.imread(path[x])
-        image = cv2.resize(image, (112,112))
-        img_array.append(image)
-    final_array = np.array(img_array)
-
-    #final_array_nums = []
-    #for x in nums:
-    #    final_array_nums.append(final_array[x])
-
-    #final_array_nums = np.array(final_array_nums)
-
-    return final_array
-
-def chestxraytoarray(nums):
-    img_array = []
-    path = glob.glob(r"D:\BEP\chest_xray\all_images\*.jpeg")
-    for img in path:
-        image = cv2.imread(img)
-        image = cv2.resize(image, (112,112))
-        img_array.append(image)
-    final_array = np.array(img_array)
-
-    final_array_nums = []
-    for x in nums:
-        final_array_nums.append(final_array[x])
-
-    final_array_nums = np.array(final_array_nums)
-
-    return final_array_nums
-
 def preprocesser(input_array):
     """
-    Converts input array of images to greyscale and median filtered arrays
+    Converts input array of images to greyscale
     Converts greyscaled image values between [0, 1] to uint8 type with [0, 256]
     Conversion is done with values Y = 0.2125 R + 0.7154 G + 0.0721 B
-    returns array of greyscale images and median filtered greyscale images.
+    returns array of greyscale images 
     """
     original_imgs = []
     original_grey_imgs = []
@@ -199,7 +49,7 @@ def preprocesser(input_array):
         original_grey_imgs.append(original_grey)
         filtered_imgs.append(grey_filtered)
 
-    return original_grey_imgs, filtered_imgs
+    return original_grey_imgs
 
 def visualizer(nrows, ncols, nums, original_imgs, original_grey_imgs, filtered_imgs):
     """
@@ -225,7 +75,7 @@ def visualizer(nrows, ncols, nums, original_imgs, original_grey_imgs, filtered_i
     fig.tight_layout()
     plt.show()
 
-def computeglcm(original_imgs, original_grey, grey_filtered, d, a, levels):
+def computeglcm(original_imgs, original_grey, d, a, levels):
     """
     First computes the grey level co-occurence matrix of the grey scaled images.
     Then from this matrix, computes different statistics and stores them separate vectors for each feature
@@ -252,6 +102,9 @@ def computeglcm(original_imgs, original_grey, grey_filtered, d, a, levels):
     return contrast, dissimilarity, homogeneity, asm, energy, correlation
 
 def batchvector(nums, contrast, dissimilarity, homogeneity, asm, energy, correlation):
+    """
+    Creates a feature vector that contains the mean value of each feature
+    """
     batchvector = []
     batchvector = [sum(contrast)/len(nums), sum(dissimilarity)/len(nums), sum(homogeneity)/len(nums), sum(asm)/len(nums), sum(energy)/len(nums), sum(correlation)/len(nums)]
     return batchvector
@@ -285,15 +138,12 @@ def writevector(name, nums, contrast, dissimilarity, homogeneity, asm, energy, c
     vectorfile.close()
     return batchvector
 
-def resultvisualizer(a):
-    
-    x = np.array([0.9, 0.907, 0.908, 0.911, 0.912])
-    y = np.array(a)
-
-    plt.scatter(x, y)
-    plt.show()
-
 def sevenplotvisualizer(contrast, dissimilarity, homogeneity, asm, energy, correlation, batchvector, source):
+    """
+    Creates a figure that shows a plot for all features + the euclidian distance 
+    x-axis: transfer learning performance, right now the x array shows performances for target set ISIC
+    y-axis: feature values or euclidian distance
+    """
     fig, ax = plt.subplots(3, 3)
 
     fig.suptitle("Difference between {} and other sets".format(source))
@@ -324,6 +174,9 @@ def sevenplotvisualizer(contrast, dissimilarity, homogeneity, asm, energy, corre
     plt.show()
 
 def zeromean(a, b, c, d, e, f, g, h):
+    """
+    Normalizes all 8 input vectors via zero mean unit variance
+    """
     ab = np.concatenate([a, b])
     abc = np.concatenate([ab, c])
     abcd = np.concatenate([abc, d])
@@ -406,6 +259,11 @@ def normalize(a, b):
     return a, b
 
 def differencewriter(isicbatchvector, stl10batchvector, dtdbatchvector, sti10batchvector, chestxraybatchvector, pcambatchvector, imagenetbatchvector, kimiabatchvector):
+    """
+    For personal use
+    Prints a lot of statistics, made so I could copy paste data into Origin/Excel
+    Caution: large chunk of text ahead, this is the last function in this file
+    """
     vectorfile = open("statistics_experiment_1", "w+")
     vectorfile.write("ISIC 2018 statistics \n")
     vectorfile.write("stl10, dtd, sti10, chestxray, pcam, imagenet \n")
@@ -629,55 +487,3 @@ def differencewriter(isicbatchvector, stl10batchvector, dtdbatchvector, sti10bat
     vectorfile.write("{} \n".format(pcambatchvector[5]))
 
     vectorfile.close()
-
-
-def normalize3(a, b ,c):
-    max = 0
-    maxa = np.amax(a)
-    maxb = np.amax(b)
-    maxc = np.amax(c)
-
-    if maxa > maxb and maxa > maxc:
-        max = maxa
-    elif maxb > maxa and maxb > maxc:
-        max = maxb
-    elif maxc > maxa and maxc > maxb:
-        max = maxc
-    
-    a = a/max
-    b = b/max
-    c = c/max
-
-    return a, b, c
-
-def normalize7(a, b, c, d, e, f, g):
-    max = 0
-    maxa = np.amax(a)
-    maxb = np.amax(b)
-    maxc = np.amax(c)
-    maxd = np.amax(d)
-    maxe = np.amax(e)
-    maxf = np.amax(f)
-    maxg = np.amax(g)
-
-    maxall = []
-    maxall.append(maxa)
-    maxall.append(maxb)
-    maxall.append(maxc)
-    maxall.append(maxd)
-    maxall.append(maxe)
-    maxall.append(maxf)
-    maxall.append(maxg)
-    maxall = np.array(maxall)
-
-    maxval = np.amax(maxall)
-
-    a = a/maxval
-    b = b/maxval
-    c = c/maxval
-    d = d/maxval
-    e = e/maxval
-    f = f/maxval
-    g = g/maxval
-
-    return a, b, c, d, e, f, g
