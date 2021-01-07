@@ -1,6 +1,3 @@
-from __future__ import print_function
-
-import sys
 import os, sys, tarfile, errno
 import numpy as np
 import matplotlib.pyplot as plt
@@ -165,5 +162,3 @@ if __name__ == "__main__":
 
     # save images to disk
     save_images(images, labels)
-
-#%% Read image

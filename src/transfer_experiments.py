@@ -1,20 +1,20 @@
 from sacred import Experiment
-from .models.model_preparation_saving import prepare_model_target, prepare_model_source, create_upload_zip, \
+from src.models.model_preparation_saving import prepare_model_target, prepare_model_source, create_upload_zip, \
     save_pred_model
-from .models.tf_generators_models_kfold import create_model, compute_class_weights
+from src.models.tf_generators_models_kfold import create_model, compute_class_weights
 import numpy as np
-from .evaluation.AUC_evaluation import calculate_AUC
+from src.evaluation.AUC_evaluation import calculate_AUC
 from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 from numpy.random import seed
 import tensorflow as tf
+from src.io.access_keys import neptune_key
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
 ex = Experiment('Resnet_pretrained=isic_target=pcam-middle')
 
 ex.observers.append(NeptuneObserver(
-    api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGl"
-              "fa2V5IjoiMjc4MGU5ZDUtMzk3Yy00YjE3LTliY2QtMThkMDJkZTMxNGMzIn0=",
+    api_token=neptune_key,
     project_name='irmavdbrandt/cats-scans'))
 
 seed(1)
@@ -28,9 +28,9 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "isic"
+    source_data = "imagenet"
     # define target dataset
-    target_data = "pcam-middle"
+    target_data = "isic"
     x_col = "path"
     y_col = "class"
     augment = True
@@ -43,7 +43,7 @@ def cfg():
     color = True
     dropout = 0.5
     scheduler_bool = False
-    home = '/data/ivdbrandt'
+    home = '/Users/IrmavandenBrandt/Downloads/Internship'
 
     # target = False
     # # define src data
