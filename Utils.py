@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 import random
 import numpy as np
 from PIL import Image
@@ -7,6 +8,7 @@ from skimage.filters import gabor, median
 from skimage.feature import greycomatrix, greycoprops
 import cv2
 import os
+import glob
 import math
 
 def batchgenerator(n, upper, lower):
@@ -20,7 +22,19 @@ def batchgenerator(n, upper, lower):
     
     return img_nums
 
-def bintoarray(path_to_data, nums, x=96, y=96):
+def isic2018toarray(nums):
+    img_array = []
+    for x in nums:
+        image = mpimg.imread(r"D:\BEP\ISIC2018\ISIC2018_Task3_Training_Input\ISIC_00{}.jpg".format(x))
+        image_data = np.array(image, dtype='uint8')
+        img_resized = cv2.resize(image_data, (112, 112))
+        img_array.append(img_resized)
+
+    img_arr = np.array(img_array)
+        
+    return img_arr
+
+def stl10toarray(path_to_data, nums, x=96, y=96):
     """
     param path_to_data: the file containing the binary images from the STL-10 dataset
     x,y = amount of pixels in x and y directions
@@ -58,7 +72,7 @@ def bintoarray(path_to_data, nums, x=96, y=96):
 
         return img_array
 
-def npytoarray(data ,nums, x=112, y=112):
+def sti10toarray(data ,nums, x=112, y=112):
     """
     Converts npy file to numpy array with of images
     n = amount of images added to array
@@ -77,6 +91,87 @@ def npytoarray(data ,nums, x=112, y=112):
     img_array = np.array(img_list)
 
     return img_array
+
+def imagenettoarray(nums):
+    pics = np.load(r'D:\BEP\test\all_imgs.npy', allow_pickle=True)
+
+    img_list = []
+    for img in pics[nums]:
+        #Choose to resize image if preferred
+        img = cv2.resize(img, (112,112))
+        img_list.append(img)
+    img_array = np.array(img_list)
+
+    return img_array
+
+def dtdtoarray(nums):
+    img_array = []
+    path = glob.glob(r"D:\BEP\dtd\moddedimages\*.jpg")
+    for img in path:
+        image = cv2.imread(img)
+        image = cv2.resize(image, (112,112))
+        img_array.append(image)
+    final_array = np.array(img_array)
+
+    final_array_nums = []
+    for x in nums:
+        final_array_nums.append(final_array[x])
+
+    final_array_nums = np.array(final_array_nums)
+
+    return final_array_nums
+
+def kimiatoarray(nums):
+    img_array = []
+    #path = glob.glob(r"C:\Users\s166646\Downloads\BEP\kimia_path_960\*.tif")
+    path = glob.glob(r"D:\BEP\kimia_path_960\*.tif")
+    for img in path:
+        image = cv2.imread(img)
+        image = cv2.resize(image, (112,112))
+        img_array.append(image)
+    final_array = np.array(img_array)
+
+    final_array_nums = []
+    for x in nums:
+        final_array_nums.append(final_array[x])
+
+    final_array_nums = np.array(final_array_nums)
+
+    return final_array_nums
+
+def pcamtoarray(nums):
+    img_array = []
+    path = glob.glob(r"D:\BEP\PCam\png_images\*.png")
+    for x in nums:
+        image = cv2.imread(path[x])
+        image = cv2.resize(image, (112,112))
+        img_array.append(image)
+    final_array = np.array(img_array)
+
+    #final_array_nums = []
+    #for x in nums:
+    #    final_array_nums.append(final_array[x])
+
+    #final_array_nums = np.array(final_array_nums)
+
+    return final_array
+
+def chestxraytoarray(nums):
+    img_array = []
+    path = glob.glob(r"D:\BEP\chest_xray\all_images\*.jpeg")
+    for img in path:
+        image = cv2.imread(img)
+        image = cv2.resize(image, (112,112))
+        img_array.append(image)
+    final_array = np.array(img_array)
+
+    final_array_nums = []
+    for x in nums:
+        final_array_nums.append(final_array[x])
+
+    final_array_nums = np.array(final_array_nums)
+
+    return final_array_nums
 
 def preprocesser(input_array):
     """
@@ -156,7 +251,12 @@ def computeglcm(original_imgs, original_grey, grey_filtered, d, a, levels):
 
     return contrast, dissimilarity, homogeneity, asm, energy, correlation
 
-def createvector(name, nums, contrast, dissimilarity, homogeneity, asm, energy, correlation):
+def batchvector(nums, contrast, dissimilarity, homogeneity, asm, energy, correlation):
+    batchvector = []
+    batchvector = [sum(contrast)/len(nums), sum(dissimilarity)/len(nums), sum(homogeneity)/len(nums), sum(asm)/len(nums), sum(energy)/len(nums), sum(correlation)/len(nums)]
+    return batchvector
+
+def writevector(name, nums, contrast, dissimilarity, homogeneity, asm, energy, correlation):
     """
     Creates a single feature vector for each image
     Stores the feature values of each image vector in a .txt file
@@ -184,6 +284,75 @@ def createvector(name, nums, contrast, dissimilarity, homogeneity, asm, energy, 
 
     vectorfile.close()
     return batchvector
+
+def resultvisualizer(a):
+    
+    x = np.array([0.9, 0.907, 0.908, 0.911, 0.912])
+    y = np.array(a)
+
+    plt.scatter(x, y)
+    plt.show()
+
+def sevenplotvisualizer(contrast, dissimilarity, homogeneity, asm, energy, correlation, batchvector, source):
+    fig, ax = plt.subplots(3, 3)
+
+    fig.suptitle("Difference between {} and other sets".format(source))
+
+    x = np.array([0.9, 0.907, 0.908, 0.912, 0.928, 0.946])
+    
+    ax[0,0].scatter(x, contrast)
+    ax[0,0].set_title("Contrast")
+
+    ax[0,1].scatter(x, dissimilarity)
+    ax[0,1].set_title("Dissimilarity")
+
+    ax[0,2].scatter(x, homogeneity)
+    ax[0,2].set_title("Homogeneity")
+
+    ax[1,0].scatter(x, asm)
+    ax[1,0].set_title("Asm")
+
+    ax[1,1].scatter(x, energy)
+    ax[1,1].set_title("Cnergy")
+
+    ax[1,2].scatter(x, correlation)
+    ax[1,2].set_title("Correlation")
+
+    ax[2,1].scatter(x, batchvector)
+    ax[2,1].set_title("Euclidian distance")
+
+    plt.show()
+
+def zeromean(a, b, c, d, e, f, g, h):
+    ab = np.concatenate([a, b])
+    abc = np.concatenate([ab, c])
+    abcd = np.concatenate([abc, d])
+    abcde = np.concatenate([abcd, e])
+    abcdef = np.concatenate([abcde, f])
+    abcdefg = np.concatenate([abcdef, g])
+    abcdefgh = np.concatenate([abcdefg, h]) 
+
+    mean = np.mean(abcdefgh)
+    print('mean is:{}'.format(mean))
+    std = np.std(abcdefgh)
+    print('std is:{}'.format(std))
+    
+    zeromeanabc = (abcdefgh - mean)/std
+    #print(zeromeanabc)
+
+    zeromeanabc = np.split(zeromeanabc, 8)
+
+    a = zeromeanabc[0]
+    b = zeromeanabc[1]
+    c = zeromeanabc[2]
+    d = zeromeanabc[3]
+    e = zeromeanabc[4]
+    f = zeromeanabc[5]
+    g = zeromeanabc[6]
+    h = zeromeanabc[7]
+    
+
+    return a, b, c, d, e, f, g, h
 
 # Comparisons for vectors, via: https://developers.google.com/machine-learning/clustering/similarity/measuring-similarity
 
@@ -236,5 +405,279 @@ def normalize(a, b):
 
     return a, b
 
+def differencewriter(isicbatchvector, stl10batchvector, dtdbatchvector, sti10batchvector, chestxraybatchvector, pcambatchvector, imagenetbatchvector, kimiabatchvector):
+    vectorfile = open("statistics_experiment_1", "w+")
+    vectorfile.write("ISIC 2018 statistics \n")
+    vectorfile.write("stl10, dtd, sti10, chestxray, pcam, imagenet \n")
+    
+    vectorfile.write("contrasts for isic \n")
+    isicstl10dif = stl10batchvector[0]
+    isicdtddif = dtdbatchvector[0]
+    isicsti10dif = sti10batchvector[0]
+    isicchestxraydif = chestxraybatchvector[0]
+    isicpcamdif = pcambatchvector[0]
+    isicimgdif = imagenetbatchvector[0]
+    isiccontrast = isicbatchvector[0]
+
+    vectorfile.write("{} \n".format(isicstl10dif))
+    vectorfile.write("{} \n".format(isicdtddif))
+    vectorfile.write("{} \n".format(isicsti10dif))
+    vectorfile.write("{} \n".format(isicchestxraydif))
+    vectorfile.write("{} \n".format(isicpcamdif))
+    vectorfile.write("{} \n".format(isicimgdif))
+
+    vectorfile.write("contrasts for chest\n")
+    vectorfile.write("{} \n".format(isicbatchvector[0]))
+    vectorfile.write("{} \n".format(sti10batchvector[0]))
+    vectorfile.write("{} \n".format(pcambatchvector[0]))
+    vectorfile.write("{} \n".format(stl10batchvector[0]))
+    vectorfile.write("{} \n".format(dtdbatchvector[0]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[0]))
+
+    vectorfile.write("contrasts for pcam \n")
+    vectorfile.write("{} \n".format(chestxraybatchvector[0]))
+    vectorfile.write("{} \n".format(isicbatchvector[0]))
+    vectorfile.write("{} \n".format(sti10batchvector[0]))
+    vectorfile.write("{} \n".format(kimiabatchvector[0]))
+    vectorfile.write("{} \n".format(stl10batchvector[0]))
+    vectorfile.write("{} \n".format(dtdbatchvector[0]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[0]))
+
+    vectorfile.write("dissimilarity for isic \n")
+    vectorfile.write("{} \n".format(stl10batchvector[1]))
+    vectorfile.write("{} \n".format(dtdbatchvector[1]))
+    vectorfile.write("{} \n".format(sti10batchvector[1]))
+    vectorfile.write("{} \n".format(chestxraybatchvector[1]))
+    vectorfile.write("{} \n".format(pcambatchvector[1]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[1]))
+
+    vectorfile.write("dissimilarity for chest\n")
+    vectorfile.write("{} \n".format(isicbatchvector[1]))
+    vectorfile.write("{} \n".format(sti10batchvector[1]))
+    vectorfile.write("{} \n".format(pcambatchvector[1]))
+    vectorfile.write("{} \n".format(stl10batchvector[1]))
+    vectorfile.write("{} \n".format(dtdbatchvector[1]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[1]))
+
+    vectorfile.write("dissimilarity for pcam \n")
+    vectorfile.write("{} \n".format(chestxraybatchvector[1]))
+    vectorfile.write("{} \n".format(isicbatchvector[1]))
+    vectorfile.write("{} \n".format(sti10batchvector[1]))
+    vectorfile.write("{} \n".format(kimiabatchvector[1]))
+    vectorfile.write("{} \n".format(stl10batchvector[1]))
+    vectorfile.write("{} \n".format(dtdbatchvector[1]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[1]))
+
+    vectorfile.write("homogeneity for isic \n")
+    vectorfile.write("{} \n".format(stl10batchvector[2]))
+    vectorfile.write("{} \n".format(dtdbatchvector[2]))
+    vectorfile.write("{} \n".format(sti10batchvector[2]))
+    vectorfile.write("{} \n".format(chestxraybatchvector[2]))
+    vectorfile.write("{} \n".format(pcambatchvector[2]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[2]))
+
+    vectorfile.write("homogeneity for chest\n")
+    vectorfile.write("{} \n".format(isicbatchvector[2]))
+    vectorfile.write("{} \n".format(sti10batchvector[2]))
+    vectorfile.write("{} \n".format(pcambatchvector[2]))
+    vectorfile.write("{} \n".format(stl10batchvector[2]))
+    vectorfile.write("{} \n".format(dtdbatchvector[2]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[2]))
+
+    vectorfile.write("homogeneity for pcam \n")
+    vectorfile.write("{} \n".format(chestxraybatchvector[2]))
+    vectorfile.write("{} \n".format(isicbatchvector[2]))
+    vectorfile.write("{} \n".format(sti10batchvector[2]))
+    vectorfile.write("{} \n".format(kimiabatchvector[2]))
+    vectorfile.write("{} \n".format(stl10batchvector[2]))
+    vectorfile.write("{} \n".format(dtdbatchvector[2]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[2]))
+    
+    vectorfile.write("asm for isic \n")
+    vectorfile.write("{} \n".format(stl10batchvector[3]))
+    vectorfile.write("{} \n".format(dtdbatchvector[3]))
+    vectorfile.write("{} \n".format(sti10batchvector[3]))
+    vectorfile.write("{} \n".format(chestxraybatchvector[3]))
+    vectorfile.write("{} \n".format(pcambatchvector[3]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[3]))
+
+    vectorfile.write("asm for chest\n")
+    vectorfile.write("{} \n".format(isicbatchvector[3]))
+    vectorfile.write("{} \n".format(sti10batchvector[3]))
+    vectorfile.write("{} \n".format(pcambatchvector[3]))
+    vectorfile.write("{} \n".format(stl10batchvector[3]))
+    vectorfile.write("{} \n".format(dtdbatchvector[3]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[3]))
+
+    vectorfile.write("asm for pcam \n")
+    vectorfile.write("{} \n".format(chestxraybatchvector[3]))
+    vectorfile.write("{} \n".format(isicbatchvector[3]))
+    vectorfile.write("{} \n".format(sti10batchvector[3]))
+    vectorfile.write("{} \n".format(kimiabatchvector[3]))
+    vectorfile.write("{} \n".format(stl10batchvector[3]))
+    vectorfile.write("{} \n".format(dtdbatchvector[3]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[3]))
+
+    vectorfile.write("energy for isic \n")
+    vectorfile.write("{} \n".format(stl10batchvector[4]))
+    vectorfile.write("{} \n".format(dtdbatchvector[4]))
+    vectorfile.write("{} \n".format(sti10batchvector[4]))
+    vectorfile.write("{} \n".format(chestxraybatchvector[4]))
+    vectorfile.write("{} \n".format(pcambatchvector[4]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[4]))
+
+    vectorfile.write("energy for chest\n")
+    vectorfile.write("{} \n".format(isicbatchvector[4]))
+    vectorfile.write("{} \n".format(sti10batchvector[4]))
+    vectorfile.write("{} \n".format(pcambatchvector[4]))
+    vectorfile.write("{} \n".format(stl10batchvector[4]))
+    vectorfile.write("{} \n".format(dtdbatchvector[4]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[4]))
+
+    vectorfile.write("energy for pcam \n")
+    vectorfile.write("{} \n".format(chestxraybatchvector[4]))
+    vectorfile.write("{} \n".format(isicbatchvector[4]))
+    vectorfile.write("{} \n".format(sti10batchvector[4]))
+    vectorfile.write("{} \n".format(kimiabatchvector[4]))
+    vectorfile.write("{} \n".format(stl10batchvector[4]))
+    vectorfile.write("{} \n".format(dtdbatchvector[4]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[4]))
+
+    vectorfile.write("correlation for isic \n")
+    vectorfile.write("{} \n".format(stl10batchvector[5]))
+    vectorfile.write("{} \n".format(dtdbatchvector[5]))
+    vectorfile.write("{} \n".format(sti10batchvector[5]))
+    vectorfile.write("{} \n".format(chestxraybatchvector[5]))
+    vectorfile.write("{} \n".format(pcambatchvector[5]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[5]))
+
+    vectorfile.write("correlation for chest\n")
+    vectorfile.write("{} \n".format(isicbatchvector[5]))
+    vectorfile.write("{} \n".format(sti10batchvector[5]))
+    vectorfile.write("{} \n".format(pcambatchvector[5]))
+    vectorfile.write("{} \n".format(stl10batchvector[5]))
+    vectorfile.write("{} \n".format(dtdbatchvector[5]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[5]))
+
+    vectorfile.write("correlation for pcam \n")
+    vectorfile.write("{} \n".format(chestxraybatchvector[5]))
+    vectorfile.write("{} \n".format(isicbatchvector[5]))
+    vectorfile.write("{} \n".format(sti10batchvector[5]))
+    vectorfile.write("{} \n".format(kimiabatchvector[5]))
+    vectorfile.write("{} \n".format(stl10batchvector[5]))
+    vectorfile.write("{} \n".format(dtdbatchvector[5]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[5]))
+
+    vectorfile.write("contrast for excel \n")
+    vectorfile.write("{} \n".format(chestxraybatchvector[0]))
+    vectorfile.write("{} \n".format(isicbatchvector[0]))
+    vectorfile.write("{} \n".format(sti10batchvector[0]))
+    vectorfile.write("{} \n".format(kimiabatchvector[0]))
+    vectorfile.write("{} \n".format(stl10batchvector[0]))
+    vectorfile.write("{} \n".format(dtdbatchvector[0]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[0]))
+    vectorfile.write("{} \n".format(pcambatchvector[0]))
+
+    vectorfile.write("dissimilarity for excel \n")
+    vectorfile.write("{} \n".format(chestxraybatchvector[1]))
+    vectorfile.write("{} \n".format(isicbatchvector[1]))
+    vectorfile.write("{} \n".format(sti10batchvector[1]))
+    vectorfile.write("{} \n".format(kimiabatchvector[1]))
+    vectorfile.write("{} \n".format(stl10batchvector[1]))
+    vectorfile.write("{} \n".format(dtdbatchvector[1]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[1]))
+    vectorfile.write("{} \n".format(pcambatchvector[1]))
+
+    vectorfile.write("homogeneity for excel \n")
+    vectorfile.write("{} \n".format(chestxraybatchvector[2]))
+    vectorfile.write("{} \n".format(isicbatchvector[2]))
+    vectorfile.write("{} \n".format(sti10batchvector[2]))
+    vectorfile.write("{} \n".format(kimiabatchvector[2]))
+    vectorfile.write("{} \n".format(stl10batchvector[2]))
+    vectorfile.write("{} \n".format(dtdbatchvector[2]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[2]))
+    vectorfile.write("{} \n".format(pcambatchvector[2]))
+
+    vectorfile.write("asm for excel \n")
+    vectorfile.write("{} \n".format(chestxraybatchvector[3]))
+    vectorfile.write("{} \n".format(isicbatchvector[3]))
+    vectorfile.write("{} \n".format(sti10batchvector[3]))
+    vectorfile.write("{} \n".format(kimiabatchvector[3]))
+    vectorfile.write("{} \n".format(stl10batchvector[3]))
+    vectorfile.write("{} \n".format(dtdbatchvector[3]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[3]))
+    vectorfile.write("{} \n".format(pcambatchvector[3]))
+
+    vectorfile.write("energy for excel \n")
+    vectorfile.write("{} \n".format(chestxraybatchvector[4]))
+    vectorfile.write("{} \n".format(isicbatchvector[4]))
+    vectorfile.write("{} \n".format(sti10batchvector[4]))
+    vectorfile.write("{} \n".format(kimiabatchvector[4]))
+    vectorfile.write("{} \n".format(stl10batchvector[4]))
+    vectorfile.write("{} \n".format(dtdbatchvector[4]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[4]))
+    vectorfile.write("{} \n".format(pcambatchvector[4]))
+
+    vectorfile.write("correlation for excel \n")
+    vectorfile.write("{} \n".format(chestxraybatchvector[5]))
+    vectorfile.write("{} \n".format(isicbatchvector[5]))
+    vectorfile.write("{} \n".format(sti10batchvector[5]))
+    vectorfile.write("{} \n".format(kimiabatchvector[5]))
+    vectorfile.write("{} \n".format(stl10batchvector[5]))
+    vectorfile.write("{} \n".format(dtdbatchvector[5]))
+    vectorfile.write("{} \n".format(imagenetbatchvector[5]))
+    vectorfile.write("{} \n".format(pcambatchvector[5]))
+
+    vectorfile.close()
 
 
+def normalize3(a, b ,c):
+    max = 0
+    maxa = np.amax(a)
+    maxb = np.amax(b)
+    maxc = np.amax(c)
+
+    if maxa > maxb and maxa > maxc:
+        max = maxa
+    elif maxb > maxa and maxb > maxc:
+        max = maxb
+    elif maxc > maxa and maxc > maxb:
+        max = maxc
+    
+    a = a/max
+    b = b/max
+    c = c/max
+
+    return a, b, c
+
+def normalize7(a, b, c, d, e, f, g):
+    max = 0
+    maxa = np.amax(a)
+    maxb = np.amax(b)
+    maxc = np.amax(c)
+    maxd = np.amax(d)
+    maxe = np.amax(e)
+    maxf = np.amax(f)
+    maxg = np.amax(g)
+
+    maxall = []
+    maxall.append(maxa)
+    maxall.append(maxb)
+    maxall.append(maxc)
+    maxall.append(maxd)
+    maxall.append(maxe)
+    maxall.append(maxf)
+    maxall.append(maxg)
+    maxall = np.array(maxall)
+
+    maxval = np.amax(maxall)
+
+    a = a/maxval
+    b = b/maxval
+    c = c/maxval
+    d = d/maxval
+    e = e/maxval
+    f = f/maxval
+    g = g/maxval
+
+    return a, b, c, d, e, f, g
