@@ -119,7 +119,7 @@ home = '/data/'
 ```
 Run the experiment by running the python file. Include server specifications if necessary.
 ```shell script
-python src.transfer_experiments.py 
+python -m src.transfer_experiments.py 
 ```
 
 
