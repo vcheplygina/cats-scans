@@ -3,7 +3,7 @@ import numpy as np
 import seaborn as sb
 import matplotlib.pyplot as plt
 
-def make_heatmap(matrix, data_list, name, output_path, auc = 'no'):
+def make_heatmap(matrix, data_list, output_path=None, auc = 'no'):
     """Convert a numpy matrix to a heatmap and save the figure"""
 
     # Define dataset list for similarity matrices (5 by 5) and AUC matrix (3 by 5)
@@ -43,8 +43,8 @@ def make_heatmap(matrix, data_list, name, output_path, auc = 'no'):
     plt.show()
 
     # Save figure to specified location
-
-    figure = heat_map.get_figure()
-    figure.savefig(output_path + '/' + name)
+    if (output_path != None):
+        figure = heat_map.get_figure()
+        figure.savefig(output_path)
 
     return
