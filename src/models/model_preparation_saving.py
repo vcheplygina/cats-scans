@@ -52,6 +52,9 @@ def prepare_model_source(home, source_data, target_data, augment, batch_size,  i
                                             seed=2)
 
     else:
+        print(home)
+        print(source_data)
+        print(target_data)
         # collect training, validation and testing datasets
         X_train, X_val, X_test = collect_data(home, source_data, target_data)
 

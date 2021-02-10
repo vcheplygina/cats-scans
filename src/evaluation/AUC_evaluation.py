@@ -3,7 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from keras.models import load_model
-from ..models.model_preparation_saving import prepare_model_target, prepare_model_source
+# from ..models.model_preparation_saving import prepare_model_target, prepare_model_source
+from src.models.model_preparation_saving import prepare_model_target, prepare_model_source
 from numpy.random import seed
 import tensorflow as tf
 import csv
@@ -35,41 +36,43 @@ def calculate_AUC(dataset, generator, predictions):
     return OneVsRest_auc
 
 
-# def calculate_pretrain_acc_AUC(home, source_data, target_data, augment, batch_size, img_length, img_width):
-#     """
-#     :param home: part of path that is specific to user, e.g. /Users/..../
-#     :param source_data: dataset used as source dataset
-#     :param target_data: dataset used as target dataset
-#     :param augment: boolean specifying whether to use data augmentation or not
-#     :param batch_size: number of images processed in one batch
-#     :param img_length: target length of image in pixels
-#     :param img_width: target width of image in pixels
-#     :return : pretraining accuracy scores on training, validation and test set, AUC score on test set
-#     """
-#     num_classes, train_generator, valid_generator, test_generator = prepare_model_source(augment,
-#                                                                                          home,
-#                                                                                          batch_size,
-#                                                                                          source_data,
-#                                                                                          target_data,
-#                                                                                          img_length,
-#                                                                                          img_width)
-#
-#     trained_model = load_model(f'{home}/pretrain_models/model_weights_resnet_pretrained={source_data}.h5')
-#     print('found model')
-#
-#     # compute loss and accuracy on training, validation and test set
-#     train_loss, train_acc = trained_model.evaluate(train_generator, verbose=1)
-#     print(f'Train loss:', train_loss, f' and Train accuracy:', train_acc)
-#     val_loss, val_acc = trained_model.evaluate(valid_generator, verbose=1)
-#     print(f'Validation loss:', val_loss, f' and Validation accuracy:', val_acc)
-#     test_loss, test_acc = trained_model.evaluate(test_generator, verbose=1)
-#     print(f'Test loss:', test_loss, f' and Test accuracy:', test_acc)
-#
-#     predictions = trained_model.predict(test_generator)  # get predictions
-#     auc = calculate_AUC(source_data, test_generator, predictions)  # calculate AUC for test set
-#
-#     return train_loss, train_acc, val_loss, val_acc, test_loss, test_acc, auc
-#
+# %%
+def calculate_pretrain_acc_AUC(home, source_data, target_data, augment, batch_size, img_length, img_width):
+    """
+    :param home: part of path that is specific to user, e.g. /Users/..../
+    :param source_data: dataset used as source dataset
+    :param target_data: dataset used as target dataset
+    :param augment: boolean specifying whether to use data augmentation or not
+    :param batch_size: number of images processed in one batch
+    :param img_length: target length of image in pixels
+    :param img_width: target width of image in pixels
+    :return : pretraining accuracy scores on training, validation and test set, AUC score on test set
+    """
+    num_classes, train_generator, valid_generator, test_generator = prepare_model_source(home,
+                                                                                         source_data,
+                                                                                         target_data,
+                                                                                         augment,
+                                                                                         batch_size,
+                                                                                         img_length,
+                                                                                         img_width)
+
+    trained_model = load_model(f'{home}/pretrain_models/model_weights_resnet_pretrained={source_data}.h5')
+    print('found model')
+
+    # compute loss and accuracy on training, validation and test set
+    train_loss, train_acc = trained_model.evaluate(train_generator, verbose=1)
+    print(f'Train loss:', train_loss, f' and Train accuracy:', train_acc)
+    val_loss, val_acc = trained_model.evaluate(valid_generator, verbose=1)
+    print(f'Validation loss:', val_loss, f' and Validation accuracy:', val_acc)
+    test_loss, test_acc = trained_model.evaluate(test_generator, verbose=1)
+    print(f'Test loss:', test_loss, f' and Test accuracy:', test_acc)
+
+    predictions = trained_model.predict(test_generator)  # get predictions
+    auc = calculate_AUC(source_data, test_generator, predictions)  # calculate AUC for test set
+
+    return train_loss, train_acc, val_loss, val_acc, test_loss, test_acc, auc
+
+
 #
 # def collect_TF_AUC(home, source_data, target_data, x_col, y_col, augment, k, batch_size, img_length, img_width):
 #     """
@@ -323,3 +326,11 @@ def calculate_AUC(dataset, generator, predictions):
 # # create heatmap and barplot which are saved in outputs folder
 # create_heatmap(mean_auc_dict=mean_auc_dictionary, overall_ranking=False)
 # create_barplot(mean_auc_dict=mean_auc_dictionary, std_auc_dict=std_auc_dictionary)
+
+# %%
+train_loss, train_acc, val_loss, val_acc, test_loss, test_acc, auc = calculate_pretrain_acc_AUC(
+    home='/Users/IrmavandenBrandt/Downloads/Internship',
+    source_data='pcam-small', target_data=None, augment=True, batch_size=128,
+    img_length=96, img_width=96)
+
+
