@@ -1,0 +1,41 @@
+[2021-02-11 09:45:04,155][root][INFO] - device: cuda:0
+task2vec:
+  max_samples: 10000
+  skip_layers: 0
+  method: montecarlo
+  method_opts:
+    epochs: 1
+classifier_opts:
+  optimizer: adam
+  epochs: 10
+  learning_rate: 0.0004
+  weight_decay: 0.0001
+dataset:
+  name: cifar10
+  task_id: 0
+  root: ~/data
+model:
+  arch: resnet50
+  pretrained: true
+loader:
+  batch_size: 100
+  num_workers: 6
+  balanced_sampling: true
+  num_samples: 10000
+
+[2021-02-11 09:45:05,900][root][INFO] - Caching features...
+[2021-02-11 12:51:06,733][root][INFO] - Fitting final classifier...
+[2021-02-11 12:51:07,049][root][INFO] - [epoch 0]: loss: 1.375952776425924	error: 37.05929487179487
+[2021-02-11 12:51:07,278][root][INFO] - [epoch 1]: loss: 0.849981508575953	error: 25.0
+[2021-02-11 12:51:07,502][root][INFO] - [epoch 2]: loss: 0.7361730409738345	error: 23.54767628205128
+[2021-02-11 12:51:07,730][root][INFO] - [epoch 3]: loss: 0.6784044479330381	error: 22.385817307692307
+[2021-02-11 12:51:07,956][root][INFO] - [epoch 4]: loss: 0.6462286393611859	error: 21.424278846153847
+[2021-02-11 12:51:08,182][root][INFO] - [epoch 5]: loss: 0.6273177932852354	error: 21.123798076923077
+[2021-02-11 12:51:08,404][root][INFO] - [epoch 6]: loss: 0.6088507786775247	error: 20.412660256410255
+[2021-02-11 12:51:08,634][root][INFO] - [epoch 7]: loss: 0.5928311363244668	error: 20.38261217948718
+[2021-02-11 12:51:08,862][root][INFO] - [epoch 8]: loss: 0.6001811860463558	error: 20.572916666666668
+[2021-02-11 12:51:09,084][root][INFO] - [epoch 9]: loss: 0.5729933665731014	error: 19.721554487179485
+[2021-02-11 12:51:09,085][root][INFO] - Using montecarlo Fisher
+[2021-02-11 12:51:09,103][root][INFO] - Computing Fisher...
+[2021-02-11 12:51:09,139][root][INFO] - 	epoch 1/1
+[2021-02-11 14:39:30,984][root][INFO] - done
