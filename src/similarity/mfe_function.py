@@ -1,136 +1,108 @@
-import keras
+# Import packages
 import numpy as np
-from src.converter_numpy import get_train_images
-from src.meta_features import meta_entropy, meta_skew, meta_kurtosis, meta_median, meta_std, meta_mean, meta_sparsity, meta_xy_axis
+import os
+from src.io.converter_numpy import get_train_images
+from src.similarity.meta_features import meta_entropy, meta_skew, meta_kurtosis, meta_mad, meta_mean, meta_variance
+import cv2
 
-#%% Function
+def feature_extraction(datasets, mfe_path, mfe_subset, color_channel):
+    """Calculates the similarity between datasets based on statistical meta-features.
+    Takes five possible datasets as input arguments and returns a matrix with the corresponding similarity measures."""
 
-def feature_extraction(datasets, subset = 20):
-    """Calculates the similarity vector between datasets based on meta-features"""
     # Importing datasets and defining subsets
 
     data_vectors = []
 
     for dataset in datasets:
-        if dataset == 'mnist':
-            mnist = keras.datasets.mnist
-            (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
-            data = train_images[:subset]
-        elif dataset == 'fashion_mnist':
-            fashion_mnist = keras.datasets.fashion_mnist
-            (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
-            data = train_images[:subset]
-        elif dataset == 'cifar10':
-            cifar10 = keras.datasets.cifar10
-            (train_images, train_labels), (test_images, test_labels) = cifar10.load_data()
-            data = train_images[:subset]
-        elif dataset == 'cifar100':
-            cifar100 = keras.datasets.cifar100
-            (train_images, train_labels), (test_images, test_labels) = cifar100.load_data()
-            data = train_images[:subset]
-        elif dataset == 'ISIC2017':
-            train_images = get_train_images(dataset='ISIC2017', local_subset=subset)
-            train_labels = 2
-            data = train_images[:subset]            # overbodig vanwege local_subset
-        elif dataset == 'ISIC2018':
-            train_images = get_train_images(dataset='ISIC2018', local_subset=subset)
-            train_labels = 2
-            data = train_images[:subset]            # overbodig vanwege local_subset
+        if dataset == 'ISIC2018':
+            train_images = get_train_images(dataset='ISIC2018', converter_path=mfe_path, converter_subset=mfe_subset)
+            num_train_labels = 7
         elif dataset == 'chest_xray':
-            train_images = get_train_images(dataset='chest_xray', local_subset=subset)
-            train_labels = 2
-            data = train_images[:subset]            # overbodig vanwege local_subset
+            train_images = get_train_images(dataset='chest_xray', converter_path=mfe_path, converter_subset=mfe_subset)
+            num_train_labels = len(next(os.walk(mfe_path + '/chest_xray/all/'))[1])
         elif dataset == 'stl-10':
-            train_images = get_train_images(dataset='stl-10', local_subset=subset)
-            train_labels = 2
-            data = train_images[:subset]            # overbodig vanwege local_subset
+            train_images = get_train_images(dataset='stl-10', converter_path=mfe_path, converter_subset=mfe_subset)
+            num_train_labels = len(next(os.walk(mfe_path + '/stl_10/'))[1])
         elif dataset == 'dtd':
-            train_images = get_train_images(dataset='dtd', local_subset=subset)
-            train_labels = 47
-            data = train_images[:subset]            # overbodig vanwege local_subset
+            train_images = get_train_images(dataset='dtd', converter_path=mfe_path, converter_subset=mfe_subset)
+            num_train_labels = len(next(os.walk(mfe_path + '/dtd/'))[1])
+        elif dataset == 'pcam':
+            train_images = get_train_images(dataset='pcam', converter_path=mfe_path, converter_subset=mfe_subset)
+            num_train_labels = len(next(os.walk(mfe_path + '/pcam/pcam_subset/'))[1])
         else:
             print('Dataset not available')
             break
 
+        data = train_images
+
         # General meta-features
 
-        if dataset == 'chest_xray' or dataset == 'dtd':
-            image_count = data.shape[0]
-            image_size = data[0].shape[0] * data[0].shape[1]
-            label_count = train_labels
+        image_count = data.shape[0]
+        label_count = num_train_labels
 
-        else:
-            image_count = data.shape[0]
-            image_size = data.shape[1] * data.shape[2]
-            label_count = train_labels
-
-        # Statistical meta-features
+        # Make empty lists for statistical meta-features
 
         data_entropy = []
         data_skewness = []
         data_kurtosis = []
-        data_median = []
-        data_std = []
+        data_mad = []
         data_mean = []
-        data_sparsity = []
-        data_xy_axis = []
+        data_variance = []
+
+        # Convert to color channel histograms
 
         for image in data:
+            if color_channel == 'blue':
+                image = cv2.calcHist([image], [0], None, [256], [0, 256])
+            elif color_channel == 'green':
+                image = cv2.calcHist([image], [1], None, [256], [0, 256])
+            elif color_channel == 'red':
+                image = cv2.calcHist([image], [2], None, [256], [0, 256])
             data_entropy.append(meta_entropy(image, base=len(image.shape)))
             data_skewness.append(meta_skew(image))
             data_kurtosis.append(meta_kurtosis(image))
-            data_median.append(meta_median(image))
-            data_std.append(meta_std(image))
+            data_mad.append(meta_mad(image))
             data_mean.append(meta_mean(image))
-            data_sparsity.append(meta_sparsity(image))
-            data_xy_axis.append(meta_xy_axis(image))
+            data_variance.append(meta_variance(image))
 
-        entropy_mean = round(np.mean(data_entropy))
-        entropy_std = round(np.std(data_entropy))
+        # Take the mean and std of all the statistical values within each dataset
 
-        skewness_mean = round(np.mean(data_skewness))
-        skewness_std = round(np.std(data_skewness))
+        entropy_mean = np.mean(data_entropy)
+        entropy_std = np.std(data_entropy)
 
-        kurtosis_mean = round(np.mean(data_kurtosis))
-        kurtosis_std = round(np.std(data_kurtosis))
+        skewness_mean = np.mean(data_skewness)
+        skewness_std = np.std(data_skewness)
 
-        median_mean = round(np.mean(data_median))
-        median_std = round(np.std(data_median))
+        kurtosis_mean = np.mean(data_kurtosis)
+        kurtosis_std = np.std(data_kurtosis)
 
-        std_mean = round(np.mean(data_std))
-        std_std = round(np.std(data_std))
+        mad_mean = np.mean(data_mad)
+        mad_std = np.std(data_mad)
 
-        mean_mean = round(np.mean(data_mean))
-        mean_std = round(np.std(data_mean))
+        mean_mean = np.mean(data_mean)
+        mean_std = np.std(data_mean)
 
-        sparsity_mean = round(np.mean(data_sparsity))
-        sparsity_std = round(np.std(data_sparsity))
+        variance_mean = np.mean(data_variance)
+        variance_std = np.std(data_variance)
 
-        xy_axis_mean = round(np.mean(data_xy_axis))
-        xy_axis_std = round(np.std(data_xy_axis))
+        # Combine statistical meta-features into one vector
 
-        # Combine meta-features
-        all_features = [image_count, image_size, label_count, entropy_mean, entropy_std, skewness_mean, skewness_std, kurtosis_mean, kurtosis_std, median_mean,
-                        median_std, std_mean, std_std, mean_mean, mean_std, sparsity_mean, sparsity_std, xy_axis_mean, xy_axis_std]
+        meta_vector = [image_count, label_count, entropy_mean, entropy_std, skewness_mean, skewness_std, kurtosis_mean, kurtosis_std,
+                       mad_mean, mad_std, mean_mean, mean_std, variance_mean, variance_std]
 
-        meta_vector = []
-
-        for index in range(len(all_features)):
-            meta_vector.append(all_features[index])
-
-        # Zero mean and unit variance
+        # Convert vectors to zero mean and unit variance
 
         meta_vector_mean = np.mean(meta_vector)
         meta_vector_std = np.std(meta_vector)
 
         for meta_feature in range(len(meta_vector)):
-            meta_vector[meta_feature] = np.round(((meta_vector[meta_feature] - meta_vector_mean) / meta_vector_std), decimals=2)
+            meta_vector[meta_feature] = ((meta_vector[meta_feature] - meta_vector_mean) / meta_vector_std)
 
-        # Combine dataset vectors
+        # Combine all dataset vectors
 
         data_vectors.append(meta_vector)
 
-    # Similarity matrix calculation
+    # Calculate the euclidean distances between the vectors and store them in the similarity matrix
 
     sim_mat = np.zeros((len(data_vectors), len(data_vectors)))
 
@@ -140,18 +112,3 @@ def feature_extraction(datasets, subset = 20):
             sim_mat[row][column] = np.around(euc_dst, decimals=2)
 
     return sim_mat
-#%% Function call
-
-feature_extraction(datasets=['chest_xray', 'ISIC2018', 'stl-10', 'dtd'], subset=10)
-
-#%% Test
-
-# vector_mean = np.mean(vector)
-# vector_std = np.std(vector)
-#
-# print(vector)
-#
-# for i in range(len(vector)):
-#     vector[i] = (vector[i] - vector_mean)/vector_std
-#
-# print(vector)

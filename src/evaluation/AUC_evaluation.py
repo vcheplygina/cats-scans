@@ -334,3 +334,9 @@ train_loss, train_acc, val_loss, val_acc, test_loss, test_acc, auc = calculate_p
     img_length=96, img_width=96)
 
 
+#%%
+import numpy as np
+
+mean_auc_scores = np.load('outputs/mean_auc_scores.npy')
+
+
