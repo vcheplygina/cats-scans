@@ -15,7 +15,7 @@ def main(cfg: DictConfig):
     train_dataset, test_dataset = get_dataset(cfg.dataset.root, cfg.dataset)
     probe_network = get_model('resnet50', pretrained=True, num_classes=2)
     embedding = Task2Vec(probe_network).embed(train_dataset)
-    with open(f'/src/task2vec_fullcode/outputs/PCam', 'wb') as f:
+    with open(f'/src/task2vec_fullcode/outputs/PCam/embedding_test_pcam.p', 'wb') as f:
         pickle.dump(embedding, f)
 
 
