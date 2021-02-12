@@ -22,7 +22,7 @@ dataset:
 #  name: cifar10
   task_id: 0
 #  root: ~/downloads/Internship
-  root: ~/data/ivdbrandt
+  root: /data/ivdbrandt
 
 # Probe network to use
 model:
