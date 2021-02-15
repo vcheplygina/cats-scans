@@ -6,6 +6,7 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
 from PIL import Image
 from src.io.data_import import collect_data
+from sklearn import preprocessing
 
 # Ignore warnings
 import warnings
@@ -29,9 +30,10 @@ class ISIC2018Dataset(Dataset):
             self.isic2018 = X_test
         self.root_dir = root_dir
         self.transform = transform
-
-
-        self.targets = self.isic2018['class'].astype(int)
+        labelencoder = preprocessing.LabelEncoder()
+        labelencoder.fit(self.isic2018['class'])
+        self.targets = labelencoder.transform(self.isic2018['class'])
+        print(self.targets)
 
     def __len__(self):
         return len(self.isic2018)
@@ -40,7 +42,7 @@ class ISIC2018Dataset(Dataset):
 
         img_name = self.isic2018.iloc[idx, 0]
         image = Image.open(img_name)
-        target = int(self.isic2018.iloc[idx, 1])
+        target = self.targets[idx]
 
         if self.transform:
             image = self.transform(image)
