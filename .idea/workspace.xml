@@ -48,7 +48,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7aa62c1f-18f8-4179-bd61-a035c8ea84e2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/isic2018.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/isic2018.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/datasets.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,6 +65,11 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/task2vec_fullcode/dataset" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration default="true" type="DjangoTestsConfigurationType">

@@ -1,4 +1,4 @@
-device: "cuda:2"
+device: "cuda:0"
 
 task2vec:
   # Maximum number of samples in the dataset used to estimate the Fisher

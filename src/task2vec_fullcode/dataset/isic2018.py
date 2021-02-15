@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 
 
 class ISIC2018Dataset(Dataset):
-    """Face Landmarks dataset."""
+    """ISIC 2018 training dataset."""
 
     def __init__(self, root_dir, train, transform=None):
         """
@@ -27,8 +27,11 @@ class ISIC2018Dataset(Dataset):
             self.isic2018 = X_train
         else:
             self.isic2018 = X_test
-        # self.root_dir = root_dir
+        self.root_dir = root_dir
         self.transform = transform
+
+
+        self.targets = self.isic2018['class'].astype(int)
 
     def __len__(self):
         return len(self.isic2018)
@@ -38,9 +41,6 @@ class ISIC2018Dataset(Dataset):
         img_name = self.isic2018.iloc[idx, 0]
         image = Image.open(img_name)
         target = int(self.isic2018.iloc[idx, 1])
-
-        # label = np.array([label])
-        # labels = label.astype('float').reshape(-1, 2)
 
         if self.transform:
             image = self.transform(image)
