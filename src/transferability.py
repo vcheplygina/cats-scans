@@ -75,15 +75,30 @@ def plot_distance_score(distance, score_mean, score_std, labels):
     plt.xlabel("Dataset distance")
     plt.ylabel("Relative AUC increase")
     
-    # Save plot (TODO)
+    # Save plot (TODO), increase font size etc. 
     
+    
+def show_transfer_matrix(scores, labels):
+    
+    fig, ax = plt.subplots(figsize=(5, 5))
+    ax.matshow(scores, cmap=plt.cm.Blues, alpha=0.3)
+    for i in range(scores.shape[0]):
+        for j in range(scores.shape[1]):
+            ax.text(x=j, y=i,s=scores[i, j], va='center', ha='center', size='xx-large')
+    
+    ax.set_xticklabels([''] + labels)
+    ax.set_yticklabels([''] + labels)
+
+dataset_distance = [5, 10, 15, 20, 25, 30]
 
 score_mean = [7, 9, 13, 14, 11, 16]
 score_std = [1, 1, 1, 1, 1, 1]
 
-dataset_distance = [5, 10, 15, 20, 25, 30]
+labels_pairs = ["A to B", "A to C", "A to D", "B to C", "B to D", "C to D"]
+plot_distance_score(dataset_distance, score_mean, score_std, labels_pairs)
 
-labels = ["A to B", "A to C", "A to D", "B to C", "B to D", "C to D"]
+labels = ["A", "B", "C", "D"]
+scores = np.matrix([[70, 75, 80, 75], [60, 70, 60, 80], [90, 95, 80, 85], [80, 60, 60, 65]])
 
-plot_distance_score(dataset_distance, score_mean, score_std, labels)
+show_transfer_matrix(scores, labels)
 
