@@ -66,7 +66,7 @@ def plot_distance_score(distance, score_mean, score_std, labels):
     
     slope, intercept, r_value, p_value, std_err = stats.linregress(distance, score_mean)
     
-    str = "rho={:1.2f}".format(r_value)
+    str = "rho={:1.2f}, p={:1.2f}".format(r_value, p_value)
     plt.legend([str])
     
     
@@ -78,7 +78,7 @@ def plot_distance_score(distance, score_mean, score_std, labels):
     # Save plot (TODO)
     
 
-score_mean = [7, 9, 11, 14, 13, 16]
+score_mean = [7, 9, 13, 14, 11, 16]
 score_std = [1, 1, 1, 1, 1, 1]
 
 dataset_distance = [5, 10, 15, 20, 25, 30]
