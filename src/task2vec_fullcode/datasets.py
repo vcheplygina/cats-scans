@@ -359,7 +359,7 @@ def stl10(root, config):
 
 @_add_dataset
 def isic2018(root, config):
-    from .isic2018 import ISIC2018Dataset
+    from src.task2vec_fullcode.dataset.isic2018 import ISIC2018Dataset
     transform = transforms.Compose([
         transforms.Resize(224),
         transforms.ToTensor(),
@@ -372,7 +372,7 @@ def isic2018(root, config):
 
 @_add_dataset
 def PCam(root, config):
-    from .PCAM import PCAMDataset
+    from src.task2vec_fullcode.dataset.PCAM import PCAMDataset
     transform = transforms.Compose([
         transforms.Resize(224),
         transforms.ToTensor(),
@@ -382,6 +382,18 @@ def PCam(root, config):
     testset = PCAMDataset(root, train=False, transform=transform)
     return trainset, testset
 
+
+# @_add_dataset
+# def PCam(root, config):
+#     from src.task2vec_fullcode.dataset.PCAM import PCAMDataset
+#     transform = transforms.Compose([
+#         transforms.Resize(224),
+#         transforms.ToTensor(),
+#         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
+#     ])
+#     trainset = PCAMDataset(root, train=True, transform=transform)
+#     testset = PCAMDataset(root, train=False, transform=transform)
+#     return trainset, testset
 
 
 def get_dataset(root, config=None):
