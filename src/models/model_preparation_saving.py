@@ -1,6 +1,6 @@
 from sklearn.model_selection import StratifiedKFold
-from ..io.requests_osf import upload_zip_to_osf
-from ..io.data_import import collect_data
+from src.io.requests_osf import upload_zip_to_osf
+from src.io.data_import import collect_data
 from .tf_generators_models_kfold import create_generators, compute_class_mode
 import numpy as np
 from keras.utils import to_categorical
@@ -52,6 +52,9 @@ def prepare_model_source(home, source_data, target_data, augment, batch_size,  i
                                             seed=2)
 
     else:
+        print(home)
+        print(source_data)
+        print(target_data)
         # collect training, validation and testing datasets
         X_train, X_val, X_test = collect_data(home, source_data, target_data)
 
