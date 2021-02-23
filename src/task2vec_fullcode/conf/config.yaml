@@ -18,7 +18,7 @@ defaults:
   - task2vec: montecarlo
 
 dataset:
-  name: stl10
+  name: stl10_catsscans
   task_id: 0
 #  root: ~/data
 #  root: ~/downloads/Internship
