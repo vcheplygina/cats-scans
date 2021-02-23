@@ -2,7 +2,7 @@ hydra:
   run:
     dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:
-    dir: ./multirun/${task2vec.method}
+    dir: ./multirun/${task2vec_fullcode.method}
     subdir: ${hydra.job.num}_${hydra.job.override_dirname}
   hydra_logging:
     version: 1

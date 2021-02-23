@@ -107,7 +107,7 @@ hydra:
     hydra: []
     task: []
   job:
-    name: task2vec_cats-scans
+    name: main
     override_dirname: ''
     id: ???
     num: ???
@@ -121,5 +121,5 @@ hydra:
         exclude_keys: []
   runtime:
     version: 1.0.6
-    cwd: /Users/IrmavandenBrandt/PycharmProjects/cats-scans
+    cwd: /Users/IrmavandenBrandt/PycharmProjects/cats-scans/src/task2vec_fullcode
   verbose: false
