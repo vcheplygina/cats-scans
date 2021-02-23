@@ -18,7 +18,7 @@ defaults:
   - task2vec: montecarlo
 
 dataset:
-  name: textures
+  name: kimia
   task_id: 0
 #  root: ~/data
 #  root: ~/downloads/Internship
