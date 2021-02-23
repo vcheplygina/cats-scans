@@ -48,8 +48,57 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7aa62c1f-18f8-4179-bd61-a035c8ea84e2" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-00-16/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-00-16/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-00-16/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-00-16/task2vec_cats-scans.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-01-02/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-01-02/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-01-02/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-01-02/task2vec_cats-scans.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-20-00/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-20-00/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-20-00/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-20-00/task2vec_cats-scans.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-21-00/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-21-00/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-21-00/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-21-00/task2vec_cats-scans.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-22-36/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-22-36/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-22-36/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-22-36/task2vec_cats-scans.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-22-58/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-22-58/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-22-58/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-22-58/task2vec_cats-scans.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-23-26/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-23-26/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-23-26/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-23-26/task2vec_cats-scans.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-23-57/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-23-57/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-23-57/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-23-57/task2vec_cats-scans.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-25-45/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-25-45/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-25-45/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-25-45/task2vec_cats-scans.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-29-42/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-29-42/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-29-42/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-22/21-29-42/task2vec_cats-scans.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/kimia.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/sti10.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/stl10.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/textures.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/isic2018.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/isic2018.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/conf/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/conf/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/chest.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/chest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/dataset_import_torchvision_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/dataset_import_torchvision_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/datasets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/task2vec_cats-scans.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/task2vec_cats-scans.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,8 +114,12 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/task2vec_fullcode/dataset" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/task2vec_fullcode/dataset" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/task2vec_fullcode/dataset" />
     </key>
@@ -247,5 +300,15 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="693" y="298" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1613747438235">
+      <screen x="0" y="25" width="1920" height="1055" />
+    </state>
+    <state x="693" y="298" key="#com.intellij.fileTypes.FileTypeChooser/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1613747438235" />
+    <state x="733" y="304" key="FileChooserDialogImpl" timestamp="1613980404274">
+      <screen x="0" y="25" width="1920" height="1055" />
+    </state>
+    <state x="733" y="304" key="FileChooserDialogImpl/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1613980404274" />
   </component>
 </project>
