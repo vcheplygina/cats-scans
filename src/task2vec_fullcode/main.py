@@ -18,10 +18,9 @@ import pickle
 import hydra
 import logging
 
-from datasets import get_dataset
-from models import get_model
-
-from task2vec import Task2Vec
+from .task2vec import Task2Vec
+from .models import get_model
+from .datasets import get_dataset
 from omegaconf import DictConfig, OmegaConf
 
 
@@ -37,7 +36,7 @@ def main(cfg: DictConfig):
     embedding = Task2Vec(probe_network, **cfg.task2vec).embed(train_dataset)
     embedding.meta = OmegaConf.to_container(cfg, resolve=True)
     embedding.meta['task_name'] = getattr(train_dataset, 'task_name', None)
-    with open('embedding.p', 'wb') as f:
+    with open(f'{cfg.dataset.root}/embedding_kimia_tasks.p', 'wb') as f:
         pickle.dump(embedding, f)
 
 
