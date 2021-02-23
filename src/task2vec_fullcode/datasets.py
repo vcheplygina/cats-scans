@@ -411,7 +411,7 @@ def sti10(root, config):
 def textures(root, config):
     from src.task2vec_fullcode.dataset.textures import DTDDataset
     transform = transforms.Compose([
-        transforms.Resize(224),
+        transforms.Resize([224, 224]),
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
@@ -436,7 +436,7 @@ def PCam(root, config):
 def kimia(root, config):
     from src.task2vec_fullcode.dataset.kimia import KimiaDataset
     transform = transforms.Compose([
-        transforms.Resize([224, 224]),
+        transforms.Resize(224),
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
