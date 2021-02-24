@@ -7,6 +7,7 @@ from torchvision import transforms, utils
 from PIL import Image
 from src.io.data_import import collect_data
 from sklearn import preprocessing
+import numpy as np
 
 # Ignore warnings
 import warnings
@@ -62,6 +63,7 @@ class ISIC2018Dataset(Dataset):
 
         self.meta_data = {}
         self.task_name = [key for key, value in task_map.items() if value == task_id]
+        self.num_classes = len(np.unique(targets))
 
     def __len__(self):
         return len(self.isic2018)
