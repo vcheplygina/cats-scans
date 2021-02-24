@@ -16,24 +16,53 @@ warnings.filterwarnings("ignore")
 class ISIC2018Dataset(Dataset):
     """ISIC 2018 training dataset."""
 
-    def __init__(self, root_dir, train, transform=None):
+    def __init__(self, root_dir, train, transform=None, task_id=0):
         """
         Args:
             root_dir (string): Directory with all the images.
             transform (callable, optional): Optional transform to be applied
                 on a sample.
         """
+        # create mapping between task ids and task labels
+        task_map = {'MEL': 0, 'NV': 1, 'BCC': 2, 'AKIEC': 3, 'BKL': 4, 'DF': 5, 'VASC': 6}
+
         X_train, X_val, X_test = collect_data(home=root_dir, source_data='isic', target_data=None)
+
+        # convert all labels in the datasets to the task ids
+        X_train = X_train.replace({"class": task_map})
+        X_test = X_test.replace({"class": task_map})
+
         if train:
-            self.isic2018 = X_train
+            if task_id:
+                self.isic2018 = X_train.loc[X_train['class'] == task_id]
+            else:
+                self.isic2018 = X_train
         else:
-            self.isic2018 = X_test
+            if task_id:
+                self.isic2018 = X_test.loc[X_test['class'] == task_id]
+            else:
+                self.isic2018 = X_test
+
         self.root_dir = root_dir
         self.transform = transform
-        labelencoder = preprocessing.LabelEncoder()
-        labelencoder.fit(self.isic2018['class'])
-        self.targets = labelencoder.transform(self.isic2018['class'])
-        print(self.targets)
+
+        # labelencoder = preprocessing.LabelEncoder()
+        # labelencoder.fit(self.isic2018['class'])
+        # targets = labelencoder.transform(self.isic2018['class'])
+        targets = self.isic2018['class']
+
+        if task_id:
+            print(f'Embedding for task {task_id}')
+            self.targets = targets[targets == task_id]
+            print(self.targets)
+        else:
+            print('Domain embedding')
+            self.targets = targets
+            print(self.targets)
+
+        self.meta_data = {}
+        task_map_list = list(task_map)
+        self.task_name = task_map_list.index(task_id)
 
     def __len__(self):
         return len(self.isic2018)

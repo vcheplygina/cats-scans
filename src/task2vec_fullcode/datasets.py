@@ -365,9 +365,12 @@ def isic2018(root, config):
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = ISIC2018Dataset(root, train=True, transform=transform)
-    testset = ISIC2018Dataset(root, train=False, transform=transform)
+    trainset = ISIC2018Dataset(root, train=True, transform=transform, task_id=config.task_id)
+    testset = ISIC2018Dataset(root, train=False, transform=transform, task_id=config.task_id)
+    trainset, testset = set_metadata(trainset, testset, config, 'isic2018')
     return trainset, testset
+
+
 
 
 @_add_dataset

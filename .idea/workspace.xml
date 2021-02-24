@@ -47,7 +47,29 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7aa62c1f-18f8-4179-bd61-a035c8ea84e2" name="Default Changelist" comment="" />
+    <list default="true" id="7aa62c1f-18f8-4179-bd61-a035c8ea84e2" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-11-22/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-11-22/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-11-22/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-11-22/task2vec_cats-scans.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-11-48/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-11-48/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-11-48/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-11-48/task2vec_cats-scans.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-12-49/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-12-49/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-12-49/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-12-49/task2vec_cats-scans.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-13-43/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-13-43/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-13-43/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-24/18-13-43/task2vec_cats-scans.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/conf/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/conf/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/isic2018.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/isic2018.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/datasets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/task2vec_cats-scans.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/task2vec_cats-scans.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
