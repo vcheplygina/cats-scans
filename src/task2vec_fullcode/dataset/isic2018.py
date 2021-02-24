@@ -61,7 +61,7 @@ class ISIC2018Dataset(Dataset):
             print(self.targets)
 
         self.meta_data = {}
-        self.task_name = task_map.index([key for key, value in task_map.items() if value == task_id])
+        self.task_name = [key for key, value in task_map.items() if value == task_id]
 
     def __len__(self):
         return len(self.isic2018)
