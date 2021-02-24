@@ -33,16 +33,18 @@ class ISIC2018Dataset(Dataset):
         X_train = X_train.replace({"class": task_map})
         X_test = X_test.replace({"class": task_map})
 
-        if train:
-            if task_id:
-                self.isic2018 = X_train.loc[X_train['class'] == task_id]
-            else:
-                self.isic2018 = X_train
+        # if train:
+        if task_id:
+            train_subset = X_train.loc[X_train['class'] == task_id]
+            self.isic2018 = train_subset.reset_index(drop=True)
+            print(self.isic2018)
         else:
-            if task_id:
-                self.isic2018 = X_test.loc[X_test['class'] == task_id]
-            else:
-                self.isic2018 = X_test
+            self.isic2018 = X_train
+        # else:
+        #     if task_id:
+        #         self.isic2018 = X_test.loc[X_test['class'] == task_id]
+        #     else:
+        #         self.isic2018 = X_test
 
         self.root_dir = root_dir
         self.transform = transform
