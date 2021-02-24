@@ -36,7 +36,7 @@ def main(cfg: DictConfig):
     embedding = Task2Vec(probe_network, **cfg.task2vec).embed(train_dataset)
     embedding.meta = OmegaConf.to_container(cfg, resolve=True)
     embedding.meta['task_name'] = getattr(train_dataset, 'task_name', None)
-    with open(f'{cfg.dataset.root}/embedding_kimia_tasks.p', 'wb') as f:
+    with open(f'{cfg.dataset.root}/embedding_isic2018_task0.p', 'wb') as f:
         pickle.dump(embedding, f)
 
 
