@@ -31,8 +31,7 @@ def main(cfg: DictConfig):
     if hasattr(train_dataset, 'task_name'):
         print(f"======= Embedding for task: {train_dataset.task_name} =======")
     probe_network = get_model(cfg.model.arch, pretrained=cfg.model.pretrained,
-                              num_classes=train_dataset.num_classes)
-    probe_network = probe_network.to(cfg.device)
+                              num_classes=train_dataset.num_classes).cuda()
     embedding = Task2Vec(probe_network, **cfg.task2vec).embed(train_dataset)
     embedding.meta = OmegaConf.to_container(cfg, resolve=True)
     embedding.meta['task_name'] = getattr(train_dataset, 'task_name', None)
