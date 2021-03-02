@@ -13,8 +13,8 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-class ChestDataset(Dataset):
-    """Chest training dataset."""
+class STI10Dataset(Dataset):
+    """STI10 training dataset."""
 
     def __init__(self, root_dir, train, transform=None):
         """
@@ -23,25 +23,23 @@ class ChestDataset(Dataset):
             transform (callable, optional): Optional transform to be applied
                 on a sample.
         """
-        X_train, X_val, X_test = collect_data(home=root_dir, source_data='chest', target_data=None)
+        X_train, X_val, X_test, y_train, y_val, y_test = collect_data(home=root_dir, source_data='sti10', target_data=None)
+
         if train:
-            self.chest = X_train
+            self.sti10 = X_train
         else:
-            self.chest = X_test
+            self.sti10 = X_test
         self.root_dir = root_dir
         self.transform = transform
-        labelencoder = preprocessing.LabelEncoder()
-        labelencoder.fit(self.chest['class'])
-        self.targets = labelencoder.transform(self.chest['class'])
+        self.targets = y_train
         print(self.targets)
 
     def __len__(self):
-        return len(self.chest)
+        return len(self.sti10)
 
     def __getitem__(self, idx):
 
-        img_name = self.chest.iloc[idx, 0]
-        image = Image.open(img_name)
+        image = self.sti10[idx]
         target = self.targets[idx]
 
         if self.transform:

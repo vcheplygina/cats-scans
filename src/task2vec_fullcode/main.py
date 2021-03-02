@@ -18,10 +18,9 @@ import pickle
 import hydra
 import logging
 
-from datasets import get_dataset
-from models import get_model
-
-from task2vec import Task2Vec
+from .task2vec import Task2Vec
+from .models import get_model
+from .datasets import get_dataset
 from omegaconf import DictConfig, OmegaConf
 
 
@@ -32,12 +31,11 @@ def main(cfg: DictConfig):
     if hasattr(train_dataset, 'task_name'):
         print(f"======= Embedding for task: {train_dataset.task_name} =======")
     probe_network = get_model(cfg.model.arch, pretrained=cfg.model.pretrained,
-                              num_classes=train_dataset.num_classes)
-    probe_network = probe_network.to(cfg.device)
-    embedding = Task2Vec(probe_network, **cfg.task2vec).embed(train_dataset)
+                              num_classes=train_dataset.num_classes).cuda()
+    embedding = Task2Vec(probe_network).embed(train_dataset)
     embedding.meta = OmegaConf.to_container(cfg, resolve=True)
     embedding.meta['task_name'] = getattr(train_dataset, 'task_name', None)
-    with open('embedding.p', 'wb') as f:
+    with open(f'{cfg.dataset.root}/embedding_isic2018_task2.p', 'wb') as f:
         pickle.dump(embedding, f)
 
 

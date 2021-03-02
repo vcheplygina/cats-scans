@@ -1,4 +1,4 @@
-device: "cuda:0"
+device: "cuda:1"
 
 task2vec:
   # Maximum number of samples in the dataset used to estimate the Fisher
@@ -19,7 +19,8 @@ defaults:
 
 dataset:
   name: isic2018
-  task_id: 0
+  task_id: 2
+#  root: ~/data
 #  root: ~/downloads/Internship
   root: /data/ivdbrandt
 
