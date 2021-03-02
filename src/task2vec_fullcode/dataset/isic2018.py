@@ -37,7 +37,6 @@ class ISIC2018Dataset(ClassificationTaskDataset):
 
         # convert all labels in the datasets to the task ids
         X_train = X_train.replace({"class": task_map})
-        print(X_train['class'].unique())
 
         self.isic2018 = X_train
         # if task_id:

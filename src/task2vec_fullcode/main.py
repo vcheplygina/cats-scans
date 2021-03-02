@@ -30,7 +30,6 @@ def main(cfg: DictConfig):
     train_dataset, test_dataset = get_dataset(cfg.dataset.root, cfg.dataset)
     if hasattr(train_dataset, 'task_name'):
         print(f"======= Embedding for task: {train_dataset.task_name} =======")
-    print(train_dataset.num_classes)
     probe_network = get_model(cfg.model.arch, pretrained=cfg.model.pretrained,
                               num_classes=train_dataset.num_classes).cuda()
     embedding = Task2Vec(probe_network).embed(train_dataset)
