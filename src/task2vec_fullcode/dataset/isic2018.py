@@ -39,35 +39,36 @@ class ISIC2018Dataset(ClassificationTaskDataset):
         X_train = X_train.replace({"class": task_map})
         print(X_train['class'].unique())
 
-        if task_id:
-            train_subset = X_train.loc[X_train['class'] == task_id]
-            self.isic2018 = train_subset.reset_index(drop=True)
-            print(self.isic2018)
-        else:
-            if task_id == 0:
-                train_subset = X_train.loc[X_train['class'] == 0]
-                self.isic2018 = train_subset.reset_index(drop=True)
-                print(self.isic2018)
-            else:
-                self.isic2018 = X_train
+        self.isic2018 = X_train
+        # if task_id:
+        #     train_subset = X_train.loc[X_train['class'] == task_id]
+        #     self.isic2018 = train_subset.reset_index(drop=True)
+        #     print(self.isic2018)
+        # else:
+        #     if task_id == 0:
+        #         train_subset = X_train.loc[X_train['class'] == 0]
+        #         self.isic2018 = train_subset.reset_index(drop=True)
+        #         print(self.isic2018)
+        #     else:
+        #         self.isic2018 = X_train
 
         self.root_dir = root_dir
 
-        targets = self.isic2018['class']
+        self.targets = self.isic2018['class']
 
-        if task_id:
-            print(f'Embedding for task {task_id}')
-            self.targets = targets[targets == task_id]
-            print(self.targets)
-        else:
-            if task_id == 0:
-                print(f'Embedding for task {task_id}')
-                self.targets = targets[targets == task_id]
-                print(self.targets)
-            else:
-                print('Domain embedding')
-                self.targets = targets
-                print(self.targets)
+        # if task_id:
+        #     print(f'Embedding for task {task_id}')
+        #     self.targets = targets[targets == task_id]
+        #     print(self.targets)
+        # else:
+        #     if task_id == 0:
+        #         print(f'Embedding for task {task_id}')
+        #         self.targets = targets[targets == task_id]
+        #         print(self.targets)
+        #     else:
+        #         print('Domain embedding')
+        #         self.targets = targets
+        #         print(self.targets)
 
         self.meta_data = {}
         task_name = [key for key, value in task_map.items() if value == task_id]
