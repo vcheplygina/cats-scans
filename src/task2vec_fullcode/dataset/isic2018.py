@@ -51,9 +51,6 @@ class ISIC2018Dataset(ClassificationTaskDataset):
 
         self.root_dir = root_dir
 
-        # labelencoder = preprocessing.LabelEncoder()
-        # labelencoder.fit(self.isic2018['class'])
-        # targets = labelencoder.transform(self.isic2018['class'])
         targets = self.isic2018['class']
 
         if task_id:
@@ -73,7 +70,6 @@ class ISIC2018Dataset(ClassificationTaskDataset):
         self.meta_data = {}
         task_name = [key for key, value in task_map.items() if value == task_id]
         print(task_name[0])
-        # self.num_classes = len(np.unique(targets))
 
         images_list = list(self.isic2018['path'])
         labels_list = list(self.targets)
