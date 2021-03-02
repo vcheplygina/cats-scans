@@ -72,12 +72,9 @@ class ISIC2018Dataset(ClassificationTaskDataset):
 
         self.meta_data = {}
         task_name = [key for key, value in task_map.items() if value == task_id]
-        print(task_name[0])
 
         images_list = list(self.isic2018['path'])
-        print(images_list, len(images_list))
         labels_list = list(self.targets)
-        print(labels_list, len(labels_list))
 
         super(ISIC2018Dataset, self).__init__(images_list,
                                               labels_list,
@@ -89,16 +86,17 @@ class ISIC2018Dataset(ClassificationTaskDataset):
                                               transform=transform,
                                               target_transform=None)
 
-    def __len__(self):
-        return len(self.isic2018)
-
-    def __getitem__(self, idx):
-
-        img_name = self.isic2018.iloc[idx, 0]
-        image = Image.open(img_name)
-        target = self.targets[idx]
-
-        if self.transform:
-            image = self.transform(image)
-
-        return image, target
+    # def __len__(self):
+    #     return len(self.isic2018)
+    #
+    # def __getitem__(self, idx):
+    #
+    #     img_name = self.isic2018.iloc[idx, 0]
+    #     print(img_name)
+    #     image = Image.open(img_name)
+    #     target = self.targets[idx]
+    #
+    #     if self.transform:
+    #         image = self.transform(image)
+    #
+    #     return image, target
