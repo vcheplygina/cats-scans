@@ -73,6 +73,8 @@ class ISIC2018Dataset(ClassificationTaskDataset):
 
         images_list = list(self.isic2018['path'])
         labels_list = list(self.targets)
+        labels_list = [0 for x in labels_list]
+        print(labels_list)
 
         super(ISIC2018Dataset, self).__init__(images_list,
                                               labels_list,
