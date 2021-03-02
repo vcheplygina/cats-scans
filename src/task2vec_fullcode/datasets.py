@@ -129,7 +129,7 @@ def set_metadata(trainset, testset, config, dataset_name):
 @_add_dataset
 def inat2018(root, config):
     # from src.task2vec_fullcode.dataset.inat import iNat2018Dataset
-    from dataset.inat import iNat2018Dataset
+    from .dataset.inat import iNat2018Dataset
     transform_train, transform_test = _get_transforms()
     trainset = iNat2018Dataset(root, split='train', transform=transform_train, task_id=config.task_id)
     testset = iNat2018Dataset(root, split='val', transform=transform_test, task_id=config.task_id)
@@ -365,12 +365,10 @@ def isic2018(root, config):
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = ISIC2018Dataset(root, train=True, transform=transform, task_id=config.task_id)
-    testset = ISIC2018Dataset(root, train=False, transform=transform, task_id=config.task_id)
+    trainset = ISIC2018Dataset(root, split='train', transform=transform, task_id=config.task_id)
+    testset = ISIC2018Dataset(root, split='test', transform=transform, task_id=config.task_id)
     trainset, testset = set_metadata(trainset, testset, config, 'isic2018')
     return trainset, testset
-
-
 
 
 @_add_dataset
@@ -398,6 +396,7 @@ def stl10_catsscans(root, config):
     testset = STL10Dataset(root, train=False, transform=transform)
     return trainset, testset
 
+
 @_add_dataset
 def sti10(root, config):
     from src.task2vec_fullcode.dataset.sti10 import STI10Dataset
@@ -410,6 +409,7 @@ def sti10(root, config):
     testset = STI10Dataset(root, train=False, transform=transform)
     return trainset, testset
 
+
 @_add_dataset
 def textures(root, config):
     from src.task2vec_fullcode.dataset.textures import DTDDataset
@@ -421,6 +421,7 @@ def textures(root, config):
     trainset = DTDDataset(root, train=True, transform=transform)
     testset = DTDDataset(root, train=False, transform=transform)
     return trainset, testset
+
 
 @_add_dataset
 def PCam(root, config):
@@ -446,6 +447,7 @@ def kimia(root, config):
     trainset = KimiaDataset(root, train=True, transform=transform)
     testset = KimiaDataset(root, train=False, transform=transform)
     return trainset, testset
+
 
 def get_dataset(root, config=None):
     return _DATASETS[config.name](os.path.expanduser(root), config)

@@ -1,0 +1,40 @@
+[2021-03-01 15:22:19,970][root][INFO] - device: cuda:1
+task2vec:
+  max_samples: 10000
+  skip_layers: 0
+  method: montecarlo
+  method_opts:
+    epochs: 1
+classifier_opts:
+  optimizer: adam
+  epochs: 10
+  learning_rate: 0.0004
+  weight_decay: 0.0001
+dataset:
+  name: isic2018
+  task_id: 0
+  root: ~/downloads/Internship
+model:
+  arch: resnet50
+  pretrained: true
+loader:
+  batch_size: 100
+  num_workers: 6
+  balanced_sampling: true
+  num_samples: 10000
+
+[2021-03-01 15:22:39,500][root][INFO] - Caching features...
+[2021-03-01 15:27:58,758][root][INFO] - Fitting final classifier...
+[2021-03-01 15:27:59,044][root][INFO] - [epoch 0]: loss: 0.0	error: 0.0
+[2021-03-01 15:27:59,242][root][INFO] - [epoch 1]: loss: 0.0	error: 0.0
+[2021-03-01 15:27:59,448][root][INFO] - [epoch 2]: loss: 0.0	error: 0.0
+[2021-03-01 15:27:59,643][root][INFO] - [epoch 3]: loss: 0.0	error: 0.0
+[2021-03-01 15:27:59,838][root][INFO] - [epoch 4]: loss: 0.0	error: 0.0
+[2021-03-01 15:28:00,037][root][INFO] - [epoch 5]: loss: 0.0	error: 0.0
+[2021-03-01 15:28:00,230][root][INFO] - [epoch 6]: loss: 0.0	error: 0.0
+[2021-03-01 15:28:00,428][root][INFO] - [epoch 7]: loss: 0.0	error: 0.0
+[2021-03-01 15:28:00,631][root][INFO] - [epoch 8]: loss: 0.0	error: 0.0
+[2021-03-01 15:28:00,871][root][INFO] - [epoch 9]: loss: 0.0	error: 0.0
+[2021-03-01 15:28:00,872][root][INFO] - Using montecarlo Fisher
+[2021-03-01 15:28:00,877][root][INFO] - Computing Fisher...
+[2021-03-01 15:28:00,923][root][INFO] - 	epoch 1/1

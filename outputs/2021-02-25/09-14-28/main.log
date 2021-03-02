@@ -1,0 +1,25 @@
+[2021-02-25 09:14:28,717][root][INFO] - device: cuda:1
+task2vec:
+  max_samples: 10000
+  skip_layers: 0
+  method: montecarlo
+  method_opts:
+    epochs: 1
+classifier_opts:
+  optimizer: adam
+  epochs: 10
+  learning_rate: 0.0004
+  weight_decay: 0.0001
+dataset:
+  name: cub
+  task_id: 1
+  root: ~/data
+model:
+  arch: resnet50
+  pretrained: true
+loader:
+  batch_size: 100
+  num_workers: 6
+  balanced_sampling: true
+  num_samples: 10000
+

@@ -48,7 +48,107 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7aa62c1f-18f8-4179-bd61-a035c8ea84e2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/task2vec.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/task2vec.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/08-24-40/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/08-24-40/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/08-24-40/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/08-24-40/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-13-51/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-13-51/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-13-51/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-13-51/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-14-28/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-14-28/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-14-28/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-14-28/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-15-08/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-15-08/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-15-08/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-15-08/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-15-36/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-15-36/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-15-36/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-02-25/09-15-36/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-21-32/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-21-32/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-21-32/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-21-32/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-21-38/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-21-38/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-21-38/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-21-38/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-26-13/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-26-13/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-26-13/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-26-13/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-32-06/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-32-06/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-32-06/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-32-06/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-33-38/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-33-38/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-33-38/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-33-38/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-34-40/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-34-40/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-34-40/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-34-40/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-35-05/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-35-05/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-35-05/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-35-05/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-36-00/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-36-00/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-36-00/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-36-00/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-36-38/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-36-38/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-36-38/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-36-38/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-38-15/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-38-15/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-38-15/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-38-15/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-39-04/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-39-04/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-39-04/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-39-04/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-40-26/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-40-26/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-40-26/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/14-40-26/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-17-22/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-17-22/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-17-22/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-17-22/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-18-45/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-18-45/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-18-45/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-18-45/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-19-45/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-19-45/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-19-45/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-19-45/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-20-25/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-20-25/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-20-25/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-20-25/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-20-59/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-20-59/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-20-59/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-20-59/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-22-19/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-22-19/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-22-19/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/15-22-19/main.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/17-26-23/.hydra/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/17-26-23/.hydra/hydra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/17-26-23/.hydra/overrides.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/2021-03-01/17-26-23/main.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/conf/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/conf/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/isic2018.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/isic2018.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/datasets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,6 +242,28 @@
       <module name="" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="cats-scans" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/envs/MIA-internship/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/task2vec_fullcode" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/task2vec_fullcode/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -263,6 +385,10 @@
       <screen x="0" y="25" width="1920" height="1055" />
     </state>
     <state x="665" y="373" key="#Notifications/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1614068533879" />
+    <state x="408" y="177" width="1071" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1614604841774">
+      <screen x="0" y="25" width="1920" height="1055" />
+    </state>
+    <state x="408" y="177" width="1071" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1614604841774" />
     <state x="693" y="298" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1613747438235">
       <screen x="0" y="25" width="1920" height="1055" />
     </state>
@@ -271,5 +397,24 @@
       <screen x="0" y="25" width="1920" height="1055" />
     </state>
     <state x="733" y="304" key="FileChooserDialogImpl/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1613980404274" />
+    <state width="890" height="265" key="GridCell.Tab.0.bottom" timestamp="1614670647760">
+      <screen x="0" y="25" width="1920" height="1055" />
+    </state>
+    <state width="890" height="265" key="GridCell.Tab.0.bottom/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1614670647760" />
+    <state width="890" height="265" key="GridCell.Tab.0.center" timestamp="1614670647758">
+      <screen x="0" y="25" width="1920" height="1055" />
+    </state>
+    <state width="890" height="265" key="GridCell.Tab.0.center/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1614670647758" />
+    <state width="890" height="265" key="GridCell.Tab.0.left" timestamp="1614670647756">
+      <screen x="0" y="25" width="1920" height="1055" />
+    </state>
+    <state width="890" height="265" key="GridCell.Tab.0.left/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1614670647756" />
+    <state width="890" height="265" key="GridCell.Tab.0.right" timestamp="1614670647759">
+      <screen x="0" y="25" width="1920" height="1055" />
+    </state>
+    <state width="890" height="265" key="GridCell.Tab.0.right/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1614670647759" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/cats_scans$main.coverage" NAME="main Coverage Results" MODIFIED="1614604843480" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/task2vec_fullcode" />
   </component>
 </project>
