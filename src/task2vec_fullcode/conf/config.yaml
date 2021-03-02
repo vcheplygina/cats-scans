@@ -19,7 +19,7 @@ defaults:
 
 dataset:
   name: isic2018
-  task_id: 0
+  task_id: 1
 #  root: ~/data
 #  root: ~/downloads/Internship
   root: /data/ivdbrandt
