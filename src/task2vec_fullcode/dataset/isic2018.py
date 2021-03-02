@@ -26,6 +26,8 @@ class ISIC2018Dataset(ClassificationTaskDataset):
             transform (callable, optional): Optional transform to be applied
                 on a sample.
         """
+        assert isinstance(task_id, int)
+
         # create mapping between task ids and task labels
         if metadata is None:
             metadata = {}
@@ -73,8 +75,6 @@ class ISIC2018Dataset(ClassificationTaskDataset):
 
         images_list = list(self.isic2018['path'])
         labels_list = list(self.targets)
-        labels_list = [0 for x in labels_list]
-        print(labels_list)
 
         super(ISIC2018Dataset, self).__init__(images_list,
                                               labels_list,
