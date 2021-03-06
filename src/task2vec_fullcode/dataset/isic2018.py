@@ -36,6 +36,7 @@ class ISIC2018Dataset(Dataset):
         full_data = full_data.replace({"class": task_map})
         # create a sample of size len(dataset)/100 and use the random integer as random state
         sample = full_data.sample(n=round(len(full_data)/100), weights='class', random_state=rand_int, axis=None)
+        sample = sample.reset_index(drop=True)
 
         self.isic2018 = sample
         self.root_dir = root_dir
