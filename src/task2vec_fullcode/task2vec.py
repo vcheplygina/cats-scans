@@ -339,7 +339,6 @@ def _get_loader(trainset, testset=None, batch_size=64, num_workers=6, num_sample
     else:
         labels = list(trainset.tensors[1].cpu().numpy())
     num_classes = int(getattr(trainset, 'num_classes', max(labels) + 1))
-    print(num_samples)
     class_count = np.eye(num_classes)[labels].sum(axis=0)
     weights = 1. / class_count[labels] / num_classes
     weights /= weights.sum()
