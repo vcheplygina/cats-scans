@@ -6,96 +6,55 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
 from PIL import Image
 from src.io.data_import import collect_data
-from sklearn import preprocessing
+from sklearn import preprocessing, utils
 import numpy as np
+import pandas as pd
 
 # Ignore warnings
 import warnings
 warnings.filterwarnings("ignore")
-from .dataset import ClassificationTaskDataset
 
 
-class ISIC2018Dataset(ClassificationTaskDataset):
+class ISIC2018Dataset(Dataset):
     """ISIC 2018 training dataset."""
 
-    def __init__(self, root_dir, split='train', task_id=None, level=None,
-                 metadata=None, transform=None, target_transform=None):
+    def __init__(self, root_dir, train, transform=None, rand_int=None):
         """
         Args:
             root_dir (string): Directory with all the images.
             transform (callable, optional): Optional transform to be applied
                 on a sample.
         """
-        assert isinstance(task_id, int)
 
-        # create mapping between task ids and task labels
-        if metadata is None:
-            metadata = {}
+        # create mapping between classes and integer replacements
         task_map = {'MEL': 0, 'NV': 1, 'BCC': 2, 'AKIEC': 3, 'BKL': 4, 'DF': 5, 'VASC': 6}
-
+        # collect the data
         X_train, X_val, X_test = collect_data(home=root_dir, source_data='isic', target_data=None)
+        # combine all datasets in one dataset --> use this complete dataset to create all 100 subsets
+        full_data = pd.concat([X_train, X_val, X_test])
+        # replace all string labels with integers using the clas map
+        full_data = full_data.replace({"class": task_map})
+        # create a sample of size len(dataset)/100 and use the random integer as random state
+        sample = full_data.sample(n=round(len(full_data)/100), weights='class', random_state=rand_int, axis=None)
 
-        # convert all labels in the datasets to the task ids
-        X_train = X_train.replace({"class": task_map})
-
-
-        if task_id:
-            train_subset = X_train.loc[X_train['class'] == task_id]
-            self.isic2018 = train_subset.reset_index(drop=True)
-            print(self.isic2018)
-        else:
-            if task_id == 0:
-                train_subset = X_train.loc[X_train['class'] == 0]
-                self.isic2018 = train_subset.reset_index(drop=True)
-                print(self.isic2018)
-            else:
-                self.isic2018 = X_train
-
+        self.isic2018 = sample
         self.root_dir = root_dir
+        self.targets = self.isic2018['class']
+        self.transform = transform
+        # get the number of classes in the dataset and give this as attribute to the dataset
+        unique_targets = np.unique(self.targets, return_counts=True)
+        self.num_classes = len(unique_targets)
 
-        targets = self.isic2018['class']
+    def __len__(self):
+        return len(self.isic2018)
 
-        if task_id:
-            print(f'Embedding for task {task_id}')
-            self.targets = targets[targets == task_id]
-            print(self.targets)
-        else:
-            if task_id == 0:
-                print(f'Embedding for task {task_id}')
-                self.targets = targets[targets == task_id]
-                print(self.targets)
-            else:
-                print('Domain embedding')
-                self.targets = targets
-                print(self.targets)
+    def __getitem__(self, idx):
 
-        self.meta_data = {}
-        task_name = [key for key, value in task_map.items() if value == task_id]
+        img_name = self.isic2018.iloc[idx, 0]
+        image = Image.open(img_name)
+        target = self.targets[idx]
 
-        images_list = list(self.isic2018['path'])
-        labels_list = list(self.targets)
+        if self.transform:
+            image = self.transform(image)
 
-        super(ISIC2018Dataset, self).__init__(images_list,
-                                              labels_list,
-                                              label_names=None,
-                                              root=root_dir,
-                                              task_id=task_id,
-                                              task_name=task_name[0],
-                                              metadata={},
-                                              transform=transform,
-                                              target_transform=None)
-
-    # def __len__(self):
-    #     return len(self.isic2018)
-    #
-    # def __getitem__(self, idx):
-    #
-    #     img_name = self.isic2018.iloc[idx, 0]
-    #     print(img_name)
-    #     image = Image.open(img_name)
-    #     target = self.targets[idx]
-    #
-    #     if self.transform:
-    #         image = self.transform(image)
-    #
-    #     return image, target
+        return image, target

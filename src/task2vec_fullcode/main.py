@@ -27,16 +27,21 @@ from omegaconf import DictConfig, OmegaConf
 @hydra.main(config_path="conf/config.yaml")
 def main(cfg: DictConfig):
     logging.info(cfg.pretty())
-    train_dataset, test_dataset = get_dataset(cfg.dataset.root, cfg.dataset)
-    if hasattr(train_dataset, 'task_name'):
-        print(f"======= Embedding for task: {train_dataset.task_name} =======")
-    probe_network = get_model(cfg.model.arch, pretrained=cfg.model.pretrained,
-                              num_classes=7).cuda()
-    embedding = Task2Vec(probe_network).embed(train_dataset)
-    embedding.meta = OmegaConf.to_container(cfg, resolve=True)
-    embedding.meta['task_name'] = getattr(train_dataset, 'task_name', None)
-    with open(f'{cfg.dataset.root}/embedding_isic2018_task1.p', 'wb') as f:
-        pickle.dump(embedding, f)
+    # run the embedding creation code 100 times (for 100 different subsets)
+    for i in range(100):
+        print(f'creating embedding for subset {i}')
+        # get a random value that is used as random state for the sample creation
+        random = i
+        train_dataset, test_dataset = get_dataset(cfg.dataset.root, cfg.dataset, rand_int=random)
+        # if hasattr(train_dataset, 'task_name'):
+        #     print(f"======= Embedding for task: {train_dataset.task_name} =======")
+        probe_network = get_model(cfg.model.arch, pretrained=cfg.model.pretrained,
+                                  num_classes=train_dataset.num_classes).cuda()
+        embedding = Task2Vec(probe_network).embed(train_dataset)
+        embedding.meta = OmegaConf.to_container(cfg, resolve=True)
+        # embedding.meta['task_name'] = getattr(train_dataset, 'task_name', None)
+        with open(f'{cfg.dataset.root}/embedding_isic2018_subset{i}.p', 'wb') as f:
+            pickle.dump(embedding, f)
 
 
 if __name__ == "__main__":

@@ -358,16 +358,15 @@ def stl10(root, config):
 
 
 @_add_dataset
-def isic2018(root, config):
+def isic2018(root, config, rand_int):
     from src.task2vec_fullcode.dataset.isic2018 import ISIC2018Dataset
     transform = transforms.Compose([
         transforms.Resize(224),
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = ISIC2018Dataset(root, split='train', transform=transform, task_id=config.task_id)
-    testset = ISIC2018Dataset(root, split='test', transform=transform, task_id=config.task_id)
-    trainset, testset = set_metadata(trainset, testset, config, 'isic2018')
+    trainset = ISIC2018Dataset(root, train=True, transform=transform, rand_int=rand_int)
+    testset = ISIC2018Dataset(root, train=False, transform=transform, rand_int=rand_int)
     return trainset, testset
 
 
@@ -449,5 +448,5 @@ def kimia(root, config):
     return trainset, testset
 
 
-def get_dataset(root, config=None):
-    return _DATASETS[config.name](os.path.expanduser(root), config)
+def get_dataset(root, config=None, rand_int=None):
+    return _DATASETS[config.name](os.path.expanduser(root), config, rand_int)
