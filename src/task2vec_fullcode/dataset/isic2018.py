@@ -49,8 +49,8 @@ class ISIC2018Dataset(Dataset):
         self.targets = self.isic2018['class']
         self.transform = transform
         # get the number of classes in the dataset and give this as attribute to the dataset
-        unique_targets = np.unique(self.targets, return_counts=True)
-        self.num_classes = len(unique_targets)
+        # unique_targets = np.unique(self.targets, return_counts=True)
+        self.num_classes = 7
 
     def __len__(self):
         return len(self.isic2018)
