@@ -26,14 +26,10 @@ class ISIC2018Dataset(Dataset):
                 on a sample.
         """
 
-        # create mapping between classes and integer replacements
-        # task_map = {'MEL': 0, 'NV': 1, 'BCC': 2, 'AKIEC': 3, 'BKL': 4, 'DF': 5, 'VASC': 6}
         # collect the data
         X_train, X_val, X_test = collect_data(home=root_dir, source_data='isic', target_data=None)
         # combine all datasets in one dataset --> use this complete dataset to create all 100 subsets
         full_data = pd.concat([X_train, X_val, X_test])
-        # replace all string labels with integers using the clas map
-        # full_data = full_data.replace({"class": task_map})
         # create a sample of size len(dataset)/100 and use the random integer as random state
         labelencoder = preprocessing.LabelEncoder()
         labelencoder.fit(full_data['class'])
@@ -48,8 +44,6 @@ class ISIC2018Dataset(Dataset):
 
         self.targets = self.isic2018['class']
         self.transform = transform
-        # get the number of classes in the dataset and give this as attribute to the dataset
-        # unique_targets = np.unique(self.targets, return_counts=True)
         self.num_classes = 7
 
     def __len__(self):

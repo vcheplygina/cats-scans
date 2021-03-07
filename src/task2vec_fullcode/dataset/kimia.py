@@ -7,6 +7,7 @@ from torchvision import transforms, utils
 from PIL import Image
 from src.io.data_import import collect_data
 from sklearn import preprocessing
+import pandas as pd
 
 # Ignore warnings
 import warnings
@@ -16,7 +17,7 @@ warnings.filterwarnings("ignore")
 class KimiaDataset(Dataset):
     """Kimia training dataset."""
 
-    def __init__(self, root_dir, train, transform=None):
+    def __init__(self, root_dir, train, transform=None, rand_int=None):
         """
         Args:
             root_dir (string): Directory with all the images.
@@ -24,15 +25,20 @@ class KimiaDataset(Dataset):
                 on a sample.
         """
         X_train, X_val, X_test = collect_data(home=root_dir, source_data='kimia', target_data=None)
-        if train:
-            self.kimia = X_train
-        else:
-            self.kimia = X_test
-        self.root_dir = root_dir
-        self.transform = transform
+        # combine all datasets in one dataset --> use this complete dataset to create all 100 subsets
+        full_data = pd.concat([X_train, X_val, X_test])
         labelencoder = preprocessing.LabelEncoder()
-        labelencoder.fit(self.kimia['class'])
-        self.targets = labelencoder.transform(self.kimia['class'])
+        labelencoder.fit(full_data['class'])
+        full_data['class'] = labelencoder.transform(full_data['class'])
+        sample = full_data.sample(n=round(len(full_data)/100), weights='class',
+                                  random_state=rand_int, axis=None)
+        sample = sample.reset_index(drop=True)
+
+        self.kimia = sample
+        self.root_dir = root_dir
+        self.targets = self.kimia['class']
+        self.transform = transform
+        self.num_classes = 20
         print(self.targets)
 
     def __len__(self):

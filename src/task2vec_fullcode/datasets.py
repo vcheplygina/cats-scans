@@ -436,15 +436,15 @@ def PCam(root, config):
 
 
 @_add_dataset
-def kimia(root, config):
+def kimia(root, config, rand_int):
     from src.task2vec_fullcode.dataset.kimia import KimiaDataset
     transform = transforms.Compose([
         transforms.Resize(224),
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = KimiaDataset(root, train=True, transform=transform)
-    testset = KimiaDataset(root, train=False, transform=transform)
+    trainset = KimiaDataset(root, train=True, transform=transform, rand_int=rand_int)
+    testset = KimiaDataset(root, train=False, transform=transform, rand_int=rand_int)
     return trainset, testset
 
 
