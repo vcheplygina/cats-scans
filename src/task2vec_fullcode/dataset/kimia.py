@@ -30,7 +30,7 @@ class KimiaDataset(Dataset):
         labelencoder = preprocessing.LabelEncoder()
         labelencoder.fit(full_data['class'])
         full_data['class'] = labelencoder.transform(full_data['class'])
-        sample = full_data.sample(n=round(len(full_data)/100), weights='class',
+        sample = full_data.sample(n=round(len(full_data)/100), weights=full_data.groupby('class')['class'].transform('count'),
                                   random_state=rand_int, axis=None)
         sample = sample.reset_index(drop=True)
 
