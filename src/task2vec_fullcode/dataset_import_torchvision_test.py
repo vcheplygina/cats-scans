@@ -11,7 +11,7 @@ def load_embedding(filename):
     return e
 
 #%%
-embedding = load_embedding('/Users/IrmavandenBrandt/Downloads/embedding_isic2018_task1.p')
+embedding = load_embedding('/Users/IrmavandenBrandt/Downloads/embedding_kimia_subset0.p')
 
 #%%
 embedding_isic = load_embedding('/Users/IrmavandenBrandt/Downloads/embedding_isic2018.p')

@@ -18,7 +18,7 @@ defaults:
   - task2vec: montecarlo
 
 dataset:
-  name: kimia
+  name: isic
 #  task_id: 1
 #  root: ~/data
 #  root: ~/downloads/Internship
