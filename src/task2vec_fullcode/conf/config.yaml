@@ -18,7 +18,7 @@ defaults:
   - task2vec: montecarlo
 
 dataset:
-  name: isic
+  name: isic2018
 #  task_id: 1
 #  root: ~/data
 #  root: ~/downloads/Internship
