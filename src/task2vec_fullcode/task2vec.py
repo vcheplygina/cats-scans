@@ -88,7 +88,6 @@ class Task2Vec:
         # Cache the last layer features (needed to train the classifier) and (if needed) the intermediate layer features
         # so that we can skip the initial layers when computing the embedding
         if self.skip_layers > 0:
-            print(self.loader_opts)
             self._cache_features(dataset, indexes=(self.skip_layers, -1), loader_opts=self.loader_opts,
                                  max_samples=self.max_samples)
         else:

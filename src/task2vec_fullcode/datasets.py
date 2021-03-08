@@ -410,15 +410,15 @@ def sti10(root, config):
 
 
 @_add_dataset
-def textures(root, config):
+def textures(root, config, rand_int):
     from src.task2vec_fullcode.dataset.textures import DTDDataset
     transform = transforms.Compose([
         transforms.Resize([224, 224]),
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = DTDDataset(root, train=True, transform=transform)
-    testset = DTDDataset(root, train=False, transform=transform)
+    trainset = DTDDataset(root, train=True, transform=transform, rand_int=rand_int)
+    testset = DTDDataset(root, train=False, transform=transform, rand_int=rand_int)
     return trainset, testset
 
 
