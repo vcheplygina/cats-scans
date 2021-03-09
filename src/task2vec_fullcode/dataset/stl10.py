@@ -47,7 +47,8 @@ class STL10Dataset(Dataset):
 
     def __getitem__(self, idx):
 
-        image = self.stl10[idx]
+        img_name = self.stl10[idx]
+        image = Image.open(img_name)
         target = self.targets[idx]
 
         if self.transform:
