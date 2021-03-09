@@ -55,6 +55,7 @@
       <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/conf/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/conf/config.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/textures.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/textures.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/datasets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/task2vec.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/task2vec.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
