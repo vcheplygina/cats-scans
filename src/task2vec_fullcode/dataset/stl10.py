@@ -26,19 +26,19 @@ class STL10Dataset(Dataset):
         """
         X_train, X_val, X_test, y_train, y_val, y_test = collect_data(home=root_dir, source_data='stl10', target_data=None)
 
-        full_data_img = np.concatenate((X_train, X_val, X_test), axis=None)
-        full_data_labels = np.concatenate((y_train, y_val, y_test), axis=None)
+        full_data_img = np.concatenate((X_train, X_val, X_test), axis=0)
+        full_data_labels = np.concatenate((y_train, y_val, y_test), axis=0)
         np.random.seed(rand_int)
-        sample_img = np.random.choice(full_data_img, round(len(full_data_img) / 100), replace=False)
-        sample_labels = np.random.choice(full_data_labels, round(len(full_data_labels) / 100), replace=False)
+        indices = np.random.choice(range(len(full_data_img)), round(len(full_data_img) / 100), replace=False)
+        sample_img = np.take(full_data_img, indices, axis=0)
+        sample_labels = np.take(full_data_labels, indices)
 
+        print(sample_img)
         self.stl10 = sample_img
-
         self.targets = sample_labels
         print(self.targets)
 
         self.root_dir = root_dir
-
         self.transform = transform
         self.num_classes = 10
 
@@ -48,7 +48,7 @@ class STL10Dataset(Dataset):
     def __getitem__(self, idx):
 
         img_name = self.stl10[idx]
-        image = Image.open(img_name)
+        image = Image.fromarray(img_name, 'RGB')
         target = self.targets[idx]
 
         if self.transform:

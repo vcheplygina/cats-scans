@@ -387,8 +387,8 @@ def chest(root, config):
 def stl10_catsscans(root, config, rand_int):
     from src.task2vec_fullcode.dataset.stl10 import STL10Dataset
     transform = transforms.Compose([
-        transforms.ToTensor(),  # first create tensor from numpy array
         transforms.Resize(224),  # then resize array from 96x96to 224x224
+        transforms.ToTensor(),  # first create tensor from numpy array
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
     trainset = STL10Dataset(root, train=True, transform=transform, rand_int=rand_int)
