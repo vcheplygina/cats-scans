@@ -18,7 +18,7 @@ defaults:
   - task2vec: montecarlo
 
 dataset:
-  name: PCam
+  name: stl10_catsscans
 #  task_id: 1
 #  root: ~/data
 #  root: ~/downloads/Internship

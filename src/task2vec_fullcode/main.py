@@ -33,14 +33,14 @@ def main(cfg: DictConfig):
         # get a random value that is used as random state for the sample creation
         random = i
         train_dataset = get_dataset(cfg.dataset.root, cfg.dataset, rand_int=random)
-        # if hasattr(train_dataset, 'task_name'):
-        #     print(f"======= Embedding for task: {train_dataset.task_name} =======")
+        if hasattr(train_dataset, 'task_name'):
+            print(f"======= Embedding for task: {train_dataset.task_name} =======")
         probe_network = get_model(cfg.model.arch, pretrained=cfg.model.pretrained,
                                   num_classes=train_dataset.num_classes).cuda()
         embedding = Task2Vec(probe_network).embed(train_dataset)
         embedding.meta = OmegaConf.to_container(cfg, resolve=True)
         # embedding.meta['task_name'] = getattr(train_dataset, 'task_name', None)
-        with open(f'{cfg.dataset.root}/embedding_pcam_subset{i}.p', 'wb') as f:
+        with open(f'{cfg.dataset.root}/embedding_stl10_subset{i}.p', 'wb') as f:
             pickle.dump(embedding, f)
 
 
