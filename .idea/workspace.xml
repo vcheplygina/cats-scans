@@ -48,42 +48,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7aa62c1f-18f8-4179-bd61-a035c8ea84e2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/13-54-26/.hydra/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/13-54-26/.hydra/hydra.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/13-54-26/.hydra/overrides.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/13-55-19/.hydra/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/13-55-19/.hydra/hydra.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/13-55-19/.hydra/overrides.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/13-55-54/.hydra/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/13-55-54/.hydra/hydra.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/13-55-54/.hydra/overrides.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/13-57-24/.hydra/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/13-57-24/.hydra/hydra.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/13-57-24/.hydra/overrides.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-04-37/.hydra/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-04-37/.hydra/hydra.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-04-37/.hydra/overrides.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-04-56/.hydra/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-04-56/.hydra/hydra.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-04-56/.hydra/overrides.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-05-41/.hydra/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-05-41/.hydra/hydra.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-05-41/.hydra/overrides.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-06-12/.hydra/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-06-12/.hydra/hydra.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-06-12/.hydra/overrides.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-07-35/.hydra/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-07-35/.hydra/hydra.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-07-35/.hydra/overrides.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-07-52/.hydra/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-07-52/.hydra/hydra.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/2021-03-09/14-07-52/.hydra/overrides.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/conf/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/conf/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/sti10.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/sti10.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/stl10.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/dataset/stl10.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/datasets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task2vec_fullcode/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

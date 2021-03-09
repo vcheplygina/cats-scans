@@ -396,16 +396,15 @@ def stl10_catsscans(root, config, rand_int):
 
 
 @_add_dataset
-def sti10(root, config):
+def sti10(root, config, rand_int):
     from src.task2vec_fullcode.dataset.sti10 import STI10Dataset
     transform = transforms.Compose([
         transforms.ToTensor(),  # first create tensor from numpy array
         transforms.Resize(224),  # then resize array from 96x96to 224x224
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = STI10Dataset(root, train=True, transform=transform)
-    testset = STI10Dataset(root, train=False, transform=transform)
-    return trainset, testset
+    trainset = STI10Dataset(root, train=True, transform=transform, rand_int=rand_int)
+    return trainset
 
 
 @_add_dataset
