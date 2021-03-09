@@ -32,7 +32,7 @@ def main(cfg: DictConfig):
         print(f'creating embedding for subset {i}')
         # get a random value that is used as random state for the sample creation
         random = i
-        train_dataset, test_dataset = get_dataset(cfg.dataset.root, cfg.dataset, rand_int=random)
+        train_dataset = get_dataset(cfg.dataset.root, cfg.dataset, rand_int=random)
         # if hasattr(train_dataset, 'task_name'):
         #     print(f"======= Embedding for task: {train_dataset.task_name} =======")
         probe_network = get_model(cfg.model.arch, pretrained=cfg.model.pretrained,
