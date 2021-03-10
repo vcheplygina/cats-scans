@@ -40,7 +40,7 @@ def main(cfg: DictConfig):
         embedding = Task2Vec(probe_network).embed(train_dataset)
         embedding.meta = OmegaConf.to_container(cfg, resolve=True)
         # embedding.meta['task_name'] = getattr(train_dataset, 'task_name', None)
-        with open(f'{cfg.dataset.root}/embedding_chest_subset{i}.p', 'wb') as f:
+        with open(f'{cfg.dataset.root}/embedding_pcam-small_subset{i}.p', 'wb') as f:
             pickle.dump(embedding, f)
 
 
