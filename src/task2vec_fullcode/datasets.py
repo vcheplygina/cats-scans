@@ -371,15 +371,15 @@ def isic2018(root, config, rand_int):
 
 
 @_add_dataset
-def chest(root, config):
+def chest(root, config, rand_int):
     from src.task2vec_fullcode.dataset.chest import ChestDataset
     transform = transforms.Compose([
         transforms.Resize(224),
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = ChestDataset(root, train=True, transform=transform)
-    testset = ChestDataset(root, train=False, transform=transform)
+    trainset = ChestDataset(root, train=True, transform=transform, rand_int=rand_int)
+    testset = ChestDataset(root, train=False, transform=transform, rand_int=rand_int)
     return trainset, testset
 
 

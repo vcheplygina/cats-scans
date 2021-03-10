@@ -7,6 +7,7 @@ from torchvision import transforms, utils
 from PIL import Image
 from src.io.data_import import collect_data
 from sklearn import preprocessing
+import pandas as pd
 
 # Ignore warnings
 import warnings
@@ -16,24 +17,33 @@ warnings.filterwarnings("ignore")
 class ChestDataset(Dataset):
     """Chest training dataset."""
 
-    def __init__(self, root_dir, train, transform=None):
+    def __init__(self, root_dir, train, transform=None, rand_int=None):
         """
         Args:
             root_dir (string): Directory with all the images.
             transform (callable, optional): Optional transform to be applied
                 on a sample.
         """
+
+        # collect the data
         X_train, X_val, X_test = collect_data(home=root_dir, source_data='chest', target_data=None)
-        if train:
-            self.chest = X_train
-        else:
-            self.chest = X_test
-        self.root_dir = root_dir
-        self.transform = transform
+        # combine all datasets in one dataset --> use this complete dataset to create all 100 subsets
+        full_data = pd.concat([X_train, X_val, X_test])
+        # create a sample of size len(dataset)/100 and use the random integer as random state
         labelencoder = preprocessing.LabelEncoder()
-        labelencoder.fit(self.chest['class'])
-        self.targets = labelencoder.transform(self.chest['class'])
-        print(self.targets)
+        labelencoder.fit(full_data['class'])
+        full_data['class'] = labelencoder.transform(full_data['class'])
+        sample = full_data.sample(n=round(len(full_data) / 100),
+                                  weights=full_data.groupby('class')['class'].transform('count'),
+                                  random_state=rand_int, axis=None)
+        sample = sample.reset_index(drop=True)
+
+        self.chest = sample
+        self.root_dir = root_dir
+
+        self.targets = self.chest['class']
+        self.transform = transform
+        self.num_classes = 2
 
     def __len__(self):
         return len(self.chest)
@@ -41,7 +51,7 @@ class ChestDataset(Dataset):
     def __getitem__(self, idx):
 
         img_name = self.chest.iloc[idx, 0]
-        image = Image.open(img_name)
+        image = Image.open(img_name).convert('RGB')
         target = self.targets[idx]
 
         if self.transform:
