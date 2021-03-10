@@ -379,8 +379,7 @@ def chest(root, config, rand_int):
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
     trainset = ChestDataset(root, train=True, transform=transform, rand_int=rand_int)
-    testset = ChestDataset(root, train=False, transform=transform, rand_int=rand_int)
-    return trainset, testset
+    return trainset
 
 
 @_add_dataset
