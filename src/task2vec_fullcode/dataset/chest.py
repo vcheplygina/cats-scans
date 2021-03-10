@@ -56,6 +56,5 @@ class ChestDataset(Dataset):
 
         if self.transform:
             image = self.transform(image)
-            print(image.shape)
 
         return image, target
