@@ -51,10 +51,11 @@ class ChestDataset(Dataset):
     def __getitem__(self, idx):
 
         img_name = self.chest.iloc[idx, 0]
-        image = Image.open(img_name).convert('RGB')
+        image = Image.open(img_name)
         target = self.targets[idx]
 
         if self.transform:
             image = self.transform(image)
+            print(image.shape)
 
         return image, target
