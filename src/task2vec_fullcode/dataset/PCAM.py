@@ -23,7 +23,7 @@ class PCAMDataset(Dataset):
             transform (callable, optional): Optional transform to be applied
                 on a sample.
         """
-        X_train, X_val, X_test = collect_data(home=root_dir, source_data='pcam-small', target_data=None)
+        X_train, X_val, X_test = collect_data(home=root_dir, source_data='pcam-middle', target_data=None)
         # combine all datasets in one dataset --> use this complete dataset to create all 100 subsets
         full_data = pd.concat([X_train, X_val, X_test])
         sample = full_data.sample(n=round(len(full_data) / 100),
@@ -37,7 +37,6 @@ class PCAMDataset(Dataset):
         self.transform = transform
         self.num_classes = 2
         print(self.targets)
-
 
     def __len__(self):
         return len(self.PCAM)
