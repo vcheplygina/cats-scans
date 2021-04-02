@@ -257,6 +257,7 @@ class Task2Vec:
         for i, (input, target) in tqdm(enumerate(itertools.islice(data_loader, 0, n_batches)), total=n_batches,
                                        leave=False,
                                        desc="Caching features"):
+            print(target)
             targets.append(target.clone())
             self.model(input.to(device))
         for hook in hooks:

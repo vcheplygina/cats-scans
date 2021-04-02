@@ -7,6 +7,7 @@ from torchvision import transforms, utils
 from PIL import Image
 from src.io.data_import import collect_data
 from sklearn import preprocessing
+import numpy as np
 
 # Ignore warnings
 import warnings
@@ -16,7 +17,7 @@ warnings.filterwarnings("ignore")
 class STL10Dataset(Dataset):
     """STL10 training dataset."""
 
-    def __init__(self, root_dir, train, transform=None):
+    def __init__(self, root_dir, train, transform=None, rand_int=None):
         """
         Args:
             root_dir (string): Directory with all the images.
@@ -25,21 +26,29 @@ class STL10Dataset(Dataset):
         """
         X_train, X_val, X_test, y_train, y_val, y_test = collect_data(home=root_dir, source_data='stl10', target_data=None)
 
-        if train:
-            self.stl10 = X_train
-        else:
-            self.stl10 = X_test
+        full_data_img = np.concatenate((X_train, X_val, X_test), axis=0)
+        full_data_labels = np.concatenate((y_train, y_val, y_test), axis=0)
+        np.random.seed(rand_int)
+        indices = np.random.choice(range(len(full_data_img)), round(len(full_data_img) / 100), replace=False)
+        sample_img = np.take(full_data_img, indices, axis=0)
+        sample_labels = np.take(full_data_labels, indices)
+
+        print(sample_img)
+        self.stl10 = sample_img
+        self.targets = sample_labels
+        print(self.targets)
+
         self.root_dir = root_dir
         self.transform = transform
-        self.targets = y_train
-        print(self.targets)
+        self.num_classes = 10
 
     def __len__(self):
         return len(self.stl10)
 
     def __getitem__(self, idx):
 
-        image = self.stl10[idx]
+        img_name = self.stl10[idx]
+        image = Image.fromarray(img_name, 'RGB')
         target = self.targets[idx]
 
         if self.transform:

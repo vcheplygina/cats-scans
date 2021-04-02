@@ -358,96 +358,93 @@ def stl10(root, config):
 
 
 @_add_dataset
-def isic2018(root, config):
+def isic2018(root, config, rand_int):
     from src.task2vec_fullcode.dataset.isic2018 import ISIC2018Dataset
     transform = transforms.Compose([
         transforms.Resize(224),
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = ISIC2018Dataset(root, split='train', transform=transform, task_id=config.task_id)
-    testset = ISIC2018Dataset(root, split='test', transform=transform, task_id=config.task_id)
-    trainset, testset = set_metadata(trainset, testset, config, 'isic2018')
+    trainset = ISIC2018Dataset(root, train=True, transform=transform, rand_int=rand_int)
+    testset = ISIC2018Dataset(root, train=False, transform=transform, rand_int=rand_int)
     return trainset, testset
 
 
 @_add_dataset
-def chest(root, config):
+def chest(root, config, rand_int):
     from src.task2vec_fullcode.dataset.chest import ChestDataset
     transform = transforms.Compose([
-        transforms.Resize(224),
+        transforms.Resize([224, 224]),
+        transforms.Grayscale(3),
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = ChestDataset(root, train=True, transform=transform)
-    testset = ChestDataset(root, train=False, transform=transform)
-    return trainset, testset
+    trainset = ChestDataset(root, train=True, transform=transform, rand_int=rand_int)
+    return trainset
 
 
 @_add_dataset
-def stl10_catsscans(root, config):
+def stl10_catsscans(root, config, rand_int):
     from src.task2vec_fullcode.dataset.stl10 import STL10Dataset
     transform = transforms.Compose([
-        transforms.ToTensor(),  # first create tensor from numpy array
         transforms.Resize(224),  # then resize array from 96x96to 224x224
+        transforms.ToTensor(),  # first create tensor from numpy array
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = STL10Dataset(root, train=True, transform=transform)
-    testset = STL10Dataset(root, train=False, transform=transform)
-    return trainset, testset
+    trainset = STL10Dataset(root, train=True, transform=transform, rand_int=rand_int)
+    return trainset
 
 
 @_add_dataset
-def sti10(root, config):
+def sti10(root, config, rand_int):
     from src.task2vec_fullcode.dataset.sti10 import STI10Dataset
     transform = transforms.Compose([
         transforms.ToTensor(),  # first create tensor from numpy array
         transforms.Resize(224),  # then resize array from 96x96to 224x224
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = STI10Dataset(root, train=True, transform=transform)
-    testset = STI10Dataset(root, train=False, transform=transform)
-    return trainset, testset
+    trainset = STI10Dataset(root, train=True, transform=transform, rand_int=rand_int)
+    return trainset
 
 
 @_add_dataset
-def textures(root, config):
+def textures(root, config, rand_int):
     from src.task2vec_fullcode.dataset.textures import DTDDataset
     transform = transforms.Compose([
         transforms.Resize([224, 224]),
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = DTDDataset(root, train=True, transform=transform)
-    testset = DTDDataset(root, train=False, transform=transform)
+    trainset = DTDDataset(root, train=True, transform=transform, rand_int=rand_int)
+    testset = DTDDataset(root, train=False, transform=transform, rand_int=rand_int)
     return trainset, testset
 
 
 @_add_dataset
-def PCam(root, config):
+def PCam(root, config, rand_int):
     from src.task2vec_fullcode.dataset.PCAM import PCAMDataset
     transform = transforms.Compose([
         transforms.Resize(224),
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = PCAMDataset(root, train=True, transform=transform)
-    testset = PCAMDataset(root, train=False, transform=transform)
-    return trainset, testset
+    trainset = PCAMDataset(root, train=True, transform=transform, rand_int=rand_int)
+    # testset = PCAMDataset(root, train=False, transform=transform, rand_int=rand_int)
+    return trainset
 
 
 @_add_dataset
-def kimia(root, config):
+def kimia(root, config, rand_int):
     from src.task2vec_fullcode.dataset.kimia import KimiaDataset
     transform = transforms.Compose([
         transforms.Resize(224),
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
     ])
-    trainset = KimiaDataset(root, train=True, transform=transform)
-    testset = KimiaDataset(root, train=False, transform=transform)
+    trainset = KimiaDataset(root, train=True, transform=transform, rand_int=rand_int)
+    testset = KimiaDataset(root, train=False, transform=transform, rand_int=rand_int)
     return trainset, testset
 
 
-def get_dataset(root, config=None):
-    return _DATASETS[config.name](os.path.expanduser(root), config)
+def get_dataset(root, config=None, rand_int=None):
+    return _DATASETS[config.name](os.path.expanduser(root), config, rand_int)
