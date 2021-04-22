@@ -37,145 +37,152 @@ def calculate_AUC(dataset, generator, predictions):
 
 
 # %%
-def calculate_pretrain_acc_AUC(home, source_data, target_data, augment, batch_size, img_length, img_width):
-    """
-    :param home: part of path that is specific to user, e.g. /Users/..../
-    :param source_data: dataset used as source dataset
-    :param target_data: dataset used as target dataset
-    :param augment: boolean specifying whether to use data augmentation or not
-    :param batch_size: number of images processed in one batch
-    :param img_length: target length of image in pixels
-    :param img_width: target width of image in pixels
-    :return : pretraining accuracy scores on training, validation and test set, AUC score on test set
-    """
-    num_classes, train_generator, valid_generator, test_generator = prepare_model_source(home,
-                                                                                         source_data,
-                                                                                         target_data,
-                                                                                         augment,
-                                                                                         batch_size,
-                                                                                         img_length,
-                                                                                         img_width)
-
-    trained_model = load_model(f'{home}/pretrain_models/model_weights_resnet_pretrained={source_data}.h5')
-    print('found model')
-
-    # compute loss and accuracy on training, validation and test set
-    train_loss, train_acc = trained_model.evaluate(train_generator, verbose=1)
-    print(f'Train loss:', train_loss, f' and Train accuracy:', train_acc)
-    val_loss, val_acc = trained_model.evaluate(valid_generator, verbose=1)
-    print(f'Validation loss:', val_loss, f' and Validation accuracy:', val_acc)
-    test_loss, test_acc = trained_model.evaluate(test_generator, verbose=1)
-    print(f'Test loss:', test_loss, f' and Test accuracy:', test_acc)
-
-    predictions = trained_model.predict(test_generator)  # get predictions
-    auc = calculate_AUC(source_data, test_generator, predictions)  # calculate AUC for test set
-
-    return train_loss, train_acc, val_loss, val_acc, test_loss, test_acc, auc
-
-
-#
-# def collect_TF_AUC(home, source_data, target_data, x_col, y_col, augment, k, batch_size, img_length, img_width):
+# def calculate_pretrain_acc_AUC(home, source_data, target_data, augment, batch_size, img_length, img_width):
 #     """
 #     :param home: part of path that is specific to user, e.g. /Users/..../
 #     :param source_data: dataset used as source dataset
 #     :param target_data: dataset used as target dataset
-#     :param x_col: column in dataframe containing the image paths
-#     :param y_col: column in dataframe containing the target labels
 #     :param augment: boolean specifying whether to use data augmentation or not
-#     :param k: amount of folds used in the k-fold cross validation
 #     :param batch_size: number of images processed in one batch
 #     :param img_length: target length of image in pixels
 #     :param img_width: target width of image in pixels
-#     :return: mean and standard deviation of AUC score for k-fold cross validation transfer learning experiment
+#     :return : pretraining accuracy scores on training, validation and test set, AUC score on test set
 #     """
-#     dataframe, num_classes, skf, train_gen, valid_gen, x_col, y_col, class_mode = prepare_model_target(home,
-#                                                                                                        source_data,
-#                                                                                                        target_data,
-#                                                                                                        x_col,
-#                                                                                                        y_col,
-#                                                                                                        augment,
-#                                                                                                        k)
-#     auc_per_fold = []
-#     fold_no = 1
+#     num_classes, train_generator, valid_generator, test_generator = prepare_model_source(home,
+#                                                                                          source_data,
+#                                                                                          target_data,
+#                                                                                          augment,
+#                                                                                          batch_size,
+#                                                                                          img_length,
+#                                                                                          img_width)
 #
-#     for train_index, val_index in skf.split(np.zeros(len(dataframe)), y=dataframe[['class']]):
-#         print(f'Starting fold {fold_no}')
+#     trained_model = load_model(f'{home}/pretrain_models/model_weights_resnet_pretrained={source_data}.h5')
+#     print('found model')
 #
-#         valid_data = dataframe.iloc[val_index]  # create validation dataframe with indices from fold split
+#     # compute loss and accuracy on training, validation and test set
+#     train_loss, train_acc = trained_model.evaluate(train_generator, verbose=1)
+#     print(f'Train loss:', train_loss, f' and Train accuracy:', train_acc)
+#     val_loss, val_acc = trained_model.evaluate(valid_generator, verbose=1)
+#     print(f'Validation loss:', val_loss, f' and Validation accuracy:', val_acc)
+#     test_loss, test_acc = trained_model.evaluate(test_generator, verbose=1)
+#     print(f'Test loss:', test_loss, f' and Test accuracy:', test_acc)
 #
-#         valid_generator = valid_gen.flow_from_dataframe(dataframe=valid_data,
-#                                                         x_col=x_col,
-#                                                         y_col=y_col,
-#                                                         target_size=(img_length, img_width),
-#                                                         batch_size=batch_size,
-#                                                         class_mode=class_mode,
-#                                                         validate_filenames=False,
-#                                                         seed=2,
-#                                                         shuffle=False)
+#     predictions = trained_model.predict(test_generator)  # get predictions
+#     auc = calculate_AUC(source_data, test_generator, predictions)  # calculate AUC for test set
 #
-#         try:
-#             trained_model = load_model(
-#                 f'{home}/output/resnet_target={target_data}_source={source_data}/model_weights_resnet_target='
-#                 f'{target_data}_source={source_data}_fold{fold_no}.h5')
-#             print('found model')
-#         except OSError:
-#             print('OSError')
-#             continue
+#     return train_loss, train_acc, val_loss, val_acc, test_loss, test_acc, auc
 #
-#         predictions = trained_model.predict(valid_generator)  # get predictions
-#         auc = calculate_AUC(target_data, valid_generator, predictions)  # compute AUC score
-#         auc_per_fold.append(auc)
-#
-#         fold_no += 1
-#
-#     mean_auc = np.mean(auc_per_fold)
-#     std_auc = np.std(auc_per_fold)
-#
-#     return mean_auc, std_auc
-#
-#
-# def create_AUC_matrix(home, x_col, y_col, augment, k, batch_size):
-#     """
-#     :param home: part of path that is specific to user, e.g. /Users/..../
-#     :param x_col: column in dataframe containing the image paths
-#     :param y_col: column in dataframe containing the target labels
-#     :param augment: boolean specifying whether to use data augmentation or not
-#     :param k: amount of folds used in the k-fold cross validation
-#     :param batch_size: number of images processed in one batch
-#     :return: dictionary containing all mean AUC scores from transfer learning, dictionary containing all standard
-#     deviations of the AUC scores from transfer learning
-#     """
-#     mean_auc_dict = {}
-#     std_auc_dict = {}
-#
-#     source_datasets = ['imagenet', 'stl10', 'sti10', 'textures', 'isic', 'chest', 'pcam-middle', 'pcam-small', 'kimia']
-#     target_datasets = ['isic', 'chest', 'pcam-middle']
-#
-#     for source in source_datasets:
-#         print(f'Now starting with source dataset {source}')
-#         mean_aucs_per_source = []
-#         std_aucs_per_source = []
-#         for target in target_datasets:
-#             print(f'Now starting with target dataset {target}')
-#             if target == source:
-#                 mean_auc, std_auc = np.nan, np.nan
-#             else:
-#                 # add if-else to set right img length and width depending on target dataset used
-#                 if target == 'pcam-middle':
-#                     img_length = 96
-#                     img_width = 96
-#                 else:
-#                     img_length = 112
-#                     img_width = 112
-#                 mean_auc, std_auc = collect_TF_AUC(home, source, target, x_col, y_col, augment, k, img_length,
-#                                                    img_width, batch_size)
-#             mean_aucs_per_source.append(mean_auc)
-#             std_aucs_per_source.append(std_auc)
-#         mean_auc_dict[source] = mean_aucs_per_source
-#         std_auc_dict[source] = std_aucs_per_source
-#
-#     return mean_auc_dict, std_auc_dict
-#
+
+# %%
+def collect_TF_AUC(home, source_data, target_data, x_col, y_col, augment, k, batch_size, img_length, img_width):
+    """
+    :param home: part of path that is specific to user, e.g. /Users/..../
+    :param source_data: dataset used as source dataset
+    :param target_data: dataset used as target dataset
+    :param x_col: column in dataframe containing the image paths
+    :param y_col: column in dataframe containing the target labels
+    :param augment: boolean specifying whether to use data augmentation or not
+    :param k: amount of folds used in the k-fold cross validation
+    :param batch_size: number of images processed in one batch
+    :param img_length: target length of image in pixels
+    :param img_width: target width of image in pixels
+    :return: mean and standard deviation of AUC score for k-fold cross validation transfer learning experiment
+    """
+    dataframe, num_classes, x_col, y_col, class_mode, skf, train_gen, valid_gen = prepare_model_target(home,
+                                                                                                       source_data,
+                                                                                                       target_data,
+                                                                                                       x_col,
+                                                                                                       y_col,
+                                                                                                       augment,
+                                                                                                       k)
+    auc_per_fold = []
+    auc_per_fold_dict = {}
+    fold_no = 1
+
+    for train_index, val_index in skf.split(np.zeros(len(dataframe)), y=dataframe[['class']]):
+        print(f'Starting fold {fold_no}')
+
+        valid_data = dataframe.iloc[val_index]  # create validation dataframe with indices from fold split
+
+        valid_generator = valid_gen.flow_from_dataframe(dataframe=valid_data,
+                                                        x_col=x_col,
+                                                        y_col=y_col,
+                                                        target_size=(img_length, img_width),
+                                                        batch_size=batch_size,
+                                                        class_mode=class_mode,
+                                                        validate_filenames=False,
+                                                        seed=2,
+                                                        shuffle=False)
+
+        try:
+            trained_model = load_model(
+                f'{home}/output/resnet_target={target_data}_source={source_data}/model_weights_resnet_target='
+                f'{target_data}_source={source_data}_fold{fold_no}.h5')
+            print('found model')
+        except OSError:
+            print('OSError')
+            continue
+
+        predictions = trained_model.predict(valid_generator)  # get predictions
+        auc = calculate_AUC(target_data, valid_generator, predictions)  # compute AUC score
+        auc_per_fold.append(auc)
+        auc_per_fold_dict[fold_no] = auc
+
+        fold_no += 1
+
+    mean_auc = np.mean(auc_per_fold)
+    std_auc = np.std(auc_per_fold)
+
+    return mean_auc, std_auc, auc_per_fold_dict
+
+
+def create_AUC_matrix(home, x_col, y_col, augment, k, batch_size):
+    """
+    :param home: part of path that is specific to user, e.g. /Users/..../
+    :param x_col: column in dataframe containing the image paths
+    :param y_col: column in dataframe containing the target labels
+    :param augment: boolean specifying whether to use data augmentation or not
+    :param k: amount of folds used in the k-fold cross validation
+    :param batch_size: number of images processed in one batch
+    :return: dictionary containing all mean AUC scores from transfer learning, dictionary containing all standard
+    deviations of the AUC scores from transfer learning
+    """
+    mean_auc_dict = {}
+    std_auc_dict = {}
+    auc_fold_dict = {}
+
+    source_datasets = ['imagenet', 'stl10', 'sti10', 'textures', 'isic', 'chest', 'pcam-middle', 'pcam-small', 'kimia']
+    target_datasets = ['isic', 'chest', 'pcam-middle']
+
+    for source in source_datasets:
+        print(f'Now starting with source dataset {source}')
+        mean_aucs_per_source = []
+        std_aucs_per_source = []
+        auc_folds_per_source = []
+        for target in target_datasets:
+            print(f'Now starting with target dataset {target}')
+            if target == source:
+                mean_auc, std_auc = np.nan, np.nan
+            else:
+                # add if-else to set right img length and width depending on target dataset used
+                if target == 'pcam-middle':
+                    img_length = 96
+                    img_width = 96
+                else:
+                    img_length = 112
+                    img_width = 112
+                mean_auc, std_auc, auc_per_fold_dict = collect_TF_AUC(home, source, target, x_col, y_col, augment, k,
+                                                                      img_length, img_width, batch_size)
+            mean_aucs_per_source.append(mean_auc)
+            std_aucs_per_source.append(std_auc)
+            auc_folds_per_source.append(auc_per_fold_dict)
+        mean_auc_dict[source] = mean_aucs_per_source
+        std_auc_dict[source] = std_aucs_per_source
+        auc_fold_dict[source] = auc_folds_per_source
+
+    return mean_auc_dict, std_auc_dict, auc_fold_dict
+
+
 #
 # def create_heatmap(mean_auc_dict, overall_ranking):
 #     """
@@ -299,12 +306,13 @@ def calculate_pretrain_acc_AUC(home, source_data, target_data, augment, batch_si
 #
 #     plt.show()
 #
-# #%%
-# # collect the mean and standard deviation AUC dictionaries
-# mean_auc_dictionary, std_auc_dictionary = create_AUC_matrix(home='/Users/IrmavandenBrandt/Downloads/Internship',
-#                                                             x_col='path', y_col='class', augment=True, k=5,
-#                                                             batch_size=128)
-#
+#%%
+# collect the mean and standard deviation AUC dictionaries
+# mean_auc_dictionary, std_auc_dictionary, auc_fold_dictionary = create_AUC_matrix(
+#     home='/Users/IrmavandenBrandt/Downloads/Internship',
+#     x_col='path', y_col='class', augment=True, k=5,
+#     batch_size=128)
+# #
 # # save the dictionaries in the outputs folder
 # with open('outputs/mean_auc_dict.csv', 'w') as csv_file:
 #     writer = csv.writer(csv_file)
@@ -328,15 +336,7 @@ def calculate_pretrain_acc_AUC(home, source_data, target_data, augment, batch_si
 # create_barplot(mean_auc_dict=mean_auc_dictionary, std_auc_dict=std_auc_dictionary)
 
 # %%
-train_loss, train_acc, val_loss, val_acc, test_loss, test_acc, auc = calculate_pretrain_acc_AUC(
-    home='/Users/IrmavandenBrandt/Downloads/Internship',
-    source_data='pcam-small', target_data=None, augment=True, batch_size=128,
-    img_length=96, img_width=96)
-
-
-#%%
-import numpy as np
-
-mean_auc_scores = np.load('outputs/mean_auc_scores.npy')
-
-
+# train_loss, train_acc, val_loss, val_acc, test_loss, test_acc, auc = calculate_pretrain_acc_AUC(
+#     home='/Users/IrmavandenBrandt/Downloads/Internship',
+#     source_data='pcam-small', target_data=None, augment=True, batch_size=128,
+#     img_length=96, img_width=96)

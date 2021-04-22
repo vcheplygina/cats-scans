@@ -48,7 +48,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7aa62c1f-18f8-4179-bd61-a035c8ea84e2" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/cats-scans.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cats-scans.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/evaluation/AUC_evaluation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/evaluation/AUC_evaluation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/transfer_experiments.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/transfer_experiments.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,7 +88,12 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/task2vec_fullcode/dataset" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -264,6 +274,16 @@
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7aa62c1f-18f8-4179-bd61-a035c8ea84e2" name="Default Changelist" comment="" />
+      <created>1617351697910</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1617351697910</updated>
+      <workItem from="1617351702850" duration="194000" />
+      <workItem from="1617953834399" duration="470000" />
+      <workItem from="1619077297349" duration="8282000" />
+    </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -297,6 +317,10 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="661" y="346" key="#Notifications" timestamp="1619085744425">
+      <screen x="0" y="25" width="1920" height="1055" />
+    </state>
+    <state x="661" y="346" key="#Notifications/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1619085744425" />
     <state x="172" y="83" key="MergeDialog" timestamp="1614672106216">
       <screen x="0" y="25" width="1920" height="1055" />
     </state>
@@ -305,6 +329,10 @@
       <screen x="0" y="25" width="1920" height="1055" />
     </state>
     <state x="573" y="284" key="MultipleFileMergeDialog/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1614672181465" />
+    <state x="776" y="111" key="SettingsEditor" timestamp="1619086884419">
+      <screen x="0" y="25" width="1920" height="1055" />
+    </state>
+    <state x="776" y="111" key="SettingsEditor/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1619086884419" />
     <state width="960" height="528" key="XDebugger.FullValuePopup" timestamp="1616257365586">
       <screen x="0" y="25" width="1920" height="1055" />
     </state>

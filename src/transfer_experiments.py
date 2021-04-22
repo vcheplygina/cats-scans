@@ -11,7 +11,7 @@ import tensorflow as tf
 from src.io.access_keys import neptune_key
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Resnet_pretrained=isic_target=pcam-middle')
+ex = Experiment('Resnet_pretrained=isic_target=isic')
 
 ex.observers.append(NeptuneObserver(
     api_token=neptune_key,
@@ -28,22 +28,22 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "imagenet"
+    source_data = "isic"
     # define target dataset
     target_data = "isic"
     x_col = "path"
     y_col = "class"
     augment = True
     k = 5
-    img_length = 96
-    img_width = 96
-    learning_rate = 0.000001
+    img_length = 112
+    img_width = 112
+    learning_rate = 0.00001
     batch_size = 128
-    epochs = 20
+    epochs = 50
     color = True
     dropout = 0.5
     scheduler_bool = False
-    home = '/Users/IrmavandenBrandt/Downloads/Internship'
+    home = '/data/ivdbrandt'
 
     # target = False
     # # define src data
