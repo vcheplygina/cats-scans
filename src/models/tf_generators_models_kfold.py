@@ -18,10 +18,10 @@ def create_generators(dataset, augment):
     :param augment: boolean specifying whether to use data augmentation or not
     :return: training and validation generator that preprocesses and augments images
     """
-    if (dataset == 'pcam-middle') | (dataset == 'pcam-small'):
-        preprocessing = lambda x: x / 255.      # recommended preprocessing: https://github.com/basveeling/pcam
-    else:
-        preprocessing = preprocess_input
+    # if (dataset == 'pcam-middle') | (dataset == 'pcam-small'):
+    #     preprocessing = lambda x: x / 255.      # recommended preprocessing: https://github.com/basveeling/pcam
+    # else:
+    preprocessing = preprocess_input
 
     if augment:
         train_datagen = ImageDataGenerator(
