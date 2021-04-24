@@ -3,7 +3,7 @@ from src.models.model_preparation_saving import prepare_model_target, prepare_mo
     save_pred_model
 from src.models.tf_generators_models_kfold import create_model, compute_class_weights
 import numpy as np
-from src.evaluation.AUC_evaluation import calculate_AUC
+from src.evaluation.auc_evaluation import calculate_AUC
 from neptunecontrib.monitoring.sacred import NeptuneObserver
 from tensorflow.keras import callbacks
 from numpy.random import seed
@@ -11,7 +11,7 @@ import tensorflow as tf
 from src.io.access_keys import neptune_key
 
 # initialize experiment name. NOTE: this should be updated with every new experiment
-ex = Experiment('Resnet_pretrained=isic_target=isic')
+ex = Experiment('Resnet_pretrained=imagenet_target=isic')
 
 ex.observers.append(NeptuneObserver(
     api_token=neptune_key,
@@ -28,7 +28,7 @@ def cfg():
     """
     target = True
     # define src data
-    source_data = "isic"
+    source_data = "imagenet"
     # define target dataset
     target_data = "isic"
     x_col = "path"
@@ -44,6 +44,7 @@ def cfg():
     dropout = 0.5
     scheduler_bool = False
     home = '/data/ivdbrandt'
+
 
     # target = False
     # # define src data

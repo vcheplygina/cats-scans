@@ -48,11 +48,74 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7aa62c1f-18f8-4179-bd61-a035c8ea84e2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/cats-scans.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cats-scans.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/auc_folds_dict.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/barplot_auc_scores.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/heatmap_auc_scores.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/mean_auc_dict.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/mean_auc_scores.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/outputs/std_auc_dict.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/results/auc_folds_means_std.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/auc_tables_figures.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/evaluation/AUC_evaluation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/evaluation/AUC_evaluation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/mean_auc_dict.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/std_auc_dict.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/evaluation/AUC_evaluation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/evaluation/auc_evaluation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/tf_generators_models_kfold.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/tf_generators_models_kfold.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-25-40/.hydra/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-25-40/.hydra/hydra.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-25-40/.hydra/overrides.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-25-40/main.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-27-08/.hydra/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-27-08/.hydra/hydra.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-27-08/.hydra/overrides.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-27-08/main.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-28-10/.hydra/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-28-10/.hydra/hydra.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-28-10/.hydra/overrides.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-28-10/main.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-34-17/.hydra/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-34-17/.hydra/hydra.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-34-17/.hydra/overrides.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-34-17/main.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-34-47/.hydra/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-34-47/.hydra/hydra.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-34-47/.hydra/overrides.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-34-47/main.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-35-20/.hydra/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-35-20/.hydra/hydra.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-35-20/.hydra/overrides.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-35-20/main.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-35-42/.hydra/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-35-42/.hydra/hydra.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-35-42/.hydra/overrides.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-35-42/main.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-36-54/.hydra/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-36-54/.hydra/hydra.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-36-54/.hydra/overrides.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-36-54/main.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-45-00/.hydra/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-45-00/.hydra/hydra.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-45-00/.hydra/overrides.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-45-00/task2vec_cats-scans.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-45-56/.hydra/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-45-56/.hydra/hydra.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-45-56/.hydra/overrides.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-45-56/task2vec_cats-scans.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-47-21/.hydra/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-47-21/.hydra/hydra.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-47-21/.hydra/overrides.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-10/17-47-21/task2vec_cats-scans.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-11/09-45-04/.hydra/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-11/09-45-04/.hydra/hydra.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-11/09-45-04/.hydra/overrides.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-11/09-45-04/embedding_test_stl10.p" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/2021-02-11/09-45-04/task2vec_cats-scans.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/PCam/embedding_test_pcam.p" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/embedding_isic2018.p" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/embedding_pcam-middle.p" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/outputs/embedding_pcam-small.p" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/task2vec_fullcode/plot_distance_cub_inat.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/transfer_experiments.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/transfer_experiments.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -96,10 +159,11 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/task2vec_fullcode/dataset" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/task2vec_fullcode/dataset" />
     </key>
   </component>
@@ -282,7 +346,7 @@
       <updated>1617351697910</updated>
       <workItem from="1617351702850" duration="194000" />
       <workItem from="1617953834399" duration="470000" />
-      <workItem from="1619077297349" duration="8282000" />
+      <workItem from="1619077297349" duration="30242000" />
     </task>
     <servers />
   </component>
@@ -321,6 +385,10 @@
       <screen x="0" y="25" width="1920" height="1055" />
     </state>
     <state x="661" y="346" key="#Notifications/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1619085744425" />
+    <state x="588" y="330" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1619272238836">
+      <screen x="0" y="25" width="1920" height="1055" />
+    </state>
+    <state x="588" y="330" key="#com.intellij.fileTypes.FileTypeChooser/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1619272238836" />
     <state x="172" y="83" key="MergeDialog" timestamp="1614672106216">
       <screen x="0" y="25" width="1920" height="1055" />
     </state>
@@ -329,22 +397,24 @@
       <screen x="0" y="25" width="1920" height="1055" />
     </state>
     <state x="573" y="284" key="MultipleFileMergeDialog/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1614672181465" />
-    <state x="776" y="111" key="SettingsEditor" timestamp="1619086884419">
-      <screen x="0" y="25" width="1920" height="1055" />
+    <state x="458" y="96" key="SettingsEditor" timestamp="1619169998775">
+      <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state x="776" y="111" key="SettingsEditor/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1619086884419" />
-    <state width="960" height="528" key="XDebugger.FullValuePopup" timestamp="1616257365586">
+    <state x="458" y="96" key="SettingsEditor/0.25.1440.875@0.25.1440.875" timestamp="1619169998775" />
+    <state width="960" height="528" key="XDebugger.FullValuePopup" timestamp="1619271932264">
       <screen x="0" y="25" width="1920" height="1055" />
     </state>
-    <state width="960" height="528" key="XDebugger.FullValuePopup/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1616257365586" />
+    <state width="960" height="528" key="XDebugger.FullValuePopup/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1619271932264" />
     <state x="639" y="273" width="602" height="490" key="find.popup" timestamp="1616257701926">
       <screen x="0" y="25" width="1920" height="1055" />
     </state>
     <state x="639" y="273" width="602" height="490" key="find.popup/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1616257701926" />
-    <state x="605" y="242" width="670" height="676" key="search.everywhere.popup" timestamp="1616256872215">
-      <screen x="0" y="25" width="1920" height="1055" />
+    <state x="454" y="205" width="670" height="561" key="search.everywhere.popup" timestamp="1619169673172">
+      <screen x="0" y="25" width="1440" height="875" />
     </state>
     <state x="605" y="242" width="670" height="676" key="search.everywhere.popup/-1440.138.1440.875/0.25.1920.1055@0.25.1920.1055" timestamp="1616256872215" />
+    <state x="454" y="205" width="670" height="561" key="search.everywhere.popup/0.25.1440.875@0.25.1440.875" timestamp="1619169673172" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/cats_scans$main.coverage" NAME="main Coverage Results" MODIFIED="1614604843480" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/task2vec_fullcode" />
