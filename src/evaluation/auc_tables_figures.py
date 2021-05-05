@@ -136,18 +136,15 @@ def create_AUC_matrix(home, x_col, y_col, augment, k, batch_size):
         auc_folds_per_source = []
         for target in target_datasets:
             print(f'Now starting with target dataset {target}')
-            if (target == source) and (target != 'isic'):
-                mean_auc, std_auc = np.nan, np.nan
+            # add if-else to set right img length and width depending on target dataset used
+            if target == 'pcam-middle':
+                img_length = 96
+                img_width = 96
             else:
-                # add if-else to set right img length and width depending on target dataset used
-                if target == 'pcam-middle':
-                    img_length = 96
-                    img_width = 96
-                else:
-                    img_length = 112
-                    img_width = 112
-                mean_auc, std_auc, auc_per_fold_dict = collect_TF_AUC(home, source, target, x_col, y_col, augment, k,
-                                                                      batch_size, img_length, img_width)
+                img_length = 112
+                img_width = 112
+            mean_auc, std_auc, auc_per_fold_dict = collect_TF_AUC(home, source, target, x_col, y_col, augment, k,
+                                                                  batch_size, img_length, img_width)
             mean_aucs_per_source.append(mean_auc)
             std_aucs_per_source.append(std_auc)
             auc_folds_per_source.append(auc_per_fold_dict)

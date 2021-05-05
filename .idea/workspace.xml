@@ -49,6 +49,11 @@
   <component name="ChangeListManager">
     <list default="true" id="7aa62c1f-18f8-4179-bd61-a035c8ea84e2" name="Default Changelist" comment="Merge branch 'Irma' into master&#10;# Please enter a commit message to explain why this merge is necessary,&#10;# especially if it merges an updated upstream into a topic branch.&#10;#&#10;# Lines starting with '#' will be ignored, and an empty message aborts&#10;# the commit.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/outputs/barplot_auc_scores.png" beforeDir="false" afterPath="$PROJECT_DIR$/outputs/barplot_auc_scores.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/outputs/heatmap_auc_scores.png" beforeDir="false" afterPath="$PROJECT_DIR$/outputs/heatmap_auc_scores.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/outputs/mean_auc_scores.npy" beforeDir="false" afterPath="$PROJECT_DIR$/outputs/mean_auc_scores.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/auc_folds_means_std.csv" beforeDir="false" afterPath="$PROJECT_DIR$/results/auc_folds_means_std.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/evaluation/auc_tables_figures.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/evaluation/auc_tables_figures.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -279,7 +284,7 @@
       <workItem from="1617351702850" duration="194000" />
       <workItem from="1617953834399" duration="470000" />
       <workItem from="1619077297349" duration="30242000" />
-      <workItem from="1619687933743" duration="2506000" />
+      <workItem from="1619687933743" duration="5196000" />
     </task>
     <task id="LOCAL-00001" summary="Merge branch 'Irma' into master&#10;# Please enter a commit message to explain why this merge is necessary,&#10;# especially if it merges an updated upstream into a topic branch.&#10;#&#10;# Lines starting with '#' will be ignored, and an empty message aborts&#10;# the commit.">
       <created>1619273649488</created>
