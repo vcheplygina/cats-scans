@@ -11,7 +11,8 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
-from scipy import stats
+from scipy import stats, spatial
+import pickle
 
 #Calculate transferability - move this to functions later
 def get_transfer_score(auc_target, auc_source):
@@ -50,15 +51,18 @@ def test_transfer_score():
 # Create transferability plot like in the paper "Geometric Dataset Distances via Optimal Transport"
 def plot_distance_score(distance, score_mean, score_std, labels):
     
+    plt.figure(figsize=(8,6))
+    #plt.ylim([-10,20])
+    #plt.xlim([-0.05, 1])
     # Plot the data
     plt.errorbar(distance, score_mean, yerr=score_std, fmt='o')
 
     # Label points    
-    offset = 0.2
+    offset = 0.02
     
     for i, label in enumerate(labels):
-        plt.annotate(label, (distance[i]+offset, score_mean[i]+offset))
-        #u'\u03b8 (°)', fontdict={'fontname': 'Times New Roman'}
+        plt.annotate(label, (distance[i]+offset, score_mean[i]+offset), size=8)
+    
     
     
     # Regression line
@@ -74,8 +78,10 @@ def plot_distance_score(distance, score_mean, score_std, labels):
     
     plt.xlabel("Dataset distance")
     plt.ylabel("Relative AUC increase")
+    plt.tight_layout()
+    plt.savefig('transfer_score.png')
     
-    # Save plot (TODO), increase font size etc. 
+    
     
     
 def show_transfer_matrix(scores, labels):
@@ -113,21 +119,23 @@ aucs = pd.read_csv('/Users/vech/Sync/30-ResearchPapers/cats-scans/cats-scans/res
 aucs = aucs.dropna(axis=0)
 
 
-#  Add columns for transfer scores
+#  Add columns for transfer scores and distances
 num_folds = 5
 for fold in np.arange(0,num_folds)+1:
     
     col = 'score_'+str(fold)
     aucs[col] = np.nan
     
+    col = 'distance_'+str(fold)
+    aucs[col] = np.nan
     
-
+    
+    
+#Calculate transferability
 for index, row in aucs.iterrows():
     
     target = row['target']
-    print(target)
-   
-    
+
     #Calculate transfer score
     num_folds = 5
     
@@ -137,10 +145,10 @@ for index, row in aucs.iterrows():
     
          col = str(fold)
     
-         without_transfer = baseline['fold_'+col]
+         target_only = baseline['fold_'+col]
          with_transfer = row['fold_'+col]
          
-         score = get_transfer_score(with_transfer, without_transfer)
+         score = get_transfer_score(target_only, with_transfer)
     
      
          aucs.at[index,'score_'+col] = score
@@ -152,7 +160,54 @@ aucs.to_csv('aucs_with_scores.csv')
 #experts = pd.read_excel(experts)
 
 
-emb = '/Users/vech/Sync/30-ResearchPapers/cats-scans/cats-scans/results/task2vec_embeddings.csv'
-emb = pd.read_csv(emb)
+path_emb = '/Users/vech/Sync/30-ResearchPapers/cats-scans/cats-scans/results/Task2Vec_embeddings/'
+subset_index = np.random.randint(1,100, 5)
+
+os.chdir('/Users/vech/Sync/30-ResearchPapers/cats-scans/cats-scans/') #magic required to load pickles
+
+# Calculate distances
+for index, row in aucs.iterrows():
+    
+    target = row['target']
+    source = row['source']
+   
+    
+    if source == 'imagenet':
+        source = 'stl10'
+   
+    
+    #Calculate distance
+    num_folds = 5
+    
+    
+    for fold in np.arange(0,num_folds)+1:
+        col = str(fold)
+        subset = str(subset_index[fold-1])
+        
+        path_target = path_emb+'embedding_' + target + '_subset' + subset + '.p'
+        path_source = path_emb+'embedding_' + source + '_subset' + subset + '.p'
+ 
+        
+        emb_target = pickle.load(open(path_target, 'rb'))
+        emb_source = pickle.load(open(path_source, 'rb'))
+        
+        dist = spatial.distance.cosine(emb_target.hessian, emb_source.hessian)
+        aucs.at[index,'distance_'+col] = dist
+        
+           
+aucs.to_csv('aucs_with_distances.csv')
 
 
+# Make plot?
+distance_col = [col for col in aucs if col.startswith('distance')]
+score_col = [col for col in aucs if col.startswith('score')]
+
+labels = aucs['source']+' to ' + aucs['target']
+
+
+dist = aucs[distance_col].mean(axis=1).to_numpy()
+meanauc = aucs[score_col].mean(axis=1).to_numpy()
+stdauc = aucs[score_col].std(axis=1).to_numpy()
+
+
+plot_distance_score(dist, meanauc, stdauc, labels)
