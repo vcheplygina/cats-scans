@@ -89,16 +89,70 @@ def show_transfer_matrix(scores, labels):
     ax.set_xticklabels([''] + labels)
     ax.set_yticklabels([''] + labels)
 
-dataset_distance = [5, 10, 15, 20, 25, 30]
 
-score_mean = [7, 9, 13, 14, 11, 16]
-score_std = [1, 1, 1, 1, 1, 1]
+def test_transfer_matrix():
+    
+    dataset_distance = [5, 10, 15, 20, 25, 30]
+    
+    score_mean = [7, 9, 13, 14, 11, 16]
+    score_std = [1, 1, 1, 1, 1, 1]
+    
+    labels_pairs = ["A to B", "A to C", "A to D", "B to C", "B to D", "C to D"]
+    plot_distance_score(dataset_distance, score_mean, score_std, labels_pairs)
+    
+    labels = ["A", "B", "C", "D"]
+    scores = np.matrix([[70, 75, 80, 75], [60, 70, 60, 80], [90, 95, 80, 85], [80, 60, 60, 65]])
+    
+    show_transfer_matrix(scores, labels)
 
-labels_pairs = ["A to B", "A to C", "A to D", "B to C", "B to D", "C to D"]
-plot_distance_score(dataset_distance, score_mean, score_std, labels_pairs)
 
-labels = ["A", "B", "C", "D"]
-scores = np.matrix([[70, 75, 80, 75], [60, 70, 60, 80], [90, 95, 80, 85], [80, 60, 60, 65]])
 
-show_transfer_matrix(scores, labels)
+
+# Load transfer experiment AUCs
+aucs = pd.read_csv('/Users/vech/Sync/30-ResearchPapers/cats-scans/cats-scans/results/auc_folds_means_std.csv')
+aucs = aucs.dropna(axis=0)
+
+
+#  Add columns for transfer scores
+num_folds = 5
+for fold in np.arange(0,num_folds)+1:
+    
+    col = 'score_'+str(fold)
+    aucs[col] = np.nan
+    
+    
+
+for index, row in aucs.iterrows():
+    
+    target = row['target']
+    print(target)
+   
+    
+    #Calculate transfer score
+    num_folds = 5
+    
+    for fold in np.arange(0,num_folds)+1:
+        
+         baseline = aucs.loc[(aucs['target']==target) & (aucs['source']==target)]
+    
+         col = str(fold)
+    
+         without_transfer = baseline['fold_'+col]
+         with_transfer = row['fold_'+col]
+         
+         score = get_transfer_score(with_transfer, without_transfer)
+    
+     
+         aucs.at[index,'score_'+col] = score
+    
+aucs.to_csv('aucs_with_scores.csv')
+
+
+#experts = '/Users/vech/Sync/30-ResearchPapers/cats-scans/experts_clean.xlsx'
+#experts = pd.read_excel(experts)
+
+
+emb = '/Users/vech/Sync/30-ResearchPapers/cats-scans/cats-scans/results/task2vec_embeddings.csv'
+emb = pd.read_csv(emb)
+
 
