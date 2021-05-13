@@ -156,8 +156,7 @@ for index, row in aucs.iterrows():
 aucs.to_csv('aucs_with_scores.csv')
 
 
-#experts = '/Users/vech/Sync/30-ResearchPapers/cats-scans/experts_clean.xlsx'
-#experts = pd.read_excel(experts)
+########################### Transferability vs task2vec distance
 
 
 path_emb = '/Users/vech/Sync/30-ResearchPapers/cats-scans/cats-scans/results/Task2Vec_embeddings/'
@@ -208,6 +207,33 @@ labels = aucs['source']+' to ' + aucs['target']
 dist = aucs[distance_col].mean(axis=1).to_numpy()
 meanauc = aucs[score_col].mean(axis=1).to_numpy()
 stdauc = aucs[score_col].std(axis=1).to_numpy()
+
+
+plot_distance_score(dist, meanauc, stdauc, labels)
+
+
+
+
+########################### Transferability vs expert distance
+
+# Load expert distances
+expdist = pd.read_csv('/Users/vech/Sync/30-ResearchPapers/cats-scans/cats-scans/results/experts_clean.csv', sep=";")
+
+# Initialize column in same dataframe
+aucs['expert_distance'] = np.nan
+
+# Lookup expert distances from CSV
+for index, row in aucs.iterrows():
+    
+    target = row['target']
+    source = row['source']
+   
+    
+    dist = expdist.loc[(expdist['source']==source) & (expdist['target']==target)]
+    aucs.at[index, 'expert_distance'] = dist['distance']
+
+
+dist = aucs['expert_distance'].to_numpy()
 
 
 plot_distance_score(dist, meanauc, stdauc, labels)
