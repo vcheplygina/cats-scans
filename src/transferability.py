@@ -14,6 +14,8 @@ import seaborn as sns
 from scipy import stats, spatial
 import pickle
 
+path_repo = '/Users/vech/Sync/30-ResearchPapers/cats-scans/cats-scans/'
+
 #Calculate transferability - move this to functions later
 def get_transfer_score(auc_target, auc_source):
     transfer_score = (auc_source - auc_target)/auc_target * 100
@@ -49,7 +51,7 @@ def test_transfer_score():
 
 
 # Create transferability plot like in the paper "Geometric Dataset Distances via Optimal Transport"
-def plot_distance_score(distance, score_mean, score_std, labels):
+def plot_distance_score(distance, score_mean, score_std, labels, plot_name):
     
     plt.figure(figsize=(8,6))
     #plt.ylim([-10,20])
@@ -79,7 +81,7 @@ def plot_distance_score(distance, score_mean, score_std, labels):
     plt.xlabel("Dataset distance")
     plt.ylabel("Relative AUC increase")
     plt.tight_layout()
-    plt.savefig('transfer_score.png')
+    plt.savefig(path_repo + 'figures/' + plot_name + '.png')
     
     
     
@@ -114,8 +116,8 @@ def test_transfer_matrix():
 
 
 
-# Load transfer experiment AUCs
-aucs = pd.read_csv('/Users/vech/Sync/30-ResearchPapers/cats-scans/cats-scans/results/auc_folds_means_std.csv')
+#################  Load transfer experiment AUCs
+aucs = pd.read_csv(path_repo+'results/auc_folds_means_std.csv')
 aucs = aucs.dropna(axis=0)
 
 
@@ -153,16 +155,16 @@ for index, row in aucs.iterrows():
      
          aucs.at[index,'score_'+col] = score
     
-aucs.to_csv('aucs_with_scores.csv')
+aucs.to_csv(path_repo+'results/aucs_scores.csv')
 
 
 ########################### Transferability vs task2vec distance
 
 
-path_emb = '/Users/vech/Sync/30-ResearchPapers/cats-scans/cats-scans/results/Task2Vec_embeddings/'
+path_emb = path_repo+'results/Task2Vec_embeddings/'
 subset_index = np.random.randint(1,100, 5)
 
-os.chdir('/Users/vech/Sync/30-ResearchPapers/cats-scans/cats-scans/') #magic required to load pickles
+os.chdir(path_repo) #magic required to load pickles
 
 # Calculate distances
 for index, row in aucs.iterrows():
@@ -194,7 +196,7 @@ for index, row in aucs.iterrows():
         aucs.at[index,'distance_'+col] = dist
         
            
-aucs.to_csv('aucs_with_distances.csv')
+aucs.to_csv(path_repo+'results/aucs_scores_distances.csv')
 
 
 # Make plot?
@@ -209,7 +211,7 @@ meanauc = aucs[score_col].mean(axis=1).to_numpy()
 stdauc = aucs[score_col].std(axis=1).to_numpy()
 
 
-plot_distance_score(dist, meanauc, stdauc, labels)
+plot_distance_score(dist, meanauc, stdauc, labels, 'transferability_task2vec')
 
 
 
@@ -217,7 +219,7 @@ plot_distance_score(dist, meanauc, stdauc, labels)
 ########################### Transferability vs expert distance
 
 # Load expert distances
-expdist = pd.read_csv('/Users/vech/Sync/30-ResearchPapers/cats-scans/cats-scans/results/experts_clean.csv', sep=";")
+expdist = pd.read_csv(path_repo+'results/experts_clean.csv', sep=";")
 
 # Initialize column in same dataframe
 aucs['expert_distance'] = np.nan
@@ -232,8 +234,11 @@ for index, row in aucs.iterrows():
     dist = expdist.loc[(expdist['source']==source) & (expdist['target']==target)]
     aucs.at[index, 'expert_distance'] = dist['distance']
 
+         
+aucs.to_csv(path_repo+'results/aucs_scores_distances_experts.csv')
+
 
 dist = aucs['expert_distance'].to_numpy()
 
 
-plot_distance_score(dist, meanauc, stdauc, labels)
+plot_distance_score(dist, meanauc, stdauc, labels, 'trasferability_experts')
