@@ -23,47 +23,24 @@ def get_transfer_score(auc_target, auc_source):
 
 
 
-
-# Examples of AUCs for transferability
-def test_transfer_score():    
-    #Improves somewhat
-    auc_target_only1 = 0.7
-    auc_with_source1 = 0.8
-    print(get_transfer_score(auc_target_only1, auc_with_source1))
-    
-    
-    #Improves an already easy case
-    auc_target_only2 = 0.9
-    auc_with_source2 = 0.95
-    print(get_transfer_score(auc_target_only2, auc_with_source2))
-    
-    
-    #Can't learn without it
-    auc_target_only3 = 0.5
-    auc_with_source3 = 1
-    print(get_transfer_score(auc_target_only3, auc_with_source3))
-    
-    
-    #Makes things worse
-    auc_target_only4 = 0.7
-    auc_with_source4 = 0.6
-    print(get_transfer_score(auc_target_only4, auc_with_source4))
-
-
 # Create transferability plot like in the paper "Geometric Dataset Distances via Optimal Transport"
 def plot_distance_score(distance, score_mean, score_std, labels, plot_name):
     
     plt.figure(figsize=(8,6))
     #plt.ylim([-10,20])
-    #plt.xlim([-0.05, 1])
+    plt.xlim([-0.05, 1.05])
     # Plot the data
     plt.errorbar(distance, score_mean, yerr=score_std, fmt='o')
 
     # Label points    
-    offset = 0.02
+    offset_x = 0.02
+    
+    np.random.seed(1)
     
     for i, label in enumerate(labels):
-        plt.annotate(label, (distance[i]+offset, score_mean[i]+offset), size=8)
+        
+        offset_y = np.random.rand(1)[0]
+        plt.annotate(label, (distance[i]+offset_x, score_mean[i]+offset_y), size=8)
     
     
     
@@ -207,6 +184,8 @@ labels = aucs['source']+' to ' + aucs['target']
 
 
 dist = aucs[distance_col].mean(axis=1).to_numpy()
+dist = dist / np.max(dist)
+
 meanauc = aucs[score_col].mean(axis=1).to_numpy()
 stdauc = aucs[score_col].std(axis=1).to_numpy()
 
@@ -239,6 +218,7 @@ aucs.to_csv(path_repo+'results/aucs_scores_distances_experts.csv')
 
 
 dist = aucs['expert_distance'].to_numpy()
+dist = dist / np.max(dist)
 
 
 plot_distance_score(dist, meanauc, stdauc, labels, 'trasferability_experts')
